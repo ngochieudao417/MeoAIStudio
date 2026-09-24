@@ -1,0 +1,371 @@
+{
+  "yt": {
+    "platform": "yt",
+    "status": "PASS",
+    "http_code": 200,
+    "api_response": {
+      "ok": true,
+      "platforms": [
+        "yt"
+      ]
+    },
+    "launched_browser_pids": [
+      13660
+    ],
+    "survived_browser_pids": [
+      13660
+    ],
+    "total_active_browsers": 63,
+    "details": [
+      {
+        "ProcessId": 13660,
+        "ParentProcessId": 2420,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\yt_chrome_profile\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=80 --launch-time-ticks=34762050631 --ssd-no-pressure-read-main-dll --metrics-shmem-handle=5752,i,4505697108606706147,2105566108701459942,1048576 --field-trial-handle=2592,i,1504854232261563695,11128914420086738699,262144 --variations-seed-version --pseudonymization-salt-handle=2596,i,3430467540702596682,6605474793429958495,4 --trace-process-track-uuid=3190709061275219414 --mojo-platform-channel-handle=7804 /prefetch:1"
+      }
+    ]
+  },
+  "dy": {
+    "platform": "dy",
+    "status": "PASS",
+    "http_code": 200,
+    "api_response": {
+      "ok": true,
+      "platforms": [
+        "dy"
+      ]
+    },
+    "launched_browser_pids": [],
+    "survived_browser_pids": [],
+    "total_active_browsers": 62,
+    "details": []
+  },
+  "bili": {
+    "platform": "bili",
+    "status": "PASS",
+    "http_code": 200,
+    "api_response": {
+      "ok": true,
+      "platforms": [
+        "bili"
+      ]
+    },
+    "launched_browser_pids": [
+      22656,
+      9984,
+      21792,
+      580,
+      24452,
+      10692,
+      25224,
+      9512,
+      15272,
+      25196,
+      16500,
+      8052,
+      24052,
+      24564,
+      24120
+    ],
+    "survived_browser_pids": [
+      22656,
+      9984,
+      21792,
+      580,
+      24452,
+      10692,
+      25224,
+      9512,
+      15272,
+      25196,
+      16500,
+      8052,
+      24052,
+      24564,
+      24120
+    ],
+    "total_active_browsers": 83,
+    "details": [
+      {
+        "ProcessId": 22656,
+        "ParentProcessId": 20620,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" \"--user-data-dir=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --app=https://www.bilibili.com --no-first-run --no-default-browser-check"
+      },
+      {
+        "ProcessId": 9984,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=crashpad-handler \"--user-data-dir=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" /prefetch:4 --monitor-self-annotation=ptype=crashpad-handler \"--database=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\\Crashpad\" \"--metrics-dir=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --annotation=IsOfficialBuild=1 --annotation=channel= --annotation=chromium-version=153.0.8010.53 \"--annotation=exe=C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --annotation=plat=Win64 --annotation=prod=Edge --annotation=ver=153.0.4234.48 --initial-client-data=0x278,0x27c,0x280,0x274,0x288,0x7ffe54e83360,0x7ffe54e83370,0x7ffe54e83380"
+      },
+      {
+        "ProcessId": 21792,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=14 --launch-time-ticks=34795651638 --skip-read-main-dll --metrics-shmem-handle=4728,i,4086795463455475179,15778332138842988036,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708999430457380 --mojo-platform-channel-handle=4736 /prefetch:2"
+      },
+      {
+        "ProcessId": 580,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=10 --launch-time-ticks=34795620034 --skip-read-main-dll --metrics-shmem-handle=4280,i,5694277248814858593,17404745869171609880,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708995682289984 --mojo-platform-channel-handle=4288 /prefetch:2"
+      },
+      {
+        "ProcessId": 24452,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=service --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --startup-read-main-dll --metrics-shmem-handle=2572,i,11664998221497492368,938793920471756406,524288 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708990060038890 --mojo-platform-channel-handle=2592 /prefetch:8"
+      },
+      {
+        "ProcessId": 10692,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=16 --launch-time-ticks=34795671286 --skip-read-main-dll --metrics-shmem-handle=4936,i,5765582754807659266,9118706800799281745,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190709001304541078 --mojo-platform-channel-handle=4944 /prefetch:2"
+      },
+      {
+        "ProcessId": 25224,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=entity_extraction_service.mojom.Extractor --lang=en-US --service-sandbox-type=entity_extraction --onnx-enabled-for-ee --video-capture-use-gpu-memory-buffer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --skip-read-main-dll --metrics-shmem-handle=6756,i,17429311839440512587,6428959825636594270,524288 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190709005989750323 --mojo-platform-channel-handle=6916 /prefetch:8"
+      },
+      {
+        "ProcessId": 9512,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=15 --launch-time-ticks=34795660063 --skip-read-main-dll --metrics-shmem-handle=4824,i,9627274612353927270,15332162754529965328,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190709000367499229 --mojo-platform-channel-handle=4836 /prefetch:1"
+      },
+      {
+        "ProcessId": 15272,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --startup-read-main-dll --metrics-shmem-handle=2120,i,9974458991455425849,11068812851190158434,524288 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708989122997041 --mojo-platform-channel-handle=2128 /prefetch:3"
+      },
+      {
+        "ProcessId": 25196,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=20 --launch-time-ticks=34798190540 --skip-read-main-dll --metrics-shmem-handle=3564,i,10937398703476326883,8507372690699464949,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190709005052708474 --mojo-platform-channel-handle=6908 /prefetch:1"
+      },
+      {
+        "ProcessId": 16500,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --launch-time-ticks=34795495994 --skip-read-main-dll --metrics-shmem-handle=3616,i,6983708444950969932,6190540747503160155,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708990997080739 --mojo-platform-channel-handle=3624 /prefetch:1"
+      },
+      {
+        "ProcessId": 8052,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=17 --launch-time-ticks=34795870622 --skip-read-main-dll --metrics-shmem-handle=5444,i,1539951329383598948,5299727810815522195,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190709002241582927 --mojo-platform-channel-handle=5456 /prefetch:2"
+      },
+      {
+        "ProcessId": 24052,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=gpu-process --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --gpu-preferences=WAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAQAAAAAAAAAADAAAAAAAAADgAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAoAAAAAAAAAAgAAAAAAAAAEAAAAAIAAAABAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --startup-read-main-dll --metrics-shmem-handle=1876,i,2575231685724427301,17552955574036208275,262144 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=2052 /prefetch:2"
+      },
+      {
+        "ProcessId": 24564,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=12 --launch-time-ticks=34795638094 --skip-read-main-dll --metrics-shmem-handle=4360,i,11122553235403872372,10226989120794881397,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708997556373682 --mojo-platform-channel-handle=4396 /prefetch:2"
+      },
+      {
+        "ProcessId": 24120,
+        "ParentProcessId": 22656,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\bilibili_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=8 --launch-time-ticks=34795603418 --skip-read-main-dll --metrics-shmem-handle=4108,i,5567289420653824202,8434404513483995915,1048576 --field-trial-handle=2068,i,2411516044094185638,14477347956131662125,262144 --variations-seed-version --pseudonymization-salt-handle=2072,i,13931534746007356914,3155772382442880623,4 --trace-process-track-uuid=3190708993808206286 --mojo-platform-channel-handle=4152 /prefetch:2"
+      }
+    ]
+  },
+  "xhs": {
+    "platform": "xhs",
+    "status": "PASS",
+    "http_code": 200,
+    "api_response": {
+      "ok": true,
+      "platforms": [
+        "xhs"
+      ]
+    },
+    "launched_browser_pids": [
+      17116,
+      4040
+    ],
+    "survived_browser_pids": [],
+    "total_active_browsers": 81,
+    "details": [
+      {
+        "ProcessId": 17116,
+        "ParentProcessId": 8588,
+        "Name": "chrome.exe",
+        "CommandLine": "\"C:\\Users\\Ngoc Hieu\\AppData\\Local\\ms-playwright\\chromium-1243\\chrome-win64\\chrome.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\xhs_user_data_dir\" --no-pre-read-main-dll --start-stack-profiler --no-sandbox --disable-back-forward-cache --disable-background-timer-throttling --disable-breakpad --force-color-profile=srgb --remote-debugging-pipe --allow-pre-commit-input --disable-blink-features=AutomationControlled --video-capture-use-gpu-memory-buffer --lang=en-US --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=16 --launch-time-ticks=34828221734 --metrics-shmem-handle=5412,i,1832860959437992202,14306692746702171148,1572864 --field-trial-handle=2148,i,18903054148401331,13451551638046871214,262144 --enable-features=CDPScreenshotNewSurface --disable-features=AutoDeElevate,AvoidUnnecessaryBeforeUnloadCheckSync,BlockOriginHeaderModificationOnRedirect,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,OptimizationHints,PaintHolding,ThirdPartyStoragePartitioning,Translate,msEdgeUpdateLaunchServicesPreferredVersion,msForceBrowserSignIn --variations-seed-version --pseudonymization-salt-handle=1784,i,8736746647451294607,325862811444155725,4 --trace-process-track-uuid=3190709001304541078 --mojo-platform-channel-handle=4704 /prefetch:1"
+      },
+      {
+        "ProcessId": 4040,
+        "ParentProcessId": 8588,
+        "Name": "chrome.exe",
+        "CommandLine": "\"C:\\Users\\Ngoc Hieu\\AppData\\Local\\ms-playwright\\chromium-1243\\chrome-win64\\chrome.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\xhs_user_data_dir\" --no-pre-read-main-dll --start-stack-profiler --no-sandbox --disable-back-forward-cache --disable-background-timer-throttling --disable-breakpad --force-color-profile=srgb --remote-debugging-pipe --allow-pre-commit-input --disable-blink-features=AutomationControlled --video-capture-use-gpu-memory-buffer --lang=en-US --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=17 --launch-time-ticks=34830439494 --metrics-shmem-handle=5624,i,4085315861994826519,18290524847863999814,1572864 --field-trial-handle=2148,i,18903054148401331,13451551638046871214,262144 --enable-features=CDPScreenshotNewSurface --disable-features=AutoDeElevate,AvoidUnnecessaryBeforeUnloadCheckSync,BlockOriginHeaderModificationOnRedirect,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,OptimizationHints,PaintHolding,ThirdPartyStoragePartitioning,Translate,msEdgeUpdateLaunchServicesPreferredVersion,msForceBrowserSignIn --variations-seed-version --pseudonymization-salt-handle=1784,i,8736746647451294607,325862811444155725,4 --trace-process-track-uuid=3190709002241582927 --mojo-platform-channel-handle=5516 /prefetch:1"
+      }
+    ]
+  },
+  "ks": {
+    "platform": "ks",
+    "status": "PASS",
+    "http_code": 200,
+    "api_response": {
+      "ok": true,
+      "platforms": [
+        "ks"
+      ]
+    },
+    "launched_browser_pids": [
+      10124,
+      23060,
+      5288,
+      19124,
+      25016,
+      23620,
+      22600,
+      24392,
+      20304,
+      18384,
+      18136,
+      26712,
+      3812,
+      23780,
+      23272,
+      23016,
+      26736
+    ],
+    "survived_browser_pids": [
+      10124,
+      23060,
+      5288,
+      19124,
+      25016,
+      23620,
+      22600,
+      24392,
+      20304,
+      18384,
+      18136,
+      26712,
+      3812,
+      23780,
+      23272,
+      23016,
+      26736
+    ],
+    "total_active_browsers": 99,
+    "details": [
+      {
+        "ProcessId": 10124,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=12 --launch-time-ticks=34847075813 --skip-read-main-dll --metrics-shmem-handle=4328,i,6211252820794882001,6211745367850432678,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708997556373682 --mojo-platform-channel-handle=4352 /prefetch:2"
+      },
+      {
+        "ProcessId": 23060,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=16 --launch-time-ticks=34847114423 --skip-read-main-dll --metrics-shmem-handle=4632,i,15437977399490878828,2767195742380389505,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709001304541078 --mojo-platform-channel-handle=4644 /prefetch:2"
+      },
+      {
+        "ProcessId": 5288,
+        "ParentProcessId": 21944,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" \"--user-data-dir=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --app=https://www.kuaishou.com --no-first-run --no-default-browser-check"
+      },
+      {
+        "ProcessId": 19124,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=15 --launch-time-ticks=34847102511 --skip-read-main-dll --metrics-shmem-handle=4560,i,4152723423948100234,5463279219839684208,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709000367499229 --mojo-platform-channel-handle=4568 /prefetch:1"
+      },
+      {
+        "ProcessId": 25016,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=network.mojom.NetworkService --lang=en-US --service-sandbox-type=none --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --startup-read-main-dll --metrics-shmem-handle=2068,i,346622779625203330,4505378566417668563,524288 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708989122997041 --mojo-platform-channel-handle=2264 /prefetch:3"
+      },
+      {
+        "ProcessId": 23620,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=8 --launch-time-ticks=34847042504 --skip-read-main-dll --metrics-shmem-handle=4000,i,11900074593402410091,7427578378583929182,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708993808206286 --mojo-platform-channel-handle=4048 /prefetch:2"
+      },
+      {
+        "ProcessId": 22600,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=17 --launch-time-ticks=34847344339 --skip-read-main-dll --metrics-shmem-handle=5384,i,9084672358411022355,533240638683167670,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709002241582927 --mojo-platform-channel-handle=5736 /prefetch:2"
+      },
+      {
+        "ProcessId": 24392,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=gpu-process --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --gpu-preferences=WAAAAAAAAADgAAAEAAAAAAAAAAAAAGAAQAAAAAAAAAADAAAAAAAAADgAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAoAAAAAAAAAAgAAAAAAAAAEAAAAAIAAAABAAAAAAAAAAgAAAAAAAAACAAAAAAAAAA= --startup-read-main-dll --metrics-shmem-handle=1856,i,3584740357678404728,10587542716578289908,262144 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708988185955192 --mojo-platform-channel-handle=2152 /prefetch:2"
+      },
+      {
+        "ProcessId": 20304,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=edge_collections.mojom.CollectionsDataManager --lang=en-US --service-sandbox-type=collections --video-capture-use-gpu-memory-buffer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --skip-read-main-dll --metrics-shmem-handle=6432,i,11766267736418117878,14005523536157304256,524288 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709005989750323 --mojo-platform-channel-handle=6340 /prefetch:8"
+      },
+      {
+        "ProcessId": 18384,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=20 --launch-time-ticks=34848264444 --skip-read-main-dll --metrics-shmem-handle=6608,i,14477067017575785910,4553111185388827121,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709005052708474 --mojo-platform-channel-handle=4268 /prefetch:1"
+      },
+      {
+        "ProcessId": 18136,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=crashpad-handler \"--user-data-dir=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" /prefetch:4 --monitor-self-annotation=ptype=crashpad-handler \"--database=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\\Crashpad\" \"--metrics-dir=C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --annotation=IsOfficialBuild=1 --annotation=channel= --annotation=chromium-version=153.0.8010.53 \"--annotation=exe=C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --annotation=plat=Win64 --annotation=prod=Edge --annotation=ver=153.0.4234.48 --initial-client-data=0x268,0x26c,0x270,0x264,0x280,0x7ffe54e83360,0x7ffe54e83370,0x7ffe54e83380"
+      },
+      {
+        "ProcessId": 26712,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=24 --launch-time-ticks=34849342478 --skip-read-main-dll --metrics-shmem-handle=7144,i,4413474919103341536,14517637507326344555,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709008800875870 --mojo-platform-channel-handle=7108 /prefetch:1"
+      },
+      {
+        "ProcessId": 3812,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=service --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --startup-read-main-dll --metrics-shmem-handle=2544,i,3193353760558667471,7927008847812742373,524288 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708990060038890 --mojo-platform-channel-handle=2588 /prefetch:8"
+      },
+      {
+        "ProcessId": 23780,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=14 --launch-time-ticks=34847095912 --skip-read-main-dll --metrics-shmem-handle=4444,i,13644664318590095835,17078863711722507463,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708999430457380 --mojo-platform-channel-handle=4360 /prefetch:2"
+      },
+      {
+        "ProcessId": 23272,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=5 --launch-time-ticks=34846947667 --skip-read-main-dll --metrics-shmem-handle=3480,i,4123229298734588836,8572346425645274096,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708990997080739 --mojo-platform-channel-handle=3520 /prefetch:1"
+      },
+      {
+        "ProcessId": 23016,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=renderer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --extension-process --renderer-sub-type=extension --pdf-upsell-enabled --video-capture-use-gpu-memory-buffer --lang=en-US --js-flags --device-scale-factor=1.25 --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=10 --launch-time-ticks=34847059532 --skip-read-main-dll --metrics-shmem-handle=4220,i,11219474224790005159,12766322372436172280,1048576 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190708995682289984 --mojo-platform-channel-handle=4216 /prefetch:2"
+      },
+      {
+        "ProcessId": 26736,
+        "ParentProcessId": 5288,
+        "Name": "msedge.exe",
+        "CommandLine": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --type=utility --utility-sub-type=entity_extraction_service.mojom.Extractor --lang=en-US --service-sandbox-type=entity_extraction --onnx-enabled-for-ee --video-capture-use-gpu-memory-buffer --user-data-dir=\"C:\\Users\\Ngoc Hieu\\Desktop\\YT stuff\\local_tool\\src\\MediaCrawler\\browser_data\\ks_user_data_dir\" --skip-read-main-dll --metrics-shmem-handle=7200,i,11307570119651473472,14215377322073707750,524288 --field-trial-handle=2156,i,5815642446560330615,6083830772835674648,262144 --variations-seed-version --pseudonymization-salt-handle=2160,i,3501038558665908990,18362946091899452741,4 --trace-process-track-uuid=3190709009737917719 --mojo-platform-channel-handle=7304 /prefetch:8"
+      }
+    ]
+  },
+  "wb": {
+    "platform": "wb",
+    "status": "FAIL",
+    "reason": "API call error: 'charmap' codec can't encode character '\\u1ec1' in position 57: character maps to <undefined>"
+  }
+}

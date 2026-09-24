@@ -1,0 +1,11 @@
+.venv
+
+# Generated / cache / crawled data — too large for git, keep local only
+src/MediaCrawler/_cache_artifact/
+MediaCrawler/data/
+ViralCrawl_GPU_Package/
+test_out.mp4
+
+# Python
+__pycache__/
+*.pyc

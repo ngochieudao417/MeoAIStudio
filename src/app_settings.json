@@ -1,0 +1,81 @@
+{
+  "kenh_render": [
+    {
+      "ten": "Kênh 0",
+      "path": "",
+      "dich": [
+        {
+          "lang": "vi",
+          "path": ""
+        },
+        {
+          "lang": "en",
+          "path": ""
+        },
+        {
+          "lang": "es",
+          "path": ""
+        },
+        {
+          "lang": "ko",
+          "path": ""
+        }
+      ],
+      "ho_so": "kenh-k-nh-0",
+      "lo": 2,
+      "n_moi": 2
+    },
+    {
+      "ten": "dy-MS4wLjABAAAAVTPQYZBFVzV9XnKuEd_y0B7sfNr2fZ_ayIOXNZ7X5EGHc",
+      "path": "",
+      "nguon": "F:\\ALL DỰ ÁN\\Viralcrawl\\repo\\MediaCrawler\\data\\automation\\dy-MS4wLjABAAAAVTPQYZBFVzV9XnKuEd_y0B7sfNr2fZ_ayIOXNZ7X5EGHc",
+      "links": [
+        "https://www.douyin.com/user/MS4wLjABAAAAVTPQYZBFVzV9XnKuEd_y0B7sfNr2fZ_ayIOXNZ7X5EGHcZnIJ9VNrkVxIfSNqnnQ?from_tab_name=main&vid=7666397642670402297"
+      ],
+      "dich": [
+        {
+          "lang": "vi",
+          "path": ""
+        },
+        {
+          "lang": "en",
+          "path": ""
+        },
+        {
+          "lang": "es",
+          "path": ""
+        },
+        {
+          "lang": "ko",
+          "path": ""
+        }
+      ],
+      "nguon_meta": {
+        "platform": "dy",
+        "ten": "dy-MS4wLjABAAAAVTPQYZBFVzV9XnKuEd_y0B7sfNr2fZ_ayIOXNZ7X5EGHc",
+        "link": "https://www.douyin.com/user/MS4wLjABAAAAVTPQYZBFVzV9XnKuEd_y0B7sfNr2fZ_ayIOXNZ7X5EGHcZnIJ9VNrkVxIfSNqnnQ?from_tab_name=main&vid=7666397642670402297"
+      },
+      "lo": 2,
+      "n_moi": 2
+    }
+  ],
+  "ho_so_ds": {
+    "test": {
+      "ten": "test",
+      "cfg": {
+        "": "{\"sw\":{\"r2SwDub\":true,\"r2SwSub\":true,\"r2SwEdit\":true,\"r2SwBrand\":true,\"r2Mirror\":false,\"r2Color\":true,\"r2XoaNhac\":false,\"r2TachNhac\":false,\"r2LogoOn\":false,\"r2WmOn\":false,\"r2Thumb\":false,\"r2SsBold\":true,\"r2SsItal\":false,\"r2CheBlur\":false,\"r2ChePatch\":false,\"r2CheKeo\":true,\"r2CheMauCard\":false,\"r2CheKhongCard\":false,\"r2CheDong\":false,\"r2SwBanTC\":false,\"r2DaKenh\":true,\"r2WmChay\":false},\"vl\":{\"r2Speed\":\"1.0\",\"r2Ratio\":\"\",\"r2Zoom\":\"1.0\",\"r2TrimS\":\"0\",\"r2TrimE\":\"0\",\"r2GocVol\":\"0\",\"r2WmText\":\"\",\"r2WmPos\":\"br\",\"r2WmColor\":\"#ffffff\",\"r2WmSize\":\"\",\"r2WmFont\":\"\",\"r2WmOpacity\":\"100\",\"r2WmSpeed\":\"100\",\"r2SsFont\":\"Bangers\",\"r2SsSize\":\"18\",\"r2SsCol\":\"#ffffff\",\"r2SsOut\":\"#000000\",\"r2SsOutline\":\"-1\",\"r2BlurSigma\":\"70\",\"r2Out\":\"\",\"r2DubToc\":\"100\",\"r2DubPitch\":\"100\",\"r2GiongVol\":\"100\",\"r2CheMau\":\"#1e293b\",\"r2CheRadius\":\"8\",\"r2TongVideoInp\":\"0\",\"r2BgSel\":\"\",\"r2BgVol\":\"25\",\"r2LoiThoai\":\"ocr\"},\"langs\":{\"vi\":{\"nam\":false,\"nu\":true,\"dao\":false,\"voiceNam\":\"\",\"voiceNu\":\"\",\"vol\":100,\"refAudio\":\"\"},\"en\":{\"nam\":false,\"nu\":true,\"dao\":false,\"voiceNam\":\"capcut:pNInz6obpgDQGcFmaJgB\",\"voiceNu\":\"capcut:yl2ZDV1MzN4HbQJbMihG\",\"vol\":100,\"refAudio\":\"\"},\"es\":{\"nam\":false,\"nu\":true,\"dao\":false,\"voiceNam\":\"capcut:sKgg4MPUDBy69X7iv3fA\",\"voiceNu\":\"capcut:KHCvMklQZZo0O30ERnVn\",\"vol\":100,\"refAudio\":\"\"},\"ko\":{\"nam\":false,\"nu\":true,\"dao\":false,\"voiceNam\":\"capcut:kr_004\",\"voiceNu\":\"capcut:BV546_streaming\",\"vol\":100,\"refAudio\":\"\"}},\"ssOutlineV2\":1,\"cheKeoV1\":1,\"dubToc100\":1,\"speed100\":1,\"cheDongV2\":1}",
+        "vc_logo_path": "",
+        "vc_logo_name": null,
+        "vc_bg_path": ""
+      }
+    }
+  },
+  "out_dirs": [
+    "C:\\Users\\Ngoc Hieu\\Downloads",
+    "C:\\Users\\Ngoc Hieu\\Videos",
+    "C:\\Users\\Ngoc Hieu\\output_src_vid",
+    "F:\\ALL DỰ ÁN\\Viralcrawl\\repo\\MediaCrawler\\data\\automation\\dy-MS4wLjABAAAAVTPQYZBFVzV9XnKuEd_y0B7sfNr2fZ_ayIOXNZ7X5EGHc"
+  ],
+  "wm_tu_do": true,
+  "logo_tu_do": true
+}

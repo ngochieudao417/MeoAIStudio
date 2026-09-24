@@ -1,0 +1,28 @@
+# Backend NÂNG CAO (tuỳ chọn) cho lồng tiếng — học tập/nghiên cứu.
+# Đã VERIFY chạy thật trên Windows + Python 3.11 + torch 2.9 (CPU).
+# Cài: desktop\vendor\uv.exe pip install --python <venv-python> -r long_tieng\requirements_nangcao.txt
+
+# --- Tách nhạc nền AI (Demucs) — giữ nhạc nền sạch ---
+demucs>=4.0.0
+soundfile>=0.12.1          # đọc/ghi wav cho demucs qua Python API (né lỗi torchcodec của torchaudio 2.x)
+
+# --- Dịch OFFLINE zh->vi (NLLB-200) ---
+transformers==4.56.0       # PHẢI 4.5x: 5.x bỏ isin_mps_friendly (vỡ XTTS); <4.50 thiếu is_torchcodec_available
+sentencepiece>=0.2.0
+# ctranslate2 đã có sẵn (cùng faster-whisper).
+# + Model NLLB ct2 -> long_tieng/models/nllb-ct2  (đã tải từ JustFrederik/nllb-200-distilled-600M-ct2-int8)
+#   hoặc trỏ biến môi trường NLLB_CT2.
+
+# --- Clone giọng tiếng Việt (viXTTS = fine-tune tiếng Việt của XTTS-v2) ---
+coqui-tts>=0.24.0
+torchcodec                 # torch 2.9+ cần torchcodec cho audio IO
+# + Model viXTTS -> long_tieng/models/viXTTS  (đã tải từ capleaf/viXTTS: model.pth, config.json, vocab.json)
+#   hoặc trỏ biến VIXTTS_MODEL.
+# + FFmpeg *shared* DLLs -> long_tieng/models/ffmpeg-shared/bin  (torchcodec cần, KHÁC ffmpeg.exe tĩnh)
+#   tải BtbN ffmpeg-master-latest-win64-gpl-shared.zip, copy bin/*.dll vào đó.
+#   (code tự nạp qua os.add_dll_directory; tokenizer tự patch 'vi'.)
+# LƯU Ý tốc độ viXTTS: CPU ~30s/câu. GPU NVIDIA: load model 1 lần ~30s rồi chỉ ~2-3s/câu (nhanh ~10×).
+# BẬT GPU (NVIDIA + CUDA 12.x) — cài torch bản CUDA (thay torch CPU):
+#   desktop\vendor\uv.exe pip install --python <venv> torch==2.8.0 torchaudio==2.8.0 \
+#       --index-url https://download.pytorch.org/whl/cu126 --reinstall-package torch --reinstall-package torchaudio
+#   (đặt UV_LINK_MODE=copy nếu lỗi hardlink). Code tự dùng GPU khi torch.cuda khả dụng.

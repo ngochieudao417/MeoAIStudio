@@ -1,0 +1,19 @@
+{
+  "loha_uploads_dir": "",
+  "trang": [
+    {
+      "ten": "Mukbang",
+      "page_id": "",
+      "hashtag": ["#mukbang", "#anuong", "#monngon"],
+      "tu_khoa": ["mukbang", "厨师", "美食"],
+      "kenh": []
+    },
+    {
+      "ten": "Review phim",
+      "page_id": "",
+      "hashtag": ["#reviewphim", "#phimhay", "#tomtatphim"],
+      "tu_khoa": ["电影解讀"],
+      "kenh": []
+    }
+  ]
+}

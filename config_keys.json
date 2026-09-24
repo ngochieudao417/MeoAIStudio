@@ -1,0 +1,15 @@
+{
+  "ai_keys": [
+    {
+      "provider": "gemini",
+      "key": "",
+      "label": "My Gemini API Key"
+    },
+    {
+      "provider": "groq",
+      "key": "",
+      "label": "My Groq API Key"
+    }
+  ],
+  "instructions": "Dán API Key cá nhân của bạn vào trường 'key' phía trên (ví dụ API key Gemini hoặc Groq), hoặc nhập trực tiếp từ giao diện Web Dashboard."
+}

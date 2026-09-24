@@ -1,0 +1,6 @@
+# PoC lồng tiếng video (zh->vi, không LLM) — học tập/nghiên cứu.
+# Cài vào venv:  MediaCrawler\.venv\Scripts\python.exe -m pip install -r long_tieng\requirements.txt
+faster-whisper>=1.0.0
+deep-translator>=1.11.4
+edge-tts>=6.1.10
+zhconv>=1.4.3          # chuẩn-hoá phồn↔giản khi dedup cue OCR (1 dòng hardsub OCR ra lúc phồn lúc giản)
