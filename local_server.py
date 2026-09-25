@@ -1,6 +1,11 @@
 import os
 import sys
 import socket
+import json
+import threading
+import subprocess
+import time
+import shutil
 
 # 1. Force IPv4 globally to fix YouTube Read Timed Out (IPv6 socket hangs)
 _orig_getaddrinfo = socket.getaddrinfo
@@ -35,9 +40,9 @@ try:
         params.setdefault("socket_timeout", 15)
         _orig_ydl_init(self, params, *args, **kwargs)
     yt_dlp.YoutubeDL.__init__ = _patched_ydl_init
-    print("[LOCAL STUDIO] Patched yt_dlp: IPv4 forced & socket timeout 15s set & FFmpeg bin path loaded.")
+    print("[MEOWCRAWL STUDIO] Patched yt_dlp: IPv4 forced & socket timeout 15s set & FFmpeg bin path loaded.")
 except Exception as e:
-    print(f"[LOCAL STUDIO] Notice patching yt_dlp: {e}")
+    print(f"[MEOWCRAWL STUDIO] Notice patching yt_dlp: {e}")
 
 # 4. Set Environment Variables BEFORE importing web_app
 os.environ["VC_TIER"] = "unlimited"
@@ -52,8 +57,8 @@ mc_dir = os.path.join(src_dir, "MediaCrawler")
 if mc_dir not in sys.path:
     sys.path.insert(0, mc_dir)
 
-print("[LOCAL STUDIO] Starting server in Unlocked Mode (Tier: unlimited)...")
-print(f"[LOCAL STUDIO] Working Source Directory: {src_dir}")
+print("[MEOWCRAWL STUDIO] Starting server in Unlocked Mode (Tier: unlimited)...")
+print(f"[MEOWCRAWL STUDIO] Working Source Directory: {src_dir}")
 
 # 5. Import web_app & patch tier functions
 import web_app
@@ -90,7 +95,7 @@ def _patched_mo_dang_nhap(platforms=None):
     script_path = os.path.join(src_dir, "mo_dang_nhap.py")
     
     cmd = [python_venv, script_path] + platforms
-    print(f"[LOCAL STUDIO] Launching login browser script: {cmd}", flush=True)
+    print(f"[MEOWCRAWL STUDIO] Launching login browser script: {cmd}", flush=True)
     
     try:
         import subprocess
@@ -105,10 +110,10 @@ def _patched_mo_dang_nhap(platforms=None):
         if hasattr(web_app, "_login_procs") and isinstance(web_app._login_procs, dict):
             for p in platforms:
                 web_app._login_procs[p] = proc
-        print(f"[LOCAL STUDIO] Login browser process launched successfully (PID={proc.pid})", flush=True)
+        print(f"[MEOWCRAWL STUDIO] Login browser process launched successfully (PID={proc.pid})", flush=True)
         return True
     except Exception as e:
-        print(f"[LOCAL STUDIO] Error launching login browser script: {e}", flush=True)
+        print(f"[MEOWCRAWL STUDIO] Error launching login browser script: {e}", flush=True)
         if _orig_mo_dang_nhap:
             return _orig_mo_dang_nhap(platforms)
         return False
@@ -116,17 +121,90 @@ def _patched_mo_dang_nhap(platforms=None):
 web_app.mo_dang_nhap = _patched_mo_dang_nhap
 
 # Patch do_POST to add /api/honggo/list and /api/honggo/download
+def send_json_resp(handler, code, obj):
+    try:
+        import json
+        payload = json.dumps(obj, ensure_ascii=False).encode("utf-8")
+        handler.send_response(code)
+        handler.send_header("Content-Type", "application/json; charset=utf-8")
+        handler.send_header("Content-Length", str(len(payload)))
+        handler.end_headers()
+        handler.wfile.write(payload)
+    except Exception as e:
+        print(f"[MEOWCRAWL STUDIO] Error sending json response: {e}")
+
 _orig_do_POST = web_app.Handler.do_POST
 def _patched_do_POST(self):
-    if self.path == "/api/honggo/list":
+    if self.path == "/api/them_video":
+        try:
+            import tkinter as tk
+            from tkinter import filedialog
+            
+            root = tk.Tk()
+            root.withdraw()
+            root.attributes("-topmost", True)
+            files = filedialog.askopenfilenames(
+                title="Chọn video từ máy",
+                filetypes=[
+                    ("Video files", "*.mp4 *.mkv *.mov *.avi *.webm *.flv *.ts *.m4v *.wmv *.3gp"),
+                    ("All files", "*.*")
+                ]
+            )
+            root.destroy()
+            
+            res = []
+            for f in files:
+                f_norm = os.path.normpath(f)
+                if os.path.isfile(f_norm):
+                    res.append({
+                        "p": f_norm,
+                        "name": os.path.basename(f_norm),
+                        "size_mb": round(os.path.getsize(f_norm) / (1024 * 1024), 1),
+                        "duration": 0
+                    })
+            send_json_resp(self, 200, {"ok": True, "videos": res})
+        except Exception as e:
+            send_json_resp(self, 200, {"ok": False, "msg": f"Lỗi mở chọn video: {str(e)}", "videos": []})
+        return
+
+    elif self.path == "/api/quet_thu_muc":
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
-            import json, tai_honggo
+            body = json.loads(body_bytes.decode("utf-8", errors="replace"))
+            folder_path = body.get("path", "").strip()
+            res = []
+            if folder_path and os.path.isdir(folder_path):
+                valid_exts = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".flv", ".ts", ".m4v", ".wmv", ".3gp"}
+                for root_dir, _, files in os.walk(folder_path):
+                    for f in files:
+                        ext = os.path.splitext(f)[1].lower()
+                        if ext in valid_exts:
+                            full_p = os.path.normpath(os.path.join(root_dir, f))
+                            try:
+                                sz = round(os.path.getsize(full_p) / (1024 * 1024), 1)
+                            except Exception:
+                                sz = 0
+                            res.append({
+                                "p": full_p,
+                                "name": f,
+                                "size_mb": sz,
+                                "duration": 0
+                            })
+            send_json_resp(self, 200, {"ok": True, "videos": res})
+        except Exception as e:
+            send_json_resp(self, 500, {"ok": False, "msg": f"Lỗi quét thư mục: {str(e)}", "videos": []})
+        return
+
+    elif self.path == "/api/honggo/list":
+        try:
+            content_length = int(self.headers.get("Content-Length", 0))
+            body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
+            import tai_honggo
             body = json.loads(body_bytes.decode("utf-8", errors="replace"))
             url = body.get("url", "").strip()
             if not url:
-                self._send(400, {"ok": False, "msg": "Vui lòng nhập link hoặc ID phim Hồng Quả"})
+                send_json_resp(self, 400, {"ok": False, "msg": "Vui lòng nhập link hoặc ID phim Hồng Quả"})
                 return
 
             if tai_honggo._la_duanju(url):
@@ -163,7 +241,6 @@ def _patched_do_POST(self):
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
-            import json, threading, subprocess
             body = json.loads(body_bytes.decode("utf-8", errors="replace"))
             url = body.get("url", "").strip()
             mode = body.get("mode", "all")
@@ -211,7 +288,7 @@ def _patched_do_POST(self):
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
-            import json, mo_dang_nhap
+            import mo_dang_nhap
             body = json.loads(body_bytes.decode("utf-8", errors="replace"))
             plat = body.get("plat", "dy")
             mo_dang_nhap.mo_edge_school(plat)
@@ -224,7 +301,6 @@ def _patched_do_POST(self):
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
-            import json, threading, subprocess
             body = json.loads(body_bytes.decode("utf-8", errors="replace"))
             input_path = body.get("input", "").strip()
             
@@ -269,7 +345,6 @@ def _patched_do_POST(self):
 
     elif self.path == "/api/nebanguoyen/list":
         try:
-            import json
             out_dir = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "videos")
             files = []
             if os.path.exists(out_dir):
@@ -296,12 +371,10 @@ def _patched_do_POST(self):
             
             content_type = self.headers.get("Content-Type", "")
             if "application/json" in content_type:
-                import json
                 body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
                 body = json.loads(body_bytes.decode("utf-8", errors="replace"))
                 file_path = body.get("file_path", "").strip()
                 if file_path and os.path.exists(file_path):
-                    import shutil
                     dest_p = os.path.join(up_dir, os.path.basename(file_path))
                     shutil.copy2(file_path, dest_p)
                     print(f"[API HIT] /api/upload_video copied: {dest_p}", flush=True)
@@ -343,7 +416,6 @@ def _patched_do_POST(self):
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
-            import json, threading, subprocess
             body = json.loads(body_bytes.decode("utf-8", errors="replace"))
             platform = body.get("platform", "reddit")
             target = body.get("target", "AskReddit")
@@ -387,7 +459,6 @@ def _patched_do_POST(self):
 
     elif self.path == "/api/socialshorts/list":
         try:
-            import json
             out_dir = os.path.join(src_dir, "MediaCrawler", "data", "social_shorts", "videos")
             files = []
             if os.path.exists(out_dir):
@@ -414,7 +485,6 @@ _orig_do_GET = web_app.Handler.do_GET
 def _patched_do_GET(self):
     if self.path == "/api/nebanguoyen/list":
         try:
-            import json
             out_dir = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "videos")
             files = []
             if os.path.exists(out_dir):
@@ -434,7 +504,6 @@ def _patched_do_GET(self):
         return
     elif self.path == "/api/socialshorts/list":
         try:
-            import json
             out_dir = os.path.join(src_dir, "MediaCrawler", "data", "social_shorts", "videos")
             files = []
             if os.path.exists(out_dir):
@@ -476,9 +545,9 @@ if os.path.exists(config_keys_file):
                     label = k.get("label", "Custom Key")
                     if key_val:
                         ai_dich.them_key(provider, key_val, label)
-                print(f"[LOCAL STUDIO] Registered {len(user_keys)} custom AI Key(s) to ai_dich store.")
+                print(f"[MEOWCRAWL STUDIO] Registered {len(user_keys)} custom AI Key(s) to ai_dich store.")
     except Exception as e:
-        print(f"[LOCAL STUDIO] Custom API key loader notice: {e}")
+        print(f"[MEOWCRAWL STUDIO] Custom API key loader notice: {e}")
 
 if __name__ == "__main__":
     web_app.main()
