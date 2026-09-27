@@ -15,18 +15,33 @@ def _getaddrinfo_ipv4(host, port, family=0, type=0, proto=0, flags=0):
     return _orig_getaddrinfo(host, port, family, type, proto, flags)
 socket.getaddrinfo = _getaddrinfo_ipv4
 
-# 2. Prepend vendor Node.js & FFmpeg binaries (with \bin) to PATH
+# 2. Prepend vendor Node.js & FFmpeg binaries dynamically to PATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
-vendor_node = r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\node"
-vendor_ffmpeg_bin = r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin"
-vendor_ffmpeg = r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg"
+
+def _tim_vendor_binary(bin_name):
+    found = shutil.which(bin_name)
+    if found:
+        return os.path.dirname(os.path.abspath(found))
+    candidates = [
+        r"C:\Users\Ngoc Hieu\dev-tools\node",
+        os.path.join(current_dir, ".venv", "Lib", "site-packages", "playwright", "driver"),
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffmpeg\8.0",
+        r"C:\Users\Ngoc Hieu\AppData\Local\CapCut\Apps\9.5.0.4050",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries",
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            if os.path.exists(os.path.join(c, f"{bin_name}.exe")) or os.path.exists(os.path.join(c, bin_name)):
+                return c
+    return None
+
 path_adds = []
-if os.path.exists(vendor_ffmpeg_bin):
-    path_adds.append(vendor_ffmpeg_bin)
-if os.path.exists(vendor_ffmpeg):
-    path_adds.append(vendor_ffmpeg)
-if os.path.exists(vendor_node):
-    path_adds.append(vendor_node)
+node_dir = _tim_vendor_binary("node")
+if node_dir:
+    path_adds.append(node_dir)
+ffmpeg_dir = _tim_vendor_binary("ffmpeg")
+if ffmpeg_dir:
+    path_adds.append(ffmpeg_dir)
 if path_adds:
     os.environ["PATH"] = os.path.pathsep.join(path_adds) + os.path.pathsep + os.environ.get("PATH", "")
 
@@ -44,10 +59,12 @@ try:
 except Exception as e:
     print(f"[MEOWCRAWL STUDIO] Notice patching yt_dlp: {e}")
 
-# 4. Set Environment Variables BEFORE importing web_app
+# 4. Set Environment Variables BEFORE importing web_app (Enforce CPU Mode - No NVIDIA GPU)
 os.environ["VC_TIER"] = "unlimited"
 os.environ["VC_TIER_FAILOPEN"] = "1"
 os.environ["PYTHONUNBUFFERED"] = "1"
+os.environ["VC_TAT_GPU"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 src_dir = os.path.join(current_dir, "src")
 if src_dir not in sys.path:
