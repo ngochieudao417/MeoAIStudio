@@ -1849,14 +1849,16 @@
         <div class="fld" style="margin-bottom:12px">
           <label style="color:#e2e8f0;font-weight:600">Số lượng Bình luận (Comments) tối đa:</label>
           <select id="socMaxComments" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
-            <option value="1">1 Bình luận (~15s)</option>
-            <option value="2" selected>2 Bình luận (~30s)</option>
-            <option value="3">3 Bình luận (~45s)</option>
-            <option value="4">4 Bình luận (~60s)</option>
-            <option value="5">5 Bình luận (~75s)</option>
-            <option value="6">6 Bình luận (~90s)</option>
-            <option value="7">7 Bình luận (~105s)</option>
-            <option value="8">8 Bình luận (~120s)</option>
+            <option value="1">1 Bình luận</option>
+            <option value="2" selected>2 Bình luận</option>
+            <option value="3">3 Bình luận</option>
+            <option value="4">4 Bình luận</option>
+            <option value="5">5 Bình luận</option>
+            <option value="6">6 Bình luận</option>
+            <option value="7">7 Bình luận</option>
+            <option value="8">8 Bình luận</option>
+            <option value="9">9 Bình luận</option>
+            <option value="10">10 Bình luận</option>
           </select>
         </div>
 
@@ -1874,8 +1876,9 @@
         </div>
 
         <div class="fld">
-          <label style="color:#e2e8f0;font-weight:600">Thời gian chờ giữa 2 Comment (Giây):</label>
-          <input type="number" id="socCommentDelay" step="0.5" min="0" max="5" class="num" value="1.0" style="background:#1e293b;color:#fff;border:1px solid #475569">
+          <label style="color:#e2e8f0;font-weight:600">Khoảng Nghỉ Buffer Giữa Các Comment (Giây):</label>
+          <input type="number" id="socCommentDelay" step="0.5" min="0" max="5" class="num" value="1.0" style="background:#1e293b;color:#fff;border:1px solid #475569" placeholder="Mặc định: 1.0 giây">
+          <div class="sub" style="font-size:11px;color:#94a3b8;margin-top:4px">Thời gian chờ sau khi đọc xong 1 comment trước khi chuyển sang comment kế tiếp.</div>
         </div>
       </div>
     </div>

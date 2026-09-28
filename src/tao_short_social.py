@@ -28,29 +28,38 @@ def log(msg):
 
 def _tim_ffmpeg():
     paths = [
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg-win-x86_64-v7.1.exe",
         r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffmpeg.exe",
         r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffmpeg.exe",
-        "ffmpeg"
     ]
     for p in paths:
         if os.path.exists(p):
             return p
+    import shutil
+    w = shutil.which("ffmpeg")
+    if w:
+        return w
     return "ffmpeg"
 
 def _tim_ffprobe():
     paths = [
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffprobe.exe",
         r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffprobe.exe",
         r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffprobe.exe",
-        "ffprobe"
     ]
     for p in paths:
         if os.path.exists(p):
             return p
-    return "ffprobe"
+    import shutil
+    w = shutil.which("ffprobe")
+    if w:
+        return w
+    return None
 
 def generate_silence(duration_sec, out_mp3):
     ffmpeg = _tim_ffmpeg()
-    cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", f"anullsrc=r=44100:cl=stereo", "-t", str(duration_sec), "-c:a", "libmp3lame", "-b:a", "128k", out_mp3]
+    cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", str(duration_sec), "-c:a", "libmp3lame", "-b:a", "128k", out_mp3]
     subprocess.run(cmd, capture_output=True, check=True)
     return out_mp3
 
@@ -67,31 +76,98 @@ def check_gpu_encoder():
 
 def get_audio_duration(audio_path):
     ffprobe = _tim_ffprobe()
-    cmd = [
-        ffprobe, "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        audio_path
-    ]
+    if ffprobe:
+        cmd = [
+            ffprobe, "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            audio_path
+        ]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            if res.returncode == 0 and res.stdout.strip():
+                val = float(res.stdout.strip())
+                if val > 0:
+                    return val
+        except Exception:
+            pass
+
+    ffmpeg = _tim_ffmpeg()
+    cmd = [ffmpeg, "-i", audio_path]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return float(res.stdout.strip())
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        match = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", res.stderr)
+        if match:
+            h, m, s = float(match.group(1)), float(match.group(2)), float(match.group(3))
+            val = h * 3600 + m * 60 + s
+            if val > 0:
+                return val
     except Exception:
-        return 3.0
+        pass
+
+    return 3.0
 
 def get_video_duration(video_path):
     ffprobe = _tim_ffprobe()
-    cmd = [
-        ffprobe, "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        video_path
-    ]
+    if ffprobe:
+        cmd = [
+            ffprobe, "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            video_path
+        ]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            if res.returncode == 0 and res.stdout.strip():
+                val = float(res.stdout.strip())
+                if val > 0:
+                    return val
+        except Exception:
+            pass
+
+    ffmpeg = _tim_ffmpeg()
+    cmd = [ffmpeg, "-i", video_path]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return float(res.stdout.strip())
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        match = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", res.stderr)
+        if match:
+            h, m, s = float(match.group(1)), float(match.group(2)), float(match.group(3))
+            val = h * 3600 + m * 60 + s
+            if val > 0:
+                return val
     except Exception:
-        return 0.0
+        pass
+
+    return 60.0
+
+def add_audio_buffer(audio_path, buffer_sec, temp_dir, idx_tag, timestamp):
+    raw_dur = get_audio_duration(audio_path)
+    if buffer_sec <= 0:
+        log(f"   └─ Seg '{idx_tag}': Thời lượng đọc TTS = {raw_dur:.2f}s (Buffer = 0s)")
+        return audio_path, raw_dur
+
+    silence_p = os.path.join(temp_dir, f"silence_{idx_tag}_{timestamp}.mp3")
+    padded_audio = os.path.join(temp_dir, f"padded_{idx_tag}_{timestamp}.mp3")
+    generate_silence(buffer_sec, silence_p)
+
+    concat_txt = os.path.join(temp_dir, f"concat_pad_{idx_tag}_{timestamp}.txt")
+    raw_safe = audio_path.replace("\\", "/")
+    sil_safe = silence_p.replace("\\", "/")
+
+    with open(concat_txt, "w", encoding="utf-8") as f_pad:
+        f_pad.write(f"file '{raw_safe}'\nfile '{sil_safe}'\n")
+
+    ffmpeg = _tim_ffmpeg()
+    cmd = [ffmpeg, "-y", "-f", "concat", "-safe", "0", "-i", concat_txt, "-c:a", "libmp3lame", "-b:a", "192k", padded_audio]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+
+    if res.returncode == 0 and os.path.exists(padded_audio):
+        actual_padded_dur = get_audio_duration(padded_audio)
+        log(f"   └─ Seg '{idx_tag}': Thời lượng đọc TTS = {raw_dur:.2f}s + Buffer = {buffer_sec:.1f}s -> Tổng hiển thị card = {actual_padded_dur:.2f}s")
+        return padded_audio, actual_padded_dur
+    else:
+        log(f"   └─ Seg '{idx_tag}': Thời lượng đọc TTS = {raw_dur:.2f}s (Lỗi tạo buffer -> giữ audio gốc)")
+        return audio_path, raw_dur
 
 # ==========================================
 # 1. DATA FETCHERS (REDDIT RSS & THREADS)
@@ -416,7 +492,7 @@ def composite_social_short(bg_video, segments, out_mp4):
             safe_p = seg["audio_path"].replace("\\", "/")
             f.write(f"file '{safe_p}'\n")
 
-    cmd_a = [ffmpeg, "-y", "-f", "concat", "-safe", "0", "-i", concat_list_file, "-c", "copy", combined_audio]
+    cmd_a = [ffmpeg, "-y", "-f", "concat", "-safe", "0", "-i", concat_list_file, "-c:a", "libmp3lame", "-b:a", "192k", combined_audio]
     subprocess.run(cmd_a, capture_output=True, check=True)
 
     filter_complex = [
@@ -514,50 +590,39 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
 
     # Segment 0: Main Title
     title_text = data['title']
-    title_audio = os.path.join(temp_dir, f"seg_0_title_{timestamp}.mp3")
+    title_audio_raw = os.path.join(temp_dir, f"seg_0_title_raw_{timestamp}.mp3")
     title_card = os.path.join(temp_dir, f"seg_0_card_{timestamp}.png")
 
-    generate_tts_edge(title_text, title_audio, lang=lang)
+    log(f"🎙️ [0/Title] Đang tạo TTS & Thẻ UI...")
+    generate_tts_edge(title_text, title_audio_raw, lang=lang)
     create_ui_card(data["platform"], data["header_tag"], data["author"], title_text, data["score"], title_card, is_comment=False)
-    dur_0 = get_audio_duration(title_audio)
+
+    title_audio, dur_0 = add_audio_buffer(title_audio_raw, float(comment_delay), temp_dir, "title", timestamp)
     segments.append({"audio_path": title_audio, "image_path": title_card, "duration": dur_0})
 
     # Segments 1..N: Comments
     for idx, c in enumerate(data["comments"], 1):
         c_text = c["body"]
-        c_audio = os.path.join(temp_dir, f"seg_{idx}_c_{timestamp}.mp3")
+        c_audio_raw = os.path.join(temp_dir, f"seg_{idx}_c_raw_{timestamp}.mp3")
         c_card = os.path.join(temp_dir, f"seg_{idx}_card_{timestamp}.png")
 
-        generate_tts_edge(c_text, c_audio, lang=lang)
+        log(f"🎙️ [{idx}/{len(data['comments'])}] Đang tạo TTS & Thẻ UI Comment...")
+        generate_tts_edge(c_text, c_audio_raw, lang=lang)
         create_ui_card(data["platform"], data["header_tag"], c["author"], c_text, c["score"], c_card, is_comment=True)
-        dur_i = get_audio_duration(c_audio)
-        
-        # If comment_delay > 0, concat audio with silence
-        if float(comment_delay) > 0:
-            silence_p = os.path.join(temp_dir, f"silence_{idx}_{timestamp}.mp3")
-            padded_audio = os.path.join(temp_dir, f"padded_{idx}_{timestamp}.mp3")
-            generate_silence(float(comment_delay), silence_p)
-            concat_txt = os.path.join(temp_dir, f"concat_pad_{idx}_{timestamp}.txt")
-            c_audio_safe = c_audio.replace("\\", "/")
-            silence_p_safe = silence_p.replace("\\", "/")
-            with open(concat_txt, "w", encoding="utf-8") as f_pad:
-                f_pad.write(f"file '{c_audio_safe}'\nfile '{silence_p_safe}'\n")
-            subprocess.run([_tim_ffmpeg(), "-y", "-f", "concat", "-safe", "0", "-i", concat_txt, "-c", "copy", padded_audio], capture_output=True)
-            if os.path.exists(padded_audio):
-                c_audio = padded_audio
-                dur_i += float(comment_delay)
 
+        c_audio, dur_i = add_audio_buffer(c_audio_raw, float(comment_delay), temp_dir, f"c_{idx}", timestamp)
         segments.append({"audio_path": c_audio, "image_path": c_card, "duration": dur_i})
 
     # Segment Outro (if provided)
     if outro and outro.strip():
         o_text = outro.strip()
-        log(f"Thêm đoạn Outro kết video: '{o_text}'")
-        o_audio = os.path.join(temp_dir, f"seg_outro_{timestamp}.mp3")
+        log(f"🎙️ [Outro] Thêm đoạn Outro kết video: '{o_text}'")
+        o_audio_raw = os.path.join(temp_dir, f"seg_outro_raw_{timestamp}.mp3")
         o_card = os.path.join(temp_dir, f"seg_outro_card_{timestamp}.png")
-        generate_tts_edge(o_text, o_audio, lang=lang)
+        generate_tts_edge(o_text, o_audio_raw, lang=lang)
         create_ui_card(data["platform"], "💬 Câu Hỏi Kết Video", "Host", o_text, 9999, o_card, is_comment=True)
-        dur_o = get_audio_duration(o_audio)
+
+        o_audio, dur_o = add_audio_buffer(o_audio_raw, float(comment_delay), temp_dir, "outro", timestamp)
         segments.append({"audio_path": o_audio, "image_path": o_card, "duration": dur_o})
 
     log("--- 🎮 BƯỚC 4: CHUẨN BỊ VIDEO NỀN GAMEPLAY ---")
