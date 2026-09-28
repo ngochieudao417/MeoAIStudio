@@ -331,13 +331,28 @@ def fetch_threads_data(threads_url, max_comments=2):
 # 2. TTS AUDIO GENERATOR (EDGE-TTS)
 # ==========================================
 
-def generate_tts_edge(text, out_mp3, lang="en"):
+def generate_tts_edge(text, out_mp3, lang="en", tts_rate="1.0"):
     """
-    Generates TTS audio file using edge-tts.
+    Generates TTS audio file using edge-tts with customizable reading speed.
     """
     voice = "en-US-ChristopherNeural" if lang == "en" else "vi-VN-HoaiMyNeural"
     
-    cmd = [sys.executable, "-m", "edge_tts", "--voice", voice, "--text", text, "--write-media", out_mp3]
+    rate_str = "+0%"
+    try:
+        if str(tts_rate).endswith("%"):
+            rate_str = str(tts_rate)
+        else:
+            r_val = float(tts_rate)
+            pct = int(round((r_val - 1.0) * 100))
+            rate_str = f"+{pct}%" if pct >= 0 else f"{pct}%"
+    except Exception:
+        rate_str = "+0%"
+
+    cmd = [sys.executable, "-m", "edge_tts", "--voice", voice]
+    if rate_str != "+0%":
+        cmd.extend(["--rate", rate_str])
+    cmd.extend(["--text", text, "--write-media", out_mp3])
+
     res = subprocess.run(cmd, capture_output=True, text=True)
     if os.path.exists(out_mp3) and os.path.getsize(out_mp3) > 0:
         return out_mp3
@@ -554,7 +569,7 @@ def composite_social_short(bg_video, segments, out_mp4):
 # MAIN PIPELINE FUNCTION
 # ==========================================
 
-def make_social_short_video(input_target, platform="reddit", lang="en", max_comments=2, bg_type="minecraft", outro="", comment_delay=1.0, genre=""):
+def make_social_short_video(input_target, platform="reddit", lang="en", max_comments=2, bg_type="minecraft", outro="", comment_delay=1.0, genre="", tts_rate="1.0"):
     """
     Main orchestrator pipeline to create a Reddit/Threads Short video.
     """
@@ -585,7 +600,7 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
 
     log(f"Tiêu đề: '{data['title']}' ({len(data['comments'])} bình luận)")
 
-    log("--- 🔊 BƯỚC 2 & 3: TẠO GIỌNG ĐỌC TTS & VẼ THẺ UI CARD ---")
+    log(f"--- 🔊 BƯỚC 2 & 3: TẠO GIỌNG ĐỌC TTS (Tốc độ {tts_rate}x) & VẼ THẺ UI CARD ---")
     segments = []
 
     # Segment 0: Main Title
@@ -594,7 +609,7 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
     title_card = os.path.join(temp_dir, f"seg_0_card_{timestamp}.png")
 
     log(f"🎙️ [0/Title] Đang tạo TTS & Thẻ UI...")
-    generate_tts_edge(title_text, title_audio_raw, lang=lang)
+    generate_tts_edge(title_text, title_audio_raw, lang=lang, tts_rate=tts_rate)
     create_ui_card(data["platform"], data["header_tag"], data["author"], title_text, data["score"], title_card, is_comment=False)
 
     title_audio, dur_0 = add_audio_buffer(title_audio_raw, float(comment_delay), temp_dir, "title", timestamp)
@@ -607,7 +622,7 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
         c_card = os.path.join(temp_dir, f"seg_{idx}_card_{timestamp}.png")
 
         log(f"🎙️ [{idx}/{len(data['comments'])}] Đang tạo TTS & Thẻ UI Comment...")
-        generate_tts_edge(c_text, c_audio_raw, lang=lang)
+        generate_tts_edge(c_text, c_audio_raw, lang=lang, tts_rate=tts_rate)
         create_ui_card(data["platform"], data["header_tag"], c["author"], c_text, c["score"], c_card, is_comment=True)
 
         c_audio, dur_i = add_audio_buffer(c_audio_raw, float(comment_delay), temp_dir, f"c_{idx}", timestamp)
@@ -619,7 +634,7 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
         log(f"🎙️ [Outro] Thêm đoạn Outro kết video: '{o_text}'")
         o_audio_raw = os.path.join(temp_dir, f"seg_outro_raw_{timestamp}.mp3")
         o_card = os.path.join(temp_dir, f"seg_outro_card_{timestamp}.png")
-        generate_tts_edge(o_text, o_audio_raw, lang=lang)
+        generate_tts_edge(o_text, o_audio_raw, lang=lang, tts_rate=tts_rate)
         create_ui_card(data["platform"], "💬 Câu Hỏi Kết Video", "Host", o_text, 9999, o_card, is_comment=True)
 
         o_audio, dur_o = add_audio_buffer(o_audio_raw, float(comment_delay), temp_dir, "outro", timestamp)
@@ -654,6 +669,7 @@ def main():
     parser.add_argument("--outro", default="", help="Câu hỏi/kêu gọi kết video (Outro CTA)")
     parser.add_argument("--comment-delay", type=float, default=1.0, help="Thời gian chờ giữa các comment (giây)")
     parser.add_argument("--genre", default="", help="Thể loại nội dung (funny, confession, horror, quotes)")
+    parser.add_argument("--tts-rate", default="1.0", help="Tốc độ giọng đọc TTS (1.0, 1.1, 1.2, 1.25, 1.5)")
 
     args = parser.parse_args()
 
@@ -665,7 +681,8 @@ def main():
         bg_type=args.bg_type,
         outro=args.outro,
         comment_delay=args.comment_delay,
-        genre=args.genre
+        genre=args.genre,
+        tts_rate=args.tts_rate
     )
 
 if __name__ == "__main__":

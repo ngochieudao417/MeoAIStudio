@@ -1847,6 +1847,19 @@
         </div>
 
         <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Tốc độ Giọng đọc TTS (Voice Speed):</label>
+          <select id="socTtsRate" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="1.0" selected>⚡ Chuẩn (1.0x - Giọng đọc bình thường)</option>
+            <option value="1.1">⏩ Nhanh vừa (1.1x - Tăng nhẹ 10%)</option>
+            <option value="1.2">🚀 Nhanh (1.2x - Tăng 20% cuốn hơn)</option>
+            <option value="1.25">🔥 Nhanh cuốn (1.25x - Tăng 25% tối ưu TikTok/Shorts)</option>
+            <option value="1.35">⚡ Siêu nhanh (1.35x - Tăng 35%)</option>
+            <option value="1.5">🏎️ Siêu tốc (1.5x - Tăng 50%)</option>
+            <option value="0.9">🐢 Chậm (0.9x - Giảm 10%)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
           <label style="color:#e2e8f0;font-weight:600">Số lượng Bình luận (Comments) tối đa:</label>
           <select id="socMaxComments" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
             <option value="1">1 Bình luận</option>
@@ -2535,6 +2548,7 @@ async function socStartRender() {
   const outro = (document.getElementById("socOutro") || {}).value || "";
   const genre = (document.getElementById("socGenre") || {}).value || "";
   const commentDelay = (document.getElementById("socCommentDelay") || {}).value || "1.0";
+  const ttsRate = (document.getElementById("socTtsRate") || {}).value || "1.0";
 
   const btn = document.getElementById("socBtnStart");
   const logEl = document.getElementById("socLog");
@@ -2562,7 +2576,8 @@ async function socStartRender() {
       bg_type: bgType,
       outro: outro.trim(),
       genre: genre,
-      comment_delay: commentDelay
+      comment_delay: commentDelay,
+      tts_rate: ttsRate
     });
 
     if (res && res.ok) {

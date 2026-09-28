@@ -464,6 +464,7 @@ def _patched_do_POST(self):
             outro = body.get("outro", "").strip()
             comment_delay = str(body.get("comment_delay", "1.0"))
             genre = body.get("genre", "").strip()
+            tts_rate = str(body.get("tts_rate", "1.0")).strip()
 
             python_venv = os.path.join(current_dir, ".venv", "Scripts", "python.exe")
             if not os.path.exists(python_venv):
@@ -475,6 +476,8 @@ def _patched_do_POST(self):
                 cmd.extend(["--outro", outro])
             if genre:
                 cmd.extend(["--genre", genre])
+            if tts_rate:
+                cmd.extend(["--tts-rate", tts_rate])
 
             print(f"[API HIT] /api/socialshorts/start cmd: {cmd}", flush=True)
 
