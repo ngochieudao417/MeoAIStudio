@@ -1765,127 +1765,166 @@
 
 <!-- ===== REDDIT & THREADS SHORTS GENERATOR ===== -->
 <section id="v-socialshorts" class="hidden">
-<h1 class="page">🎬 Reddit & Threads Shorts Generator <span class="help" data-tip="Tự động cào bài viết Reddit/Threads, tạo giọng đọc TTS, vẽ thẻ UI Card Dark Mode và ghép video nền Minecraft/Subway Surfers tạo Video Short dọc (9:16 - 1080x1920) cực cuốn.">?</span></h1>
-<div class="sub">Tự động chuyển đổi các bài viết/thảo luận HOT trên Reddit và Threads thành Video Short 9:16 chất lượng cao với video nền Gameplay cuốn hút.</div>
-
-<!-- 1. Input Config Panel -->
-<div class="panel" style="margin-top:16px">
-<b style="font-size:14px">⚙️ Cấu Hình Bài Viết Đầu Vào</b>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px">
-  <!-- Left: Target Input & Platform -->
-  <div style="background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:12px;padding:14px">
-    <h4 style="font-size:13px;color:var(--accent2);margin-bottom:10px">1. Chọn Nguồn Bài Viết</h4>
-    
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Nền tảng Mạng Xã Hội:</label>
-      <select id="socPlatform" class="num" onchange="socPlatformChange(this.value)">
-        <option value="reddit" selected>Reddit (r/AskReddit, r/tifu, r/AITAH...)</option>
-        <option value="threads">Threads (@username / Post URL)</option>
-      </select>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <h1 class="page" style="margin:0;display:flex;align-items:center;gap:10px">
+        🎬 Social Shorts Generator 
+        <span id="socModeBadge" style="background:#FF4500;color:#fff;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">REDDIT MODE</span>
+        <span class="help" data-tip="Tự động cào bài viết Reddit/Threads, tạo giọng đọc TTS, vẽ thẻ UI Card Dark Mode và ghép video nền Minecraft/Subway Surfers tạo Video Short dọc (9:16 - 1080x1920) cực cuốn.">?</span>
+      </h1>
+      <div class="sub" style="margin-top:4px">Tự động chuyển đổi các bài viết/thảo luận HOT trên Reddit và Threads thành Video Short 9:16 chuẩn TikTok / Reels / Shorts.</div>
     </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Thể loại / Chủ đề Nội dung (Genre):</label>
-      <select id="socGenre" class="num" onchange="socGenreChange(this.value)">
-        <option value="" selected>Tự chọn / Nhập Subreddit bên dưới</option>
-        <option value="funny">😂 Hài hước & Giải trí (r/AskReddit, r/tifu)</option>
-        <option value="confession">🔥 Tâm sự & Drama (r/AITAH, r/confession)</option>
-        <option value="horror">👻 Kinh dị & Truyện đêm khuya (r/nosleep)</option>
-        <option value="quotes">💡 Triết lý & Suy ngẫm (r/Showerthoughts)</option>
-        <option value="gaming">🎮 Game & Công nghệ (r/gaming)</option>
-      </select>
-    </div>
-
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Tên Subreddit hoặc Đường dẫn Link Bài Viết:</label>
-      <input type="text" id="socTarget" style="width:100%;padding:10px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:#fff;font-size:13px" placeholder="Ví dụ: AskReddit hoặc link bài viết..." value="AskReddit">
-    </div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AskReddit'">r/AskReddit</button>
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='tifu'">r/tifu</button>
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AITAH'">r/AITAH</button>
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='confession'">r/confession</button>
+    <!-- Mode Switcher (Segmented Control) -->
+    <div style="background:#0f172a;padding:4px;border-radius:12px;display:flex;gap:4px;border:1px solid #334155">
+      <button type="button" id="socTabReddit" onclick="socSwitchMode('reddit')" style="padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:13px;cursor:pointer;background:#FF4500;color:#fff;transition:all 0.2s">
+        🤖 Reddit Mode
+      </button>
+      <button type="button" id="socTabThreads" onclick="socSwitchMode('threads')" style="padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:13px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        🌀 Threads Mode
+      </button>
     </div>
   </div>
 
-  <!-- Right: Voice & Gameplay Config -->
-  <div style="background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:12px;padding:14px">
-    <h4 style="font-size:13px;color:var(--purple);margin-bottom:10px">2. Giọng Đọc & Video Nền Gameplay</h4>
+  <!-- 1. Input Config Panel -->
+  <div class="panel" style="margin-top:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <!-- Left: Target Input & Platform -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <h4 style="font-size:14px;color:#38bdf8;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span>📌</span> 1. Chọn Nguồn & Nội Dung Bài Viết
+        </h4>
+        
+        <input type="hidden" id="socPlatform" value="reddit">
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Ngôn ngữ Giọng đọc TTS:</label>
-      <select id="socLang" class="num">
-        <option value="en" selected>🇺🇸 Tiếng Anh (en-US-Christopher - Giọng Mỹ Reddit)</option>
-        <option value="vi">🇻🇳 Tiếng Việt (vi-VN-HoaiMy - Giọng Việt Nam mượt)</option>
-      </select>
-    </div>
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600" id="socGenreLabel">Thể loại / Chủ đề Nội dung (Genre):</label>
+          <select id="socGenre" class="num" onchange="socGenreChange(this.value)" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="" selected>Tự chọn / Nhập Subreddit bên dưới</option>
+            <option value="funny">😂 Hài hước & Giải trí (r/AskReddit, r/tifu)</option>
+            <option value="confession">🔥 Tâm sự & Drama (r/AITAH, r/confession)</option>
+            <option value="horror">👻 Kinh dị & Truyện đêm khuya (r/nosleep)</option>
+            <option value="quotes">💡 Triết lý & Suy ngẫm (r/Showerthoughts)</option>
+            <option value="gaming">🎮 Game & Công nghệ (r/gaming)</option>
+          </select>
+        </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Số lượng Bình luận (Comments) tối đa:</label>
-      <select id="socMaxComments" class="num">
-        <option value="1">1 Bình luận (~15s)</option>
-        <option value="2" selected>2 Bình luận (~30s)</option>
-        <option value="3">3 Bình luận (~45s)</option>
-        <option value="4">4 Bình luận (~60s)</option>
-        <option value="5">5 Bình luận (~75s)</option>
-        <option value="6">6 Bình luận (~90s)</option>
-        <option value="7">7 Bình luận (~105s)</option>
-        <option value="8">8 Bình luận (~120s)</option>
-        <option value="9">9 Bình luận (~135s)</option>
-        <option value="10">10 Bình luận (~150s)</option>
-      </select>
-    </div>
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600" id="socTargetLabel">Tên Subreddit hoặc Đường dẫn Link Bài Viết:</label>
+          <input type="text" id="socTarget" style="width:100%;padding:10px 14px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:13px" placeholder="Ví dụ: AskReddit hoặc link bài viết..." value="AskReddit">
+        </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Loại Video Nền Gameplay:</label>
-      <select id="socBgType" class="num">
-        <option value="minecraft" selected>🎮 Minecraft Parkour (Khung dọc 9:16)</option>
-        <option value="subway">🏃 Subway Surfers (Khung dọc 9:16)</option>
-      </select>
-    </div>
+        <!-- Reddit Presets -->
+        <div id="socRedditPresets" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AskReddit'" style="background:#334155;color:#f8fafc">r/AskReddit</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='tifu'" style="background:#334155;color:#f8fafc">r/tifu</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AITAH'" style="background:#334155;color:#f8fafc">r/AITAH</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='confession'" style="background:#334155;color:#f8fafc">r/confession</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='nosleep'" style="background:#334155;color:#f8fafc">r/nosleep</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='Showerthoughts'" style="background:#334155;color:#f8fafc">r/Showerthoughts</button>
+        </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Câu Hỏi Kết Video (Outro Question / CTA):</label>
-      <input type="text" id="socOutro" style="width:100%;padding:10px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:#fff;font-size:13px" placeholder="Ví dụ: Cảm nghĩ của bạn thế nào với vấn đề này? (Để trống nếu không dùng)" value="Cảm nghĩ của bạn thế nào với vấn đề này? Hãy để lại bình luận nhé!">
-    </div>
+        <!-- Threads Presets -->
+        <div id="socThreadsPresets" style="display:none;gap:8px;flex-wrap:wrap">
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@zuck'" style="background:#334155;color:#f8fafc">@zuck</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@threads'" style="background:#334155;color:#f8fafc">@threads</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@instagram'" style="background:#334155;color:#f8fafc">@instagram</button>
+        </div>
+      </div>
 
-    <div class="fld">
-      <label style="color:var(--text);font-weight:600">Thời gian chờ giữa 2 Comment (Giây):</label>
-      <input type="number" id="socCommentDelay" step="0.5" min="0" max="5" class="num" value="1.0" placeholder="Mặc định: 1.0 giây">
+      <!-- Right: Voice & Gameplay Config -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <h4 style="font-size:14px;color:#a855f7;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span>🎤</span> 2. Giọng Đọc & Video Nền Gameplay
+        </h4>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Ngôn ngữ Giọng đọc TTS:</label>
+          <select id="socLang" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="en" selected>🇺🇸 Tiếng Anh (en-US-Christopher - Giọng Mỹ Reddit)</option>
+            <option value="vi">🇻🇳 Tiếng Việt (vi-VN-HoaiMy - Giọng Việt Nam mượt)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Số lượng Bình luận (Comments) tối đa:</label>
+          <select id="socMaxComments" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="1">1 Bình luận (~15s)</option>
+            <option value="2" selected>2 Bình luận (~30s)</option>
+            <option value="3">3 Bình luận (~45s)</option>
+            <option value="4">4 Bình luận (~60s)</option>
+            <option value="5">5 Bình luận (~75s)</option>
+            <option value="6">6 Bình luận (~90s)</option>
+            <option value="7">7 Bình luận (~105s)</option>
+            <option value="8">8 Bình luận (~120s)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Loại Video Nền Gameplay:</label>
+          <select id="socBgType" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="minecraft" selected>🎮 Minecraft Parkour (Khung dọc 9:16)</option>
+            <option value="subway">🏃 Subway Surfers (Khung dọc 9:16)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Câu Hỏi Kết Video (Outro Question / CTA):</label>
+          <input type="text" id="socOutro" style="width:100%;padding:10px 14px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:13px" placeholder="Ví dụ: Cảm nghĩ của bạn thế nào với vấn đề này?" value="Cảm nghĩ của bạn thế nào với vấn đề này? Hãy để lại bình luận nhé!">
+        </div>
+
+        <div class="fld">
+          <label style="color:#e2e8f0;font-weight:600">Thời gian chờ giữa 2 Comment (Giây):</label>
+          <input type="number" id="socCommentDelay" step="0.5" min="0" max="5" class="num" value="1.0" style="background:#1e293b;color:#fff;border:1px solid #475569">
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</div>
 
-<!-- 2. Action & Progress -->
-<div class="panel" style="margin-top:16px">
-<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-<button class="btn go" id="socBtnStart" onclick="socStartRender()" style="padding:14px 28px;font-size:16px;font-weight:800">🚀 Tạo Short Video Ngay (Tự động cào & Render)</button>
-<div class="sub" style="font-size:12px">Tự động cào post, xuất audio TTS, vẽ UI Card Dark Mode và ghép video nền 9:16 siêu tốc.</div>
-</div>
+  <!-- 2. Action & Progress Panel -->
+  <div class="panel" style="margin-top:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <button class="btn go" id="socBtnStart" onclick="socStartRender()" style="padding:14px 28px;font-size:16px;font-weight:800;background:linear-gradient(135deg, #2563eb, #7c3aed);border:none;border-radius:10px;box-shadow:0 4px 14px rgba(37,99,235,0.4)">
+        🚀 Tạo Short Video Ngay (Tự động cào & Render)
+      </button>
+      <div class="sub" style="font-size:12px;color:#94a3b8">Tự động cào post, xuất audio TTS, vẽ UI Card Dark Mode và ghép video nền 9:16 siêu tốc.</div>
+    </div>
 
-<div class="log" id="socLog" style="height:180px;margin-top:14px">Sẵn sàng. Chọn Subreddit/Link và bấm 'Tạo Short Video Ngay'...</div>
-</div>
+    <!-- Progress Bar Section -->
+    <div style="margin-top:16px;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span id="socStatusText" style="font-weight:700;font-size:13px;color:#38bdf8">⚡ Sẵn sàng. Chọn Subreddit/Link và bấm 'Tạo Short Video Ngay'...</span>
+        <span id="socProgressPct" style="font-weight:800;font-size:14px;color:#10b981">0%</span>
+      </div>
+      <div style="width:100%;height:10px;background:#1e293b;border-radius:6px;overflow:hidden">
+        <div id="socProgressBar" style="width:0%;height:100%;background:linear-gradient(90deg, #3b82f6, #10b981);transition:width 0.4s ease;border-radius:6px"></div>
+      </div>
+    </div>
 
-<!-- 3. Output Gallery -->
-<div class="panel" style="margin-top:16px">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-<b style="font-size:14px">🎬 Danh Sách Short Video Đã Render</b>
-<div style="display:flex;gap:8px">
-<button class="chip-add" type="button" onclick="socLoadList()">🔄 Làm mới</button>
-<button class="chip-add" type="button" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở Thư Mục Kết Quả</button>
-</div>
-</div>
-<div id="socOutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
-<div class="sub">Chưa có Short Video Reddit/Threads nào...</div>
-</div>
-</div>
+    <!-- Terminal Log -->
+    <div class="log" id="socLog" style="height:180px;margin-top:14px;background:#090d16;border:1px solid #1e293b;border-radius:8px;color:#a7f3d0;font-family:monospace;font-size:12px;line-height:1.5;padding:12px;overflow-y:auto">
+      Sẵn sàng. Nhật ký tiến trình cào bài & render video sẽ xuất hiện ở đây...
+    </div>
+  </div>
+
+  <!-- 3. Output Gallery -->
+  <div class="panel" style="margin-top:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <b style="font-size:14px;color:#f8fafc">🎬 Danh Sách Short Video Đã Render</b>
+      <div style="display:flex;gap:8px">
+        <button class="chip-add" type="button" onclick="socLoadList()" style="background:#334155;color:#fff">🔄 Làm mới</button>
+        <button class="chip-add" type="button" onclick="openFolder('MediaCrawler/data/social_shorts/videos')" style="background:#334155;color:#fff">📁 Mở Thư Mục Kết Quả</button>
+      </div>
+    </div>
+    <div id="socOutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+      <div class="sub">Chưa có Short Video Reddit/Threads nào...</div>
+    </div>
+  </div>
 </section>
 
 
-      <!-- ===== FILE ĐÃ TẢI ===== -->
+
+<!-- ===== FILE ĐÃ TẢI ===== -->
       <section id="v-files" class="hidden">
         <div class="fpage">
           <div class="fmain">
@@ -2422,18 +2461,51 @@
           if(t1)t1.classList.toggle('on',n===1); if(t2)t2.classList.toggle('on',n===2);
         }
         
+
 /* ===== REDDIT & THREADS SHORTS JS ===== */
-function socPlatformChange(val) {
+let socPollTimer = null;
+
+window.socSwitchMode = socSwitchMode;
+window.socPlatformChange = socPlatformChange;
+window.socGenreChange = socGenreChange;
+window.socStartRender = socStartRender;
+window.socPollLog = socPollLog;
+window.socLoadList = socLoadList;
+
+
+function socSwitchMode(mode) {
+  const platformInp = document.getElementById("socPlatform");
+  const tabReddit = document.getElementById("socTabReddit");
+  const tabThreads = document.getElementById("socTabThreads");
+  const badge = document.getElementById("socModeBadge");
   const targetInp = document.getElementById("socTarget");
-  if (targetInp) {
-    if (val === "threads") {
-      targetInp.placeholder = "Ví dụ: https://www.threads.net/@user/post/xxx";
-      targetInp.value = "";
-    } else {
-      targetInp.placeholder = "Ví dụ: AskReddit hoặc link bài viết...";
-      targetInp.value = "AskReddit";
-    }
+  const targetLabel = document.getElementById("socTargetLabel");
+  const redditPresets = document.getElementById("socRedditPresets");
+  const threadsPresets = document.getElementById("socThreadsPresets");
+
+  if (platformInp) platformInp.value = mode;
+
+  if (mode === "threads") {
+    if (tabReddit) { tabReddit.style.background = "transparent"; tabReddit.style.color = "#94a3b8"; }
+    if (tabThreads) { tabThreads.style.background = "linear-gradient(135deg, #0084FF, #A855F7)"; tabThreads.style.color = "#fff"; }
+    if (badge) { badge.textContent = "THREADS MODE"; badge.style.background = "linear-gradient(135deg, #0084FF, #A855F7)"; }
+    if (targetLabel) targetLabel.textContent = "Tên User Threads (@username) hoặc Link Bài Viết Threads:";
+    if (targetInp) { targetInp.placeholder = "Ví dụ: @zuck hoặc https://www.threads.net/@user/post/xxx"; targetInp.value = ""; }
+    if (redditPresets) redditPresets.style.display = "none";
+    if (threadsPresets) threadsPresets.style.display = "flex";
+  } else {
+    if (tabReddit) { tabReddit.style.background = "#FF4500"; tabReddit.style.color = "#fff"; }
+    if (tabThreads) { tabThreads.style.background = "transparent"; tabThreads.style.color = "#94a3b8"; }
+    if (badge) { badge.textContent = "REDDIT MODE"; badge.style.background = "#FF4500"; }
+    if (targetLabel) targetLabel.textContent = "Tên Subreddit hoặc Đường dẫn Link Bài Viết Reddit:";
+    if (targetInp) { targetInp.placeholder = "Ví dụ: AskReddit hoặc link bài viết..."; targetInp.value = "AskReddit"; }
+    if (redditPresets) redditPresets.style.display = "flex";
+    if (threadsPresets) threadsPresets.style.display = "none";
   }
+}
+
+function socPlatformChange(val) {
+  socSwitchMode(val);
 }
 
 function socGenreChange(val) {
@@ -2463,14 +2535,20 @@ async function socStartRender() {
 
   const btn = document.getElementById("socBtnStart");
   const logEl = document.getElementById("socLog");
+  const pBar = document.getElementById("socProgressBar");
+  const pPct = document.getElementById("socProgressPct");
+  const pStatus = document.getElementById("socStatusText");
 
   if (!target.trim()) {
-    vcToast("⚠️ Vui lòng nhập tên Subreddit hoặc link bài viết!");
+    vcToast("⚠️ Vui lòng nhập tên Subreddit, Username hoặc Link bài viết!");
     return;
   }
 
   if (btn) btn.disabled = true;
   if (logEl) logEl.textContent = "🚀 Đang khởi chạy tiến trình cào dữ liệu và tạo Short Video...";
+  if (pBar) pBar.style.width = "5%";
+  if (pPct) pPct.textContent = "5%";
+  if (pStatus) pStatus.textContent = "🚀 Đang khởi động tiến trình...";
 
   try {
     const res = await post("/api/socialshorts/start", {
@@ -2485,18 +2563,59 @@ async function socStartRender() {
     });
 
     if (res && res.ok) {
-      vcToast("🚀 Đã khởi chạy tiến trình tạo Short Video Reddit/Threads!");
-      if (logEl) logEl.textContent = "▶ Đang xử lý... Theo dõi nhật ký tiến trình ở drawer bên phải.";
-      setTimeout(socLoadList, 5000);
+      vcToast("🚀 Đã khởi chạy tiến trình tạo Short Video " + (platform === 'threads' ? 'Threads' : 'Reddit') + "!");
+      if (socPollTimer) clearInterval(socPollTimer);
+      socPollTimer = setInterval(socPollLog, 1000);
+      socPollLog();
     } else {
       vcToast("Lỗi: " + ((res && res.msg) || "không rõ"));
       if (logEl) logEl.textContent = "❌ " + ((res && res.msg) || "Lỗi khởi chạy");
+      if (btn) btn.disabled = false;
     }
   } catch (e) {
     vcToast("Lỗi kết nối: " + e);
     if (logEl) logEl.textContent = "❌ Lỗi kết nối: " + e;
-  } finally {
     if (btn) btn.disabled = false;
+  }
+}
+
+async function socPollLog() {
+  const logEl = document.getElementById("socLog");
+  const pBar = document.getElementById("socProgressBar");
+  const pPct = document.getElementById("socProgressPct");
+  const pStatus = document.getElementById("socStatusText");
+  const btn = document.getElementById("socBtnStart");
+
+  try {
+    const res = await (await fetch("/api/socialshorts/log")).json();
+    if (!res || !res.ok) return;
+
+    if (res.lines && res.lines.length && logEl) {
+      logEl.textContent = res.lines.join("\n");
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    const pct = res.progress || 0;
+    if (pBar) pBar.style.width = pct + "%";
+    if (pPct) pPct.textContent = pct + "%";
+    if (pStatus) pStatus.textContent = (res.step ? ("[" + res.step + "] ") : "") + (res.msg || "Đang xử lý...");
+
+    if (!res.running) {
+      if (socPollTimer) {
+        clearInterval(socPollTimer);
+        socPollTimer = null;
+      }
+      if (btn) btn.disabled = false;
+
+      if (pct >= 100) {
+        vcToast("✨ Hoàn thành tạo Short Video thành công!");
+        socLoadList();
+      } else if (res.msg && res.msg.startsWith("❌")) {
+        vcToast("❌ Lỗi trong quá trình render: " + res.msg);
+      }
+    }
+  } catch (e) {
+    console.error("Lỗi poll log socialshorts:", e);
   }
 }
 
@@ -2507,19 +2626,20 @@ async function socLoadList() {
     const res = await (await fetch("/api/socialshorts/list")).json();
     if (res && res.ok && res.files && res.files.length) {
       grid.innerHTML = res.files.map(f =>
-        `<div class="fcard" style="padding:10px">
-          <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(f.name)}">🎬 ${esc(f.name)}</b>
-          <div class="sub" style="margin:4px 0 8px;font-size:11px">${(f.size/1024/1024).toFixed(1)} MB</div>
+        `<div class="fcard" style="padding:12px;background:#0f172a;border:1px solid #334155;border-radius:8px">
+          <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f8fafc" title="${esc(f.name)}">🎬 ${esc(f.name)}</b>
+          <div class="sub" style="margin:4px 0 8px;font-size:11px;color:#94a3b8">${(f.size/1024/1024).toFixed(1)} MB</div>
           <div style="display:flex;gap:6px">
-            <button class="btn go" style="padding:5px 9px;font-size:11px" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở thư mục</button>
+            <button class="btn go" style="padding:5px 9px;font-size:11px;background:#3b82f6" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở thư mục</button>
           </div>
         </div>`
       ).join("");
     } else {
-      grid.innerHTML = `<div class="sub" style="grid-column:1/-1">Chưa có Short Video Reddit/Threads nào...</div>`;
+      grid.innerHTML = `<div class="sub" style="grid-column:1/-1;color:#94a3b8">Chưa có Short Video Reddit/Threads nào...</div>`;
     }
   } catch (e) {}
 }
+
 
 
 async function hgListCao() {

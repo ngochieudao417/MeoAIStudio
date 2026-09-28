@@ -151,6 +151,28 @@ def send_json_resp(handler, code, obj):
         print(f"[MEOWCRAWL STUDIO] Error sending json response: {e}")
 
 _orig_do_POST = web_app.Handler.do_POST
+_social_shorts_lock = threading.Lock()
+_social_shorts_state = {
+    "running": False,
+    "progress": 0,
+    "step": "Sẵn sàng",
+    "msg": "Sẵn sàng. Chọn Subreddit/Link và bấm 'Tạo Short Video Ngay'...",
+    "lines": [],
+    "last_video": ""
+}
+
+def _update_soc_state(running=None, progress=None, step=None, msg=None, add_line=None, last_video=None):
+    with _social_shorts_lock:
+        if running is not None: _social_shorts_state["running"] = running
+        if progress is not None: _social_shorts_state["progress"] = progress
+        if step is not None: _social_shorts_state["step"] = step
+        if msg is not None: _social_shorts_state["msg"] = msg
+        if last_video is not None: _social_shorts_state["last_video"] = last_video
+        if add_line:
+            _social_shorts_state["lines"].append(add_line)
+            if len(_social_shorts_state["lines"]) > 200:
+                _social_shorts_state["lines"].pop(0)
+
 def _patched_do_POST(self):
     if self.path == "/api/them_video":
         try:
@@ -457,14 +479,54 @@ def _patched_do_POST(self):
             print(f"[API HIT] /api/socialshorts/start cmd: {cmd}", flush=True)
 
             def _run_socialshorts():
+                _update_soc_state(
+                    running=True,
+                    progress=5,
+                    step="[1/4] Khởi chạy tiến trình...",
+                    msg="🚀 Đang khởi chạy tiến trình cào dữ liệu và tạo Short Video...",
+                    add_line=f"🚀 [SHORT-SOCIAL] Khởi chạy cho nới {platform.upper()} ({target})..."
+                )
                 try:
-                    if hasattr(web_app, "_chay_stream_log"):
-                        web_app._chay_stream_log(cmd, cwd=current_dir, timeout=7200)
+                    proc = subprocess.Popen(
+                        cmd,
+                        cwd=current_dir,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        text=True,
+                        encoding="utf-8",
+                        errors="replace",
+                        bufsize=1
+                    )
+                    for raw_line in iter(proc.stdout.readline, ''):
+                        line = raw_line.strip()
+                        if not line:
+                            continue
+                        print(f"[SHORT-SOCIAL LOG] {line}", flush=True)
+                        _update_soc_state(add_line=line)
+                        if hasattr(web_app, "them_log"):
+                            try: web_app.them_log(line)
+                            except Exception: pass
+
+                        if "BƯỚC 1:" in line or "CÀO BÀI VIẾT" in line:
+                            _update_soc_state(progress=25, step="[1/4] Cào dữ liệu bài viết & comment...", msg="📥 Đang cào dữ liệu bài viết & comment...")
+                        elif "BƯỚC 2" in line or "TẠO GIỌNG ĐỌC TTS" in line:
+                            _update_soc_state(progress=50, step="[2/4] Tạo giọng đọc TTS & Thẻ UI Card...", msg="🎙️ Đang tạo giọng đọc TTS & Thẻ UI Card...")
+                        elif "BƯỚC 4:" in line or "VIDEO NỀN GAMEPLAY" in line:
+                            _update_soc_state(progress=75, step="[3/4] Chuẩn bị Video Nền Gameplay...", msg="🎮 Đang ghép video nền Gameplay 9:16...")
+                        elif "BƯỚC 5:" in line or "RENDER VIDEO SHORT" in line:
+                            _update_soc_state(progress=90, step="[4/4] Render Video Short (9:16)...", msg="🎬 Đang render Video Short bằng FFmpeg...")
+                        elif "HOÀN THÀNH!" in line or "Video lưu tại:" in line:
+                            out_name = line.split(":")[-1].strip()
+                            _update_soc_state(progress=100, step="✨ Hoàn tất!", msg="✨ Đã tạo Short Video thành công!", last_video=out_name)
+
+                    proc.stdout.close()
+                    rc = proc.wait()
+                    if rc == 0:
+                        _update_soc_state(running=False, progress=100, step="✨ Hoàn thành!", msg="✨ Tiến trình tạo Short Video đã hoàn tất!")
                     else:
-                        subprocess.run(cmd, cwd=current_dir, timeout=7200)
+                        _update_soc_state(running=False, step="❌ Lỗi render", msg=f"❌ Tiến trình thất bại (Mã lỗi {rc})")
                 except Exception as ex:
-                    if hasattr(web_app, "them_log"):
-                        web_app.them_log(f"❌ Lỗi tạo Short Video Reddit/Threads: {ex}")
+                    _update_soc_state(running=False, step="❌ Lỗi tiến trình", msg=f"❌ Lỗi: {ex}", add_line=f"❌ Lỗi: {ex}")
 
             t = threading.Thread(target=_run_socialshorts, daemon=True)
             t.start()
@@ -500,7 +562,16 @@ web_app.Handler.do_POST = _patched_do_POST
 
 _orig_do_GET = web_app.Handler.do_GET
 def _patched_do_GET(self):
-    if self.path == "/api/nebanguoyen/list":
+    if self.path == "/api/socialshorts/log":
+        try:
+            with _social_shorts_lock:
+                st = dict(_social_shorts_state)
+                st["lines"] = list(_social_shorts_state["lines"])
+            self._send(200, {"ok": True, **st})
+        except Exception as e:
+            self._send(500, {"ok": False, "msg": str(e)})
+        return
+    elif self.path == "/api/nebanguoyen/list":
         try:
             out_dir = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "videos")
             files = []
