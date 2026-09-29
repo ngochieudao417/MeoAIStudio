@@ -26,6 +26,7 @@ def _tim_vendor_binary(bin_name):
         r"C:\Users\Ngoc Hieu\dev-tools\node",
         os.path.join(current_dir, ".venv", "Lib", "site-packages", "playwright", "driver"),
         r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffmpeg\8.0",
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffprobe\8.0",
         r"C:\Users\Ngoc Hieu\AppData\Local\CapCut\Apps\9.5.0.4050",
         r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries",
     ]
@@ -37,11 +38,14 @@ def _tim_vendor_binary(bin_name):
 
 path_adds = []
 node_dir = _tim_vendor_binary("node")
-if node_dir:
+if node_dir and node_dir not in path_adds:
     path_adds.append(node_dir)
 ffmpeg_dir = _tim_vendor_binary("ffmpeg")
-if ffmpeg_dir:
+if ffmpeg_dir and ffmpeg_dir not in path_adds:
     path_adds.append(ffmpeg_dir)
+ffprobe_dir = _tim_vendor_binary("ffprobe")
+if ffprobe_dir and ffprobe_dir not in path_adds:
+    path_adds.append(ffprobe_dir)
 if path_adds:
     os.environ["PATH"] = os.path.pathsep.join(path_adds) + os.path.pathsep + os.environ.get("PATH", "")
 
@@ -558,6 +562,25 @@ def _patched_do_POST(self):
         except Exception as e:
             self._send(500, {"ok": False, "msg": f"Lỗi danh sách: {str(e)}"})
         return
+    elif self.path == "/api/open_folder":
+        try:
+            length = int(self.headers.get('Content-Length', 0))
+            body = {}
+            if length > 0:
+                raw = self.rfile.read(length)
+                try:
+                    body = json.loads(raw.decode('utf-8'))
+                except Exception:
+                    pass
+            folder = body.get("folder") or body.get("path") or ""
+            if folder:
+                full_p = folder if os.path.isabs(folder) else os.path.join(src_dir, folder)
+                os.makedirs(full_p, exist_ok=True)
+                os.startfile(full_p)
+                self._send(200, {"ok": True, "folder": full_p})
+                return
+        except Exception as e:
+            pass
 
     return _orig_do_POST(self)
 

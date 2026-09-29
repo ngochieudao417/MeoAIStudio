@@ -1951,6 +1951,11 @@
         <span class="help" data-tip="Tự động biến kịch bản, tài liệu và ảnh sản phẩm thành Video Short 9:16 hoặc 16:9 với giọng đọc AI, hiệu ứng visuals và nhạc nền chuyên nghiệp.">?</span>
       </h1>
       <div class="sub" style="margin-top:4px;color:#94a3b8">Tự động phân tích kịch bản, tạo storyboard, xuất giọng đọc TTS chuẩn xác và render video hoàn chỉnh.</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+        <button type="button" class="btn go" onclick="openFolder('processed_videos')" style="padding:6px 14px;font-size:12px;font-weight:700;background:#3b82f6;color:#fff;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
+          📁 Mở Thư Mục Xuất Video (processed_videos)
+        </button>
+      </div>
     </div>
 
     <!-- Step Indicator Pills -->
@@ -19708,9 +19713,11 @@ function _tqToast(title,body){
 setInterval(()=>{ try{ if(document.hidden) return; if(document.getElementById("tqList")) tqLoad(); }catch(e){} }, 2500);
 try{ tqLoad(); }catch(e){}
 function clearLog(){post("/api/clear_log",{});document.getElementById("log").innerHTML="";}
-function openFolder(){
-  // Mở thư mục khớp bộ lọc đang xem: 1 nền tảng -> thư mục nền tảng đó;
-  // chỉ "đã rerender" -> processed_videos; còn lại -> gốc của tất cả nền tảng.
+function openFolder(p){
+  if(typeof p === "string" && p){
+    post("/api/open_folder", { folder: p });
+    return;
+  }
   const nt=[...filNen], ng=[...filNguon];
   const body={};
   if(ng.length===1 && ng[0]==="rerender") body.nguon="rerender";
