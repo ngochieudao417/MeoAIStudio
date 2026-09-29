@@ -1011,6 +1011,8 @@
       <a href="javascript:void(0)" data-v="kenhnguon" onclick="handleNavClick(this, event)">Kênh nguồn</a>
       <a href="javascript:void(0)" data-v="aivideogen" class="active" onclick="handleNavClick(this, event)">🎬 AI Video Studio</a>
       <a href="javascript:void(0)" data-v="socialshorts" onclick="handleNavClick(this, event)">Thread / Reddit</a>
+      <a href="javascript:void(0)" data-v="catqc" onclick="handleNavClick(this, event)">✂️ Cắt quảng cáo</a>
+
       <a href="javascript:void(0)" data-v="files" onclick="handleNavClick(this, event)">File đã tải</a>
       <a href="javascript:void(0)" data-v="darender" onclick="handleNavClick(this, event)">Đã render</a>
       <a href="javascript:void(0)" data-v="lichsu" onclick="handleNavClick(this, event)">Lịch sử cào</a>
@@ -1358,6 +1360,109 @@
         <div style="text-align:center;color:var(--muted);font-size:13px;padding:8px 0 24px">— Hết hướng dẫn. Cần hỗ trợ thêm, liên hệ người bán. —</div>
       </section>
       <div id="hdLightbox" onclick="this.style.display='none'"><img id="hdLightboxImg" alt=""></div>
+
+      <!-- ===== CẮT QUẢNG CÁO ===== -->
+      <section id="v-catqc" class="hidden">
+        <div class="card" style="margin-bottom:16px;">
+          <div class="spread">
+            <div>
+              <h1 class="page" style="margin:0">✂️ Dò & Cắt Quảng Cáo Chèn Giữa Video</h1>
+              <div class="sub">Tự động phát hiện quảng cáo chèn giữa (phim 720p vs QC 1080p hoặc màu Đỏ/Vàng rực), cắt bỏ và dời mốc thời gian phụ đề SRT.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="caorow">
+          <div class="caoleft">
+            <div class="card" style="margin-bottom:14px;">
+              <div class="fld">
+                <label>Đường dẫn File Video gốc:</label>
+                <div class="row">
+                  <input type="text" id="adVidPath" placeholder="Dán hoặc nhập đường dẫn file video (vd: C:\phim.mp4)" style="flex:1;">
+                  <button class="btn ghost" onclick="adOpenVideo()">Mở Video</button>
+                </div>
+                <div id="adInfo" class="muted" style="margin-top:6px;font-size:12px;"></div>
+              </div>
+              <div class="player" style="margin-top:10px;">
+                <video id="adPlayer" controls preload="metadata" style="max-height:420px;width:100%;background:#000;"></video>
+              </div>
+              <div class="tl" id="adTl" title="Bấm để tua video" style="position:relative;height:24px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;margin-top:10px;cursor:pointer;overflow:hidden;">
+                <b id="adTlHead" style="position:absolute;top:0;bottom:0;width:2px;background:var(--accent);left:0%;"></b>
+              </div>
+              <div class="spread" style="margin-top:8px;">
+                <label class="toggle" id="tglSkipAds"><input type="checkbox" id="adSkipCheck"> <span class="sw"></span> <span>Xem như đã cắt (tự động nhảy qua quảng cáo)</span></label>
+                <span class="muted mono" id="adNowTime" style="font-size:12px;">Đang xem: 00:00:00.000</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="spread" style="margin-bottom:10px;">
+                <b style="font-size:14px">Các Đoạn Quảng Cáo Phát Hiện / Nhập Mốc</b>
+                <div class="row">
+                  <button class="btn ghost" onclick="adAddSegment()" style="padding:6px 12px;font-size:12px;">+ Thêm đoạn</button>
+                  <button class="btn go" onclick="adDetect('resolution')" style="padding:6px 12px;font-size:12px;">🎯 Dò theo ĐỘ PHÂN GIẢI</button>
+                  <button class="btn ghost" onclick="adDetect('color')" style="padding:6px 12px;font-size:12px;">🎨 Dò theo MÀU (Đỏ/Vàng)</button>
+                </div>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="ads" style="width:100%;border-collapse:collapse;font-size:13px;">
+                  <thead>
+                    <tr style="border-bottom:1px solid var(--border);text-align:left;color:var(--muted);">
+                      <th style="padding:6px;">#</th>
+                      <th style="padding:6px;">Thời gian bắt đầu</th>
+                      <th style="padding:6px;">Thời gian kết thúc</th>
+                      <th style="padding:6px;">Độ dài</th>
+                      <th style="padding:6px;">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adTableBody">
+                    <tr><td colspan="5" class="muted" style="padding:12px;text-align:center;">Chưa có đoạn quảng cáo nào. Bấm nút dò tự động hoặc dán danh sách mốc bên dưới.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <details class="dub-adv" style="margin-top:14px;">
+                <summary>Dán danh sách mốc thời gian hàng loạt (SRT / Timecode / mm:ss)</summary>
+                <textarea id="adPasteArea" class="inp" rows="3" placeholder="00:05:00:19 - 00:05:26:29&#10;00:40:27:30 - 00:40:54:01" style="margin-top:8px;"></textarea>
+                <div class="row" style="margin-top:8px;">
+                  <div style="flex:1;">
+                    <label class="muted" style="font-size:11px;">FPS của Timecode (khi có ô khung hình):</label>
+                    <input type="number" id="adTcFps" value="25" class="num" style="width:100px;padding:4px 8px;">
+                  </div>
+                  <button class="btn ghost" onclick="adImportPaste()" style="padding:6px 12px;font-size:12px;">Nhập Danh Sách</button>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div>
+            <div class="card cao-action">
+              <b style="font-size:14px">Cấu Hình & Thực Hiện Cắt</b>
+              
+              <div class="fld" style="margin-top:12px;">
+                <label>File Subtitle SRT cần dời giờ theo (tùy chọn):</label>
+                <input type="text" id="adSrtPath" placeholder="Dán đường dẫn file .srt (nếu có)" style="width:100%;">
+              </div>
+
+              <div class="fld" style="margin-top:12px;">
+                <label>Chất lượng render video (Quality 20 = Nét cao, 28 = File nhỏ):</label>
+                <input type="number" id="adQuality" value="23" min="15" max="35" class="num">
+              </div>
+
+              <div class="fld" style="margin-top:12px;">
+                <button class="btn go big b2" onclick="adRunCut()" style="margin-top:10px;">
+                  <span>✂️ Cắt Quảng Cáo & Xuất Video</span>
+                  <span class="bsub">Re-encode đồng nhất + Dời mốc SRT</span>
+                </button>
+              </div>
+
+              <div id="adStatusBox" class="log" style="height:140px;margin-top:14px;font-size:11px;display:none;"></div>
+              <div id="adResultOut" style="margin-top:12px;font-size:13px;word-break:break-all;color:var(--ok);"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       <!-- ===== CÀO NGAY ===== -->
       <section id="v-cao">
@@ -36016,10 +36121,241 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+/* ===== TAB CẮT QUẢNG CÁO (v-catqc) ===== */
+let adMedia = null;
+let adRanges = [];
+
+function adFmtTime(s) {
+  if (!isFinite(s) || s < 0) return '00:00:00.000';
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const x = s % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + x.toFixed(3).padStart(6, '0');
+}
+
+function adParseTime(str, fps) {
+  if (!str) return NaN;
+  str = String(str).trim().replace(',', '.');
+  if (/^\d+(\.\d+)?$/.test(str)) return parseFloat(str);
+  const p = str.split(':');
+  if (p.some(x => x === '' || isNaN(x))) return NaN;
+  if (p.length === 4) return (+p[0]) * 3600 + (+p[1]) * 60 + (+p[2]) + (+p[3]) / (fps || 25);
+  if (p.length === 3) return (+p[0]) * 3600 + (+p[1]) * 60 + parseFloat(p[2]);
+  if (p.length === 2) return (+p[0]) * 60 + parseFloat(p[1]);
+  return NaN;
+}
+
+function adOpenVideo() {
+  const vidPath = document.getElementById('adVidPath').value.trim();
+  if (!vidPath) return vcToast('Vui lòng nhập đường dẫn file video!', 1);
+  const player = document.getElementById('adPlayer');
+  player.src = '/video?p=' + encodeURIComponent(vidPath) + '&v=' + Date.now();
+  player.onloadedmetadata = function() {
+    adMedia = { path: vidPath, duration: player.duration || 0, fps: 25 };
+    document.getElementById('adInfo').textContent = `Thời lượng: ${adFmtTime(player.duration)} (${(player.duration||0).toFixed(1)}s)`;
+    adDrawTimeline();
+    vcToast('Đã tải video');
+  };
+  player.onerror = function() {
+    vcToast('Không thể mở video! Kiểm tra lại đường dẫn file.', 1);
+  };
+}
+
+function adRenderTable() {
+  const tbody = document.getElementById('adTableBody');
+  if (!adRanges || !adRanges.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="muted" style="padding:12px;text-align:center;">Chưa có đoạn quảng cáo nào. Bấm nút dò tự động hoặc dán danh sách mốc thời gian.</td></tr>`;
+    adDrawTimeline();
+    return;
+  }
+  tbody.innerHTML = adRanges.map((r, i) => {
+    const len = r[1] - r[0];
+    const invalid = r[1] <= r[0];
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:6px;" class="muted">${i + 1}</td>
+      <td style="padding:6px;"><input type="text" value="${adFmtTime(r[0])}" class="num" style="width:130px;padding:4px 6px;font-size:12px;" onchange="adSetTime(${i}, 0, this.value)"> <button class="btn ghost" style="padding:3px 6px;font-size:11px;" onclick="adNowTime(${i}, 0)" title="Lấy mốc đang xem">⏺</button></td>
+      <td style="padding:6px;"><input type="text" value="${adFmtTime(r[1])}" class="num" style="width:130px;padding:4px 6px;font-size:12px;" onchange="adSetTime(${i}, 1, this.value)"> <button class="btn ghost" style="padding:3px 6px;font-size:11px;" onclick="adNowTime(${i}, 1)" title="Lấy mốc đang xem">⏺</button></td>
+      <td style="padding:6px;font-size:12px;" class="${invalid ? 'log__line--err' : 'muted'}">${invalid ? 'Lỗi: cuối ≤ đầu' : len.toFixed(1) + 's'}</td>
+      <td style="padding:6px;">
+        <button class="btn ghost" style="padding:3px 8px;font-size:11px;" onclick="adSeekTime(${i}, 0)">▶ Đầu</button>
+        <button class="btn ghost" style="padding:3px 8px;font-size:11px;" onclick="adSeekTime(${i}, 1)">▶ Cuối</button>
+        <button class="btn ghost" style="padding:3px 8px;font-size:11px;color:var(--err);" onclick="adDelSegment(${i})">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+  adDrawTimeline();
+}
+
+function adAddSegment() {
+  const p = document.getElementById('adPlayer');
+  const t = (p && p.currentTime) ? p.currentTime : 0;
+  adRanges.push([t, t + 25]);
+  adRenderTable();
+}
+
+function adDelSegment(i) {
+  adRanges.splice(i, 1);
+  adRenderTable();
+}
+
+function adSetTime(i, idx, val) {
+  const fps = parseFloat(document.getElementById('adTcFps').value) || 25;
+  const parsed = adParseTime(val, fps);
+  if (isNaN(parsed)) {
+    vcToast('Thời gian không hợp lệ!', 1);
+    adRenderTable();
+    return;
+  }
+  adRanges[i][idx] = parsed;
+  adRenderTable();
+}
+
+function adNowTime(i, idx) {
+  const p = document.getElementById('adPlayer');
+  if (p && !isNaN(p.currentTime)) {
+    adRanges[i][idx] = p.currentTime;
+    adRenderTable();
+  }
+}
+
+function adSeekTime(i, idx) {
+  const p = document.getElementById('adPlayer');
+  if (p && adRanges[i]) {
+    document.getElementById('adSkipCheck').checked = false;
+    p.currentTime = Math.max(0, adRanges[i][idx] - (idx ? 1 : 3));
+    p.play();
+  }
+}
+
+function adImportPaste() {
+  const fps = parseFloat(document.getElementById('adTcFps').value) || 25;
+  const raw = document.getElementById('adPasteArea').value;
+  if (!raw.trim()) return vcToast('Chưa dán danh sách mốc thời gian!', 1);
+  let count = 0, errs = 0;
+  raw.split('\n').forEach(line => {
+    const m = line.match(/([\d:.,]+)\s*(?:-|–|—|->|→|\s)\s*([\d:.,]+)/);
+    if (!m) return;
+    const a = adParseTime(m[1], fps);
+    const b = adParseTime(m[2], fps);
+    if (isNaN(a) || isNaN(b) || b <= a) { errs++; return; }
+    adRanges.push([a, b]);
+    count++;
+  });
+  adRanges.sort((x, y) => x[0] - y[0]);
+  adRenderTable();
+  vcToast(`Đã nhập ${count} đoạn quảng cáo` + (errs ? `, bỏ qua ${errs} dòng lỗi` : ''));
+}
+
+function adDrawTimeline() {
+  const tl = document.getElementById('adTl');
+  if (!tl) return;
+  tl.querySelectorAll('i').forEach(el => el.remove());
+  const player = document.getElementById('adPlayer');
+  const dur = (adMedia && adMedia.duration) || (player && player.duration) || 0;
+  if (!dur) return;
+  adRanges.forEach(([a, b]) => {
+    const i = document.createElement('i');
+    i.style.position = 'absolute';
+    i.style.top = '0';
+    i.style.bottom = '0';
+    i.style.background = 'rgba(239, 68, 68, 0.7)';
+    i.style.left = (a / dur * 100) + '%';
+    i.style.width = Math.max(0.3, (b - a) / dur * 100) + '%';
+    tl.appendChild(i);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const player = document.getElementById('adPlayer');
+  const tl = document.getElementById('adTl');
+  if (tl) {
+    tl.onclick = function(e) {
+      const dur = (adMedia && adMedia.duration) || (player && player.duration) || 0;
+      if (!dur || !player) return;
+      const rect = tl.getBoundingClientRect();
+      player.currentTime = (e.clientX - rect.left) / rect.width * dur;
+    };
+  }
+  if (player) {
+    player.ontimeupdate = function() {
+      const dur = player.duration || 0;
+      const cur = player.currentTime || 0;
+      const head = document.getElementById('adTlHead');
+      if (head && dur) head.style.left = (cur / dur * 100) + '%';
+      const nowTxt = document.getElementById('adNowTime');
+      if (nowTxt) nowTxt.textContent = 'Đang xem: ' + adFmtTime(cur);
+      const skipCheck = document.getElementById('adSkipCheck');
+      if (skipCheck && skipCheck.checked && adRanges && adRanges.length) {
+        for (const [a, b] of adRanges) {
+          if (cur >= a && cur < b - 0.05) {
+            player.currentTime = b;
+            break;
+          }
+        }
+      }
+    };
+  }
+});
+
+async function adDetect(method) {
+  const path = document.getElementById('adVidPath').value.trim();
+  if (!path) return vcToast('Vui lòng mở hoặc nhập đường dẫn file video!', 1);
+  vcToast(`Đang tự động dò quảng cáo (${method === 'color' ? 'Màu sắc' : 'Độ phân giải'})...`);
+  try {
+    const res = await fetch('/api/ads/detect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video: path, method })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.msg || 'HTTP error');
+    if (data.ranges && data.ranges.length) {
+      adRanges = data.ranges;
+      adRenderTable();
+      vcToast(`Đã phát hiện ${data.ranges.length} đoạn quảng cáo!`);
+    } else {
+      vcToast('Không tìm thấy đoạn quảng cáo nào theo thuật toán chọn.', 1);
+    }
+  } catch (err) {
+    vcToast('Lỗi dò quảng cáo: ' + err.message, 1);
+  }
+}
+
+async function adRunCut() {
+  const path = document.getElementById('adVidPath').value.trim();
+  if (!path) return vcToast('Vui lòng mở hoặc nhập đường dẫn file video!', 1);
+  const valid = adRanges.filter(r => r[1] > r[0]);
+  if (!valid.length) return vcToast('Chưa có đoạn quảng cáo hợp lệ nào để cắt!', 1);
+  const srtPath = document.getElementById('adSrtPath').value.trim();
+  const quality = parseInt(document.getElementById('adQuality').value) || 23;
+  const statusBox = document.getElementById('adStatusBox');
+  const resOut = document.getElementById('adResultOut');
+  statusBox.style.display = 'block';
+  statusBox.textContent = '[CẮT QUẢNG CÁO] Đang khởi chạy tiến trình cắt...';
+  resOut.textContent = '';
+  vcToast('Đang cắt video & dời mốc SRT...');
+  try {
+    const res = await fetch('/api/ads/cut', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video: path, ranges: valid, srt: srtPath, quality })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.msg || 'HTTP error');
+    statusBox.textContent += '\n[CẮT QUẢNG CÁO] Hoàn tất!';
+    resOut.innerHTML = `✅ <b>Cắt video thành công!</b><br>📹 File Video: <code>${data.output}</code>` + (data.srt ? `<br>📝 File Subtitle: <code>${data.srt}</code>` : '');
+    vcToast('Hoàn tất cắt quảng cáo video!');
+  } catch (err) {
+    statusBox.textContent += '\n[LỖI] ' + err.message;
+    vcToast('Lỗi cắt video: ' + err.message, 1);
+  }
+}
+
 /* Poll 8 giây: đủ nhanh để thấy đổi trạng thái, đủ chậm để không quấy máy đang render.
    `document.hidden` -> bỏ lượt: cửa sổ ẩn thì không ai đọc, đừng đốt CPU của render. */
 setInterval(function(){ if(!document.hidden) mdlNap(); }, 8000);
 setTimeout(mdlNap, 2500);
 </script>
+
 </body>
 </html>
