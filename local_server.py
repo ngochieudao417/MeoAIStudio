@@ -662,6 +662,40 @@ def _patched_do_POST(self):
             self._send(500, {"ok": False, "msg": f"Lỗi cắt quảng cáo: {str(e)}"})
         return
 
+    # Pre-render pipeline interceptor: automatic ad detection & cutting before render
+    if self.path in ("/api/xu_ly", "/api/xu_ly_batch", "/api/queue_add", "/api/workflow_run"):
+        try:
+            length = int(self.headers.get('Content-Length', 0))
+            if length > 0:
+                raw_body = self.rfile.read(length)
+                body = json.loads(raw_body.decode('utf-8'))
+                if body.get("cut_ads"):
+                    video_p = body.get("video") or body.get("input") or body.get("file") or ""
+                    method = body.get("cut_ads_method") or "resolution"
+                    if video_p and os.path.exists(video_p):
+                        import ads
+                        from pathlib import Path
+                        print(f"[MEOWCRAWL PIPELINE] Tự động dò & cắt quảng cáo ({method}) cho file: {video_p}")
+                        if method == "color":
+                            ranges = ads.detect_ads(video_p)
+                        else:
+                            ranges = ads.detect_ads_by_resolution(video_p)
+                        if ranges:
+                            out_cut = str(Path(video_p).with_suffix("")) + ".cut.mp4"
+                            print(f"[MEOWCRAWL PIPELINE] Phát hiện {len(ranges)} đoạn QC. Đang cắt ra {out_cut}...")
+                            ads.cut_ads(video_p, ranges, out_cut, quality=23)
+                            if "video" in body: body["video"] = out_cut
+                            if "input" in body: body["input"] = out_cut
+                            if "file" in body: body["file"] = out_cut
+                            raw_body = json.dumps(body).encode('utf-8')
+                        else:
+                            print(f"[MEOWCRAWL PIPELINE] Không phát hiện quảng cáo chèn giữa. Tiếp tục render gốc.")
+                import io
+                self.rfile = io.BytesIO(raw_body)
+                self.headers['Content-Length'] = str(len(raw_body))
+        except Exception as e:
+            print(f"[MEOWCRAWL PIPELINE NOTICE] Error in pre-render ad cutting check: {e}")
+
     return _orig_do_POST(self)
 
 web_app.Handler.do_POST = _patched_do_POST

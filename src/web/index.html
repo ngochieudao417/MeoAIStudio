@@ -4638,12 +4638,22 @@ async function hgDownloadCao(url) {
               <button class="r2-ghost" onclick="document.getElementById('r2SubModal').classList.add('open')">🎨 Style phụ đề &amp; che chữ</button>
               <button class="r2-ghost" onclick="document.getElementById('r2VoiceModal').classList.add('open')">🎙 Chỉnh giọng</button>
             </div>
+            <!-- CẮT QUẢNG CÁO CHÈN GIỮA (TỰ ĐỘNG CHẠY TRƯỚC RENDER) -->
+            <div class="r2-subline" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--r2-line2, #334155);">
+              <div class="r2-sw sm" id="r2SwCutAds" onclick="r2Tog(this)"></div>
+              <div class="txt">✂️ Tự động dò &amp; cắt quảng cáo <small>(chèn giữa video trước khi render)</small></div>
+              <select id="r2CutAdsMethod" onchange="r2SaveCfg()" style="width:auto;font-size:11.5px;padding:3px 8px;margin-left:auto;background:var(--r2-bg2, #0f172a);border:1px solid var(--r2-line2, #334155);border-radius:6px;color:var(--text);">
+                <option value="resolution" selected>🎯 Theo độ phân giải (720p vs 1080p)</option>
+                <option value="color">🎨 Theo sắc màu (Đỏ/Vàng rực)</option>
+              </select>
+            </div>
             <!-- ƯU TIÊN DÒ DẢI THỦ CÔNG (chủ dự án chốt 29/07): tool tự dò tốt với phụ đề 1 DÒNG nằm 1/3 dưới
                  màn hình — đúng phạm vi sản phẩm. Ca đặc thù (sub chạy liên tục, sub đặt trên đỉnh) thì khoanh
                  tay bằng nút ✏ trong "Style phụ đề & che chữ" → tool KHỎI phải đi tìm chỗ có sub (nhanh hơn)
                  + dải che căn khít, đẹp hơn. -->
             <div class="r2-subhint">💡 <b>Nên khoanh vùng phụ đề bằng tay</b> (nút ✏ trong <b>Style phụ đề &amp; che chữ</b>) — tool khỏi mất công dò, <b>render nhanh hơn</b> và dải che <b>căn khít, đẹp hơn</b>.<br><span>Tự động chỉ quét tốt phụ đề <b>1 dòng ở 1/3 dưới</b> màn hình. Sub chạy liên tục hoặc đặt trên đỉnh → <b>bắt buộc khoanh tay</b>.</span></div>
           </div>
+
 
           <!-- CHỈNH VIDEO -->
           <div class="r2-sec" data-r2tab="hinh">
@@ -34841,6 +34851,9 @@ function r2BuildOpts(boQuaVungChe){
     // dịch/lồng tiếng
     phude: subOn,
     long_tieng: dubOn,
+    cut_ads: on("r2SwCutAds"),
+    cut_ads_method: val("r2CutAdsMethod") || "resolution",
+
     // CHẾ ĐỘ BÁN THỦ CÔNG (26/08/2026): dừng SAU KHI DỊCH để khách duyệt phụ đề + chọn giọng.
     // Tái dùng NGUYÊN cơ chế "dịch thủ công" đã có (trạng thái hàng đợi `cho_srt`), chỉ thêm
     // `pha_dung` để phân biệt DỪNG-SAU-ASR (cũ) với DỪNG-SAU-DỊCH (mới). Thiếu khoá ⇒ backend
