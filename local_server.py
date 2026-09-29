@@ -451,7 +451,7 @@ def _patched_do_POST(self):
             self._send(500, {"ok": False, "msg": f"Lỗi upload video: {str(e)}"})
         return
 
-    elif self.path == "/api/socialshorts/start":
+    elif self.path in ("/api/socialshorts/start", "/api/video/start", "/api/video/render-assets"):
         try:
             content_length = int(self.headers.get("Content-Length", 0))
             body_bytes = self.rfile.read(content_length) if content_length > 0 else b"{}"
@@ -565,7 +565,7 @@ web_app.Handler.do_POST = _patched_do_POST
 
 _orig_do_GET = web_app.Handler.do_GET
 def _patched_do_GET(self):
-    if self.path == "/api/socialshorts/log":
+    if self.path in ("/api/socialshorts/log", "/api/video/log"):
         try:
             with _social_shorts_lock:
                 st = dict(_social_shorts_state)

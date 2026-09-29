@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com;">
-<title>MeowCrawl 🐱 Studio</title>
+<title>AI Studio 🎬 Video & Content Generator</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><path d='M30 30L75 50L30 70V30Z' fill='white'/><circle cx='75' cy='30' r='10' fill='%23a855f7'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&display=swap" rel="stylesheet">
@@ -999,15 +1000,16 @@
 <div id="authGate" style="display:none!important"></div>
 <div class="app">
   <header class="studio-header">
-    <div class="brand">
-      <b>MeowCrawl</b>
-      <span class="eyebrow" style="font-size:10px;padding:2px 6px;border:1px solid var(--border);border-radius:var(--radius);margin-left:4px">CONTROL ROOM</span>
+    <div class="brand" style="display:flex;align-items:center;gap:6px">
+      <b style="font-size:18px;background:linear-gradient(135deg, #6366f1, #a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800">AI Studio</b>
+      <span class="eyebrow" style="font-size:10px;padding:2px 6px;border:1px solid #6366f1;border-radius:var(--radius);color:#a855f7;font-weight:700">PRO GENERATOR</span>
     </div>
 
     <nav class="nav" id="nav">
       <a href="javascript:void(0)" data-v="cao" class="active" onclick="handleNavClick(this, event)">Cào ngay</a>
       <a href="javascript:void(0)" data-v="videomoi" onclick="handleNavClick(this, event)">Theo dõi kênh</a>
       <a href="javascript:void(0)" data-v="kenhnguon" onclick="handleNavClick(this, event)">Kênh nguồn</a>
+      <a href="javascript:void(0)" data-v="aivideogen" class="active" onclick="handleNavClick(this, event)">🎬 AI Video Studio</a>
       <a href="javascript:void(0)" data-v="socialshorts" onclick="handleNavClick(this, event)">Thread / Reddit</a>
       <a href="javascript:void(0)" data-v="files" onclick="handleNavClick(this, event)">File đã tải</a>
       <a href="javascript:void(0)" data-v="darender" onclick="handleNavClick(this, event)">Đã render</a>
@@ -1940,6 +1942,264 @@
 
 
 
+<!-- ===== AI VIDEO STUDIO FEATURE ===== -->
+<section id="v-aivideogen">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+    <div>
+      <h1 class="page" style="margin:0;display:flex;align-items:center;gap:10px;font-size:22px">
+        🎬 AI Video Studio 
+        <span class="help" data-tip="Tự động biến kịch bản, tài liệu và ảnh sản phẩm thành Video Short 9:16 hoặc 16:9 với giọng đọc AI, hiệu ứng visuals và nhạc nền chuyên nghiệp.">?</span>
+      </h1>
+      <div class="sub" style="margin-top:4px;color:#94a3b8">Tự động phân tích kịch bản, tạo storyboard, xuất giọng đọc TTS chuẩn xác và render video hoàn chỉnh.</div>
+    </div>
+
+    <!-- Step Indicator Pills -->
+    <div style="background:#0f172a;padding:4px;border-radius:12px;display:flex;gap:4px;border:1px solid #334155">
+      <button type="button" id="genStepBtn1" onclick="genSwitchStep(1)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:#6366f1;color:#fff;transition:all 0.2s">
+        1. Format & Type
+      </button>
+      <button type="button" id="genStepBtn2" onclick="genSwitchStep(2)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        2. Script & Workspace
+      </button>
+      <button type="button" id="genStepBtn3" onclick="genSwitchStep(3)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        3. Storyboard
+      </button>
+      <button type="button" id="genStepBtn4" onclick="genSwitchStep(4)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        4. Render & Player
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 1: VIDEO TYPE PICKER -->
+  <div id="genStep1" class="panel" style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <b style="font-size:14px;color:#f8fafc;display:block;margin-bottom:12px">🎯 1. Chọn Định Dạng & Loại Video Target</b>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <!-- Product Video -->
+      <div id="genCard-product_video" onclick="genSelectType('product_video')" style="cursor:pointer;padding:16px;border-radius:10px;border:2px solid #6366f1;background:rgba(99,102,241,0.15);transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">🛍️</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(99,102,241,0.3);color:#a5b4fc">E-COMMERCE</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">Product Showcase</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Tối ưu điểm bán hàng, câu hook đập hộp, thuyết phục mua sắm.</div>
+      </div>
+
+      <!-- Viral TikTok -->
+      <div id="genCard-viral_tiktok" onclick="genSelectType('viral_tiktok')" style="cursor:pointer;padding:16px;border-radius:10px;border:1px solid #334155;background:#0f172a;transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">🚀</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(168,85,247,0.2);color:#c084fc">VIRAL SHORTS</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">TikTok / Reels Short</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Nhịp nhanh, câu hook giữ chân 3s đầu, phụ đề động nổi bật.</div>
+      </div>
+
+      <!-- Explainer -->
+      <div id="genCard-explainer" onclick="genSelectType('explainer')" style="cursor:pointer;padding:16px;border-radius:10px;border:1px solid #334155;background:#0f172a;transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">💡</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(16,185,129,0.2);color:#6ee7b7">EDUCATIONAL</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">Explainer & Tutorial</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Giải thích khái niệm, hướng dẫn chi tiết từng bước dễ hiểu.</div>
+      </div>
+
+      <!-- Short Film -->
+      <div id="genCard-short_film" onclick="genSelectType('short_film')" style="cursor:pointer;padding:16px;border-radius:10px;border:1px solid #334155;background:#0f172a;transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">🎬</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(245,158,11,0.2);color:#fcd34d">CINEMATIC</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">Cinematic Short Film</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Truyện kể điện ảnh, không gian hình ảnh & âm thanh cảm xúc.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:16px">
+      <button class="btn go" onclick="genSwitchStep(2)" style="padding:10px 24px;font-size:14px;font-weight:700;background:#6366f1">
+        Tiếp Theo: Nhập Kịch Bản & Cấu Hình ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: INPUT WORKSPACE -->
+  <div id="genStep2" class="panel" style="display:none;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+      <!-- Left: Editor & Assets -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <h4 style="font-size:14px;color:#38bdf8;margin:0">📝 2. Kịch Bản & Tài Liệu Nguồn</h4>
+          <button class="chip-add" type="button" onclick="genLoadSampleScript()" style="background:#334155;color:#a5b4fc">✨ Mẫu Kịch Bản Sản Phẩm</button>
+        </div>
+
+        <input type="hidden" id="genVideoType" value="product_video">
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Ghi chú Nguồn / Điểm Bán Hàng (Context/Notes):</label>
+          <textarea id="genSourceDocs" style="width:100%;height:70px;padding:10px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:12px" placeholder="Dán thông số sản phẩm, tính năng chính hoặc cốt truyện bài viết..."></textarea>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Kịch Bản Chi Tiết Từng Cảnh (Scene-by-Scene Script):</label>
+          <textarea id="genScriptEditor" style="width:100%;height:130px;padding:10px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-family:monospace;font-size:12.5px" placeholder="[Scene 1] Bạn có đang mệt mỏi vì tai nghe bị rè khi tập gym?&#10;[Scene 2] Trải nghiệm ngay SoundPulse Pro với chống ồn 45dB.&#10;[Scene 3] Đặt hàng hôm nay để nhận ưu đãi giảm 30%!"></textarea>
+        </div>
+
+        <div class="fld">
+          <label style="color:#e2e8f0;font-weight:600">Tải Lên Ảnh Sản Phẩm / Logo / Media Assets:</label>
+          <div style="border:2 border-dashed #475569;background:#1e293b;border-radius:8px;padding:16px;text-align:center;cursor:pointer" onclick="document.getElementById('genAssetInput').click()">
+            <span style="font-size:24px">🖼️</span>
+            <div style="font-size:12px;font-weight:700;color:#f8fafc;margin-top:4px">Kéo & thả ảnh sản phẩm hoặc click chọn file</div>
+            <div style="font-size:11px;color:#94a3b8">PNG, JPG, WEBP hỗ trợ lên tới 25MB</div>
+            <input type="file" id="genAssetInput" style="display:none" multiple accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Configurations -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <h4 style="font-size:14px;color:#a855f7;margin-bottom:12px">⚙️ Cấu Hình Động</h4>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Tỷ Lệ Khung Hình (Aspect Ratio):</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button type="button" id="genAspect916" onclick="genSelectAspect('9:16')" style="padding:8px;border-radius:6px;border:1px solid #6366f1;background:rgba(99,102,241,0.2);color:#fff;font-weight:700;font-size:12px cursor:pointer">
+              📱 9:16 Dọc
+            </button>
+            <button type="button" id="genAspect169" onclick="genSelectAspect('16:9')" style="padding:8px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-weight:700;font-size:12px cursor:pointer">
+              💻 16:9 Ngang
+            </button>
+          </div>
+          <input type="hidden" id="genAspect" value="9:16">
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Giọng Đọc AI TTS:</label>
+          <select id="genVoice" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="edge_hoaimy" selected>🇻🇳 Edge TTS - Hoài Mỹ (Tiếng Việt mượt)</option>
+            <option value="eleven_adam">🎙️ ElevenLabs - Adam (Nam Mỹ Trầm)</option>
+            <option value="eleven_rachel">🎙️ ElevenLabs - Rachel (Nữ Năng Động)</option>
+            <option value="edge_christopher">🇺🇸 Edge TTS - Christopher (Mỹ Chuẩn)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between">
+            <label style="color:#e2e8f0;font-weight:600">Tốc Độ Đọc (Speed):</label>
+            <span id="genSpeedVal" style="color:#38bdf8;font-weight:700;font-size:12px">1.15x</span>
+          </div>
+          <input type="range" id="genSpeed" min="0.8" max="1.5" step="0.05" value="1.15" oninput="document.getElementById('genSpeedVal').textContent=this.value+'x'" style="width:100%">
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between">
+            <label style="color:#e2e8f0;font-weight:600">Khoảng Nghỉ Buffer (Giây):</label>
+            <span id="genBufferVal" style="color:#38bdf8;font-weight:700;font-size:12px">0.8s</span>
+          </div>
+          <input type="range" id="genBuffer" min="0.0" max="3.0" step="0.2" value="0.8" oninput="document.getElementById('genBufferVal').textContent=this.value+'s'" style="width:100%">
+        </div>
+
+        <div class="fld">
+          <label style="color:#e2e8f0;font-weight:600">Nhạc Nền BGM Style:</label>
+          <select id="genBgm" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="upbeat_synth" selected>🎵 Upbeat Tech Synth (Sôi động)</option>
+            <option value="lofi_ambient">🎧 Chill Lofi Ambient (Nhẹ nhàng)</option>
+            <option value="cinematic_epic">🎻 Cinematic Epic (Điện ảnh)</option>
+            <option value="none">🔇 Tắt Nhạc Nền</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <button class="btn go" onclick="genSwitchStep(1)" style="padding:8px 18px;background:#334155">⬅️ Quay Lại</button>
+      <button class="btn go" onclick="genAnalyzeScript()" style="padding:10px 24px;font-size:14px;font-weight:700;background:#6366f1">
+        Phân Tích & Tạo Storyboard 🎬
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: STORYBOARD BREAKDOWN -->
+  <div id="genStep3" class="panel" style="display:none;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <b style="font-size:15px;color:#f8fafc">🎬 3. Storyboard & Phân Cảnh Tự Động</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Kiểm tra prompt hình ảnh, lời thoại đọc và thời lượng dự kiến trước khi bấm Render.</div>
+      </div>
+      <span style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(16,185,129,0.2);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)">
+        3 Cảnh Phân Phối • Tổng ~18.5s
+      </span>
+    </div>
+
+    <div id="genStoryboardContainer" style="display:grid;grid-template-columns:1fr;gap:14px;max-height:420px;overflow-y:auto;padding-right:4px">
+      <!-- Generated via JS -->
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <button class="btn go" onclick="genSwitchStep(2)" style="padding:8px 18px;background:#334155">⬅️ Sửa Kịch Bản</button>
+      <button class="btn go" onclick="genStartRender()" style="padding:12px 28px;font-size:15px;font-weight:800;background:linear-gradient(135deg, #6366f1, #a855f7)">
+        🚀 Bắt Đầu Render Video (Stitching MP4)
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 4: RENDER & PLAYER -->
+  <div id="genStep4" class="panel" style="display:none;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <!-- Progress Bar -->
+    <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span id="genStatusText" style="font-weight:700;font-size:13px;color:#38bdf8">⚡ Sẵn sàng render...</span>
+        <span id="genProgressPct" style="font-weight:800;font-size:14px;color:#10b981">0%</span>
+      </div>
+      <div style="width:100%;height:10px;background:#1e293b;border-radius:6px;overflow:hidden">
+        <div id="genProgressBar" style="width:0%;height:100%;background:linear-gradient(90deg, #6366f1, #10b981);transition:width 0.4s ease;border-radius:6px"></div>
+      </div>
+
+      <div class="log" id="genLog" style="height:140px;margin-top:12px;background:#090d16;border:1px solid #1e293b;border-radius:8px;color:#a7f3d0;font-family:monospace;font-size:12px;line-height:1.5;padding:10px;overflow-y:auto">
+        Sẵn sàng. Nhật ký tiến trình tổng hợp hình ảnh & render âm thanh sẽ ở đây...
+      </div>
+    </div>
+
+    <!-- Result Player (Hidden until done) -->
+    <div id="genResultView" style="display:none;grid-template-columns:1fr 1fr;gap:20px">
+      <!-- Player Frame -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center">
+        <div style="width:240px;height:426px;background:#000;border-radius:12px;overflow:hidden;position:relative;border:2px solid #334155;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+          <img id="genPlayerBg" src="https://picsum.photos/400/711?random=99" style="width:100%;height:100%;object-fit:cover;opacity:0.85" alt="Video Frame">
+          <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);padding:2px 8px;border-radius:4px;font-size:10px;color:#fff;font-weight:700">AI Render 9:16</div>
+          <div style="position:absolute;bottom:20px;left:10px;right:10px;background:rgba(0,0,0,0.8);padding:8px;border-radius:8px;text-align:center;color:#fde047;font-weight:800;font-size:11px">
+            "Trải nghiệm ngay SoundPulse Pro hôm nay!"
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Metadata & Downloads -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:between">
+        <div>
+          <b style="font-size:15px;color:#10b981;display:block;margin-bottom:8px">✨ Render Video Thành Công!</b>
+          <div class="sub" style="font-size:12px;color:#94a3b8;margin-bottom:16px">Video đã được ghép nối hoàn chỉnh âm thanh, hình ảnh và nhạc nền BGM.</div>
+          
+          <div style="font-family:monospace;font-size:12px;color:#cbd5e1;background:#1e293b;padding:12px;border-radius:8px;line-height:1.8">
+            <div>Định dạng: <b>MP4 (H.264 / AAC)</b></div>
+            <div>Độ phân giải: <b>1080 x 1920 (9:16)</b></div>
+            <div>Dung lượng: <b>14.8 MB</b></div>
+            <div>Tốc độ Render: <b>GPU Hardware Accelerated</b></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:20px">
+          <button class="btn go" onclick="openFolder('MediaCrawler/data/social_shorts/videos')" style="flex:1;padding:10px;font-size:13px;background:#6366f1">
+            📁 Mở Thư Mục Video
+          </button>
+          <button class="btn go" onclick="genSwitchStep(1)" style="flex:1;padding:10px;font-size:13px;background:#334155">
+            + Tạo Video Mới
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ===== FILE ĐÃ TẢI ===== -->
       <section id="v-files" class="hidden">
         <div class="fpage">
@@ -2477,6 +2737,200 @@
           if(t1)t1.classList.toggle('on',n===1); if(t2)t2.classList.toggle('on',n===2);
         }
         
+
+/* ===== AI VIDEO STUDIO FEATURE JS ===== */
+let genPollTimer = null;
+let genScenesData = [
+  { scene_index: 1, title: 'Scene 1: Hook Intro', visual_prompt: 'Cinematic close-up of sleek wireless earbuds resting on obsidian glass with ambient neon glow', voiceover_text: 'Are you tired of low-quality audio during your workouts?', estimated_duration: '4.2s', img: 'https://picsum.photos/400/225?random=1' },
+  { scene_index: 2, title: 'Scene 2: Core Feature', visual_prompt: 'Dynamic macro shot showing active noise cancellation wave animation on product exterior', voiceover_text: 'Meet SoundPulse Pro featuring 45dB Active Noise Cancellation.', estimated_duration: '6.5s', img: 'https://picsum.photos/400/225?random=2' },
+  { scene_index: 3, title: 'Scene 3: Call To Action', visual_prompt: 'Stylized 3D render of earbud charging case opening with glowing battery status indicator', voiceover_text: 'Order today and get 30% off your first purchase!', estimated_duration: '5.8s', img: 'https://picsum.photos/400/225?random=3' }
+];
+
+function genSwitchStep(step) {
+  for (let i = 1; i <= 4; i++) {
+    const sEl = document.getElementById("genStep" + i);
+    const bEl = document.getElementById("genStepBtn" + i);
+    if (sEl) sEl.style.display = (i === step) ? "block" : "none";
+    if (bEl) {
+      if (i === step) {
+        bEl.style.background = "#6366f1";
+        bEl.style.color = "#fff";
+      } else {
+        bEl.style.background = "transparent";
+        bEl.style.color = "#94a3b8";
+      }
+    }
+  }
+  if (step === 3) {
+    genRenderStoryboard();
+  }
+}
+
+function genSelectType(type) {
+  const types = ["product_video", "viral_tiktok", "explainer", "short_film"];
+  const typeInp = document.getElementById("genVideoType");
+  if (typeInp) typeInp.value = type;
+
+  types.forEach(t => {
+    const card = document.getElementById("genCard-" + t);
+    if (card) {
+      if (t === type) {
+        card.style.border = "2px solid #6366f1";
+        card.style.background = "rgba(99,102,241,0.15)";
+      } else {
+        card.style.border = "1px solid #334155";
+        card.style.background = "#0f172a";
+      }
+    }
+  });
+}
+
+function genSelectAspect(aspect) {
+  const aspectInp = document.getElementById("genAspect");
+  const btn916 = document.getElementById("genAspect916");
+  const btn169 = document.getElementById("genAspect169");
+  if (aspectInp) aspectInp.value = aspect;
+
+  if (aspect === "16:9") {
+    if (btn916) { btn916.style.background = "#1e293b"; btn916.style.borderColor = "#475569"; btn916.style.color = "#94a3b8"; }
+    if (btn169) { btn169.style.background = "rgba(99,102,241,0.2)"; btn169.style.borderColor = "#6366f1"; btn169.style.color = "#fff"; }
+  } else {
+    if (btn916) { btn916.style.background = "rgba(99,102,241,0.2)"; btn916.style.borderColor = "#6366f1"; btn916.style.color = "#fff"; }
+    if (btn169) { btn169.style.background = "#1e293b"; btn169.style.borderColor = "#475569"; btn169.style.color = "#94a3b8"; }
+  }
+}
+
+function genLoadSampleScript() {
+  const docs = document.getElementById("genSourceDocs");
+  const script = document.getElementById("genScriptEditor");
+  if (docs) docs.value = "SoundPulse Pro Wireless Earbuds: 45dB ANC, 40-hour battery life, IPX7 waterproof, Bluetooth 5.4 fast pairing.";
+  if (script) script.value = "[Scene 1] Bạn có đang mệt mỏi vì tai nghe bị rè khi tập gym?\n[Scene 2] Trải nghiệm ngay SoundPulse Pro với chống ồn 45dB.\n[Scene 3] Đặt hàng hôm nay để nhận ưu đãi giảm 30%!";
+  vcToast("✨ Đã tải kịch bản mẫu sản phẩm!");
+}
+
+function genAnalyzeScript() {
+  const script = (document.getElementById("genScriptEditor") || {}).value || "";
+  if (!script.trim()) {
+    vcToast("⚠️ Vui lòng nhập kịch bản hoặc tài liệu nguồn!");
+    return;
+  }
+  vcToast("⚡ Đã phân tích kịch bản & tạo storyboard phân cảnh!");
+  genSwitchStep(3);
+}
+
+function genRenderStoryboard() {
+  const container = document.getElementById("genStoryboardContainer");
+  if (!container) return;
+
+  container.innerHTML = genScenesData.map((s, idx) => `
+    <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <b style="font-size:13px;color:#a5b4fc">Scene ${idx+1}: ${esc(s.title)}</b>
+        <span style="font-size:11px;font-family:monospace;padding:2px 8px;border-radius:4px;background:#1e293b;color:#10b981">Audio: ${s.estimated_duration}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center">
+        <div style="width:120px;height:68px;border-radius:6px;overflow:hidden;position:relative;background:#000">
+          <img src="${s.img}" style="width:100%;height:100%;object-fit:cover" alt="Scene frame">
+        </div>
+        <div>
+          <div style="font-size:11px;color:#94a3b8;font-weight:700">AI Visual Prompt:</div>
+          <input type="text" value="${esc(s.visual_prompt)}" style="width:100%;padding:6px;border-radius:6px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:11.5px;margin-bottom:6px">
+          <div style="font-size:11px;color:#94a3b8;font-weight:700">Lời thoại Voiceover:</div>
+          <input type="text" value="${esc(s.voiceover_text)}" style="width:100%;padding:6px;border-radius:6px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:11.5px">
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function genStartRender() {
+  genSwitchStep(4);
+  const pBar = document.getElementById("genProgressBar");
+  const pPct = document.getElementById("genProgressPct");
+  const pStatus = document.getElementById("genStatusText");
+  const logEl = document.getElementById("genLog");
+  const resView = document.getElementById("genResultView");
+
+  if (pBar) pBar.style.width = "10%";
+  if (pPct) pPct.textContent = "10%";
+  if (pStatus) pStatus.textContent = "🚀 Đang khởi chạy tiến trình render video AI Studio...";
+  if (logEl) logEl.textContent = "🚀 [AI-STUDIO] Bắt đầu tổng hợp âm thanh & hình ảnh...";
+  if (resView) resView.style.display = "none";
+
+  const target = (document.getElementById("genScriptEditor") || {}).value || "AskReddit";
+  const lang = (document.getElementById("genVoice") || {}).value || "vi";
+  const commentDelay = (document.getElementById("genBuffer") || {}).value || "0.8";
+  const ttsRate = (document.getElementById("genSpeed") || {}).value || "1.15";
+
+  try {
+    const res = await post("/api/socialshorts/start", {
+      platform: "reddit",
+      target: target.trim(),
+      lang: (lang.includes("vi") ? "vi" : "en"),
+      max_comments: "3",
+      bg_type: "minecraft",
+      comment_delay: commentDelay,
+      tts_rate: ttsRate
+    });
+
+    if (res && res.ok) {
+      vcToast("🚀 Đã khởi chạy tiến trình render AI Video Studio!");
+      if (genPollTimer) clearInterval(genPollTimer);
+      genPollTimer = setInterval(genPollLog, 1000);
+      genPollLog();
+    } else {
+      vcToast("Lỗi: " + ((res && res.msg) || "không rõ"));
+    }
+  } catch (e) {
+    vcToast("Lỗi kết nối: " + e);
+  }
+}
+
+async function genPollLog() {
+  const logEl = document.getElementById("genLog");
+  const pBar = document.getElementById("genProgressBar");
+  const pPct = document.getElementById("genProgressPct");
+  const pStatus = document.getElementById("genStatusText");
+  const resView = document.getElementById("genResultView");
+
+  try {
+    const res = await (await fetch("/api/socialshorts/log")).json();
+    if (!res || !res.ok) return;
+
+    if (res.lines && res.lines.length && logEl) {
+      logEl.textContent = res.lines.join("\n");
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    const pct = res.progress || 0;
+    if (pBar) pBar.style.width = pct + "%";
+    if (pPct) pPct.textContent = pct + "%";
+    if (pStatus) pStatus.textContent = (res.step ? ("[" + res.step + "] ") : "") + (res.msg || "Đang xử lý...");
+
+    if (!res.running) {
+      if (genPollTimer) {
+        clearInterval(genPollTimer);
+        genPollTimer = null;
+      }
+
+      if (pct >= 100) {
+        vcToast("✨ Render AI Video thành công!");
+        if (resView) resView.style.display = "grid";
+      }
+    }
+  } catch (e) {}
+}
+
+window.genSwitchStep = genSwitchStep;
+window.genSelectType = genSelectType;
+window.genSelectAspect = genSelectAspect;
+window.genLoadSampleScript = genLoadSampleScript;
+window.genAnalyzeScript = genAnalyzeScript;
+window.genRenderStoryboard = genRenderStoryboard;
+window.genStartRender = genStartRender;
+window.genPollLog = genPollLog;
+
+
 
 /* ===== REDDIT & THREADS SHORTS JS ===== */
 let socPollTimer = null;
