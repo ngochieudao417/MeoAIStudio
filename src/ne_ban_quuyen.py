@@ -16,10 +16,14 @@ def log(msg):
             pass
 
 def _tim_ffmpeg():
+    import shutil
+    w = shutil.which("ffmpeg")
+    if w:
+        return w
     paths = [
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffmpeg.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffmpeg.exe",
-        "ffmpeg"
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffmpeg\8.0\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\AppData\Local\CapCut\Apps\9.5.0.4050\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg.exe",
     ]
     for p in paths:
         if os.path.exists(p):
@@ -27,10 +31,13 @@ def _tim_ffmpeg():
     return "ffmpeg"
 
 def _tim_ffprobe():
+    import shutil
+    w = shutil.which("ffprobe")
+    if w:
+        return w
     paths = [
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffprobe.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffprobe.exe",
-        "ffprobe"
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffprobe\8.0\ffprobe.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffprobe.exe",
     ]
     for p in paths:
         if os.path.exists(p):
@@ -114,15 +121,15 @@ def check_gpu_encoder():
         return _GPU_ENCODER_CACHE
 
     ffmpeg = _tim_ffmpeg()
-    # Test if h264_nvenc actually works on hardware
-    try:
-        cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1", "-c:v", "h264_nvenc", "-f", "null", "-"]
-        res = subprocess.run(cmd, capture_output=True, text=True)
-        if res.returncode == 0:
-            _GPU_ENCODER_CACHE = "h264_nvenc"
-            return _GPU_ENCODER_CACHE
-    except Exception:
-        pass
+    for enc in ["h264_nvenc", "h264_qsv", "h264_amf"]:
+        try:
+            cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1", "-c:v", enc, "-f", "null", "-"]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode == 0:
+                _GPU_ENCODER_CACHE = enc
+                return _GPU_ENCODER_CACHE
+        except Exception:
+            pass
 
     _GPU_ENCODER_CACHE = "libx264"
     return _GPU_ENCODER_CACHE
@@ -136,12 +143,20 @@ def render_ne_ban_quuyen(input_path, output_path, opts=None):
     vf, af = build_ffmpeg_filters(opts, info)
     encoder = check_gpu_encoder()
 
+    enc_desc = ("Gia tốc GPU NVENC" if encoder == "h264_nvenc" 
+                else ("Gia tốc iGPU Intel QuickSync (QSV)" if encoder == "h264_qsv"
+                else ("Gia tốc AMD AMF" if encoder == "h264_amf" else "CPU libx264")))
+
     log(f"▶ Bắt đầu render né bản quyền: {os.path.basename(input_path)}")
     log(f"   · Bộ lọc video: {vf}")
     log(f"   · Bộ lọc audio: {af}")
-    log(f"   · Encoder: {encoder} ({'Gia tốc GPU NVENC' if encoder=='h264_nvenc' else 'CPU libx264 (Máy hiện tại dùng CPU)'})")
+    log(f"   · Encoder: {encoder} ({enc_desc})")
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    out_dir = os.path.dirname(output_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+
+    preset_val = "p4" if encoder == "h264_nvenc" else ("veryfast" if encoder in ("h264_qsv", "h264_amf") else "fast")
 
     cmd = [
         ffmpeg, "-y",
@@ -149,7 +164,7 @@ def render_ne_ban_quuyen(input_path, output_path, opts=None):
         "-vf", vf,
         "-af", af,
         "-c:v", encoder,
-        "-preset", "p4" if encoder == "h264_nvenc" else "fast",
+        "-preset", preset_val,
         "-c:a", "aac",
         "-b:a", "192k",
         "-progress", "pipe:1",

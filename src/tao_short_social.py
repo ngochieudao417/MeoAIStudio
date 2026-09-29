@@ -27,10 +27,15 @@ def log(msg):
             pass
 
 def _tim_ffmpeg():
+    import shutil
+    w = shutil.which("ffmpeg")
+    if w:
+        return w
     paths = [
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffmpeg\8.0\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\AppData\Local\CapCut\Apps\9.5.0.4050\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg.exe",
         r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffmpeg.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffmpeg.exe",
-        "ffmpeg"
     ]
     for p in paths:
         if os.path.exists(p):
@@ -38,10 +43,14 @@ def _tim_ffmpeg():
     return "ffmpeg"
 
 def _tim_ffprobe():
+    import shutil
+    w = shutil.which("ffprobe")
+    if w:
+        return w
     paths = [
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffprobe\8.0\ffprobe.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffprobe.exe",
         r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffprobe.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffprobe.exe",
-        "ffprobe"
     ]
     for p in paths:
         if os.path.exists(p):
@@ -50,48 +59,116 @@ def _tim_ffprobe():
 
 def generate_silence(duration_sec, out_mp3):
     ffmpeg = _tim_ffmpeg()
-    cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", f"anullsrc=r=44100:cl=stereo", "-t", str(duration_sec), "-c:a", "libmp3lame", "-b:a", "128k", out_mp3]
+    cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", str(duration_sec), "-c:a", "libmp3lame", "-b:a", "128k", out_mp3]
     subprocess.run(cmd, capture_output=True, check=True)
     return out_mp3
 
 def check_gpu_encoder():
     ffmpeg = _tim_ffmpeg()
-    try:
-        cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1", "-c:v", "h264_nvenc", "-f", "null", "-"]
-        res = subprocess.run(cmd, capture_output=True, text=True)
-        if res.returncode == 0:
-            return "h264_nvenc"
-    except Exception:
-        pass
+    for enc in ["h264_nvenc", "h264_qsv", "h264_amf"]:
+        try:
+            cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1", "-c:v", enc, "-f", "null", "-"]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode == 0:
+                return enc
+        except Exception:
+            pass
     return "libx264"
 
 def get_audio_duration(audio_path):
     ffprobe = _tim_ffprobe()
-    cmd = [
-        ffprobe, "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        audio_path
-    ]
+    if ffprobe:
+        cmd = [
+            ffprobe, "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            audio_path
+        ]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            if res.returncode == 0 and res.stdout.strip():
+                val = float(res.stdout.strip())
+                if val > 0:
+                    return val
+        except Exception:
+            pass
+
+    ffmpeg = _tim_ffmpeg()
+    cmd = [ffmpeg, "-i", audio_path]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return float(res.stdout.strip())
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        match = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", res.stderr)
+        if match:
+            h, m, s = float(match.group(1)), float(match.group(2)), float(match.group(3))
+            val = h * 3600 + m * 60 + s
+            if val > 0:
+                return val
     except Exception:
-        return 3.0
+        pass
+
+    return 3.0
 
 def get_video_duration(video_path):
     ffprobe = _tim_ffprobe()
-    cmd = [
-        ffprobe, "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        video_path
-    ]
+    if ffprobe:
+        cmd = [
+            ffprobe, "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            video_path
+        ]
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            if res.returncode == 0 and res.stdout.strip():
+                val = float(res.stdout.strip())
+                if val > 0:
+                    return val
+        except Exception:
+            pass
+
+    ffmpeg = _tim_ffmpeg()
+    cmd = [ffmpeg, "-i", video_path]
     try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return float(res.stdout.strip())
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+        match = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", res.stderr)
+        if match:
+            h, m, s = float(match.group(1)), float(match.group(2)), float(match.group(3))
+            val = h * 3600 + m * 60 + s
+            if val > 0:
+                return val
     except Exception:
-        return 0.0
+        pass
+
+    return 60.0
+
+def add_audio_buffer(audio_path, buffer_sec, temp_dir, idx_tag, timestamp):
+    raw_dur = get_audio_duration(audio_path)
+    if buffer_sec <= 0:
+        log(f"   └─ Seg '{idx_tag}': Thời lượng đọc TTS = {raw_dur:.2f}s (Buffer = 0s)")
+        return audio_path, raw_dur
+
+    silence_p = os.path.join(temp_dir, f"silence_{idx_tag}_{timestamp}.mp3")
+    padded_audio = os.path.join(temp_dir, f"padded_{idx_tag}_{timestamp}.mp3")
+    generate_silence(buffer_sec, silence_p)
+
+    concat_txt = os.path.join(temp_dir, f"concat_pad_{idx_tag}_{timestamp}.txt")
+    raw_safe = audio_path.replace("\\", "/")
+    sil_safe = silence_p.replace("\\", "/")
+
+    with open(concat_txt, "w", encoding="utf-8") as f_pad:
+        f_pad.write(f"file '{raw_safe}'\nfile '{sil_safe}'\n")
+
+    ffmpeg = _tim_ffmpeg()
+    cmd = [ffmpeg, "-y", "-f", "concat", "-safe", "0", "-i", concat_txt, "-c:a", "libmp3lame", "-b:a", "192k", padded_audio]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+
+    if res.returncode == 0 and os.path.exists(padded_audio):
+        actual_padded_dur = get_audio_duration(padded_audio)
+        log(f"   └─ Seg '{idx_tag}': Thời lượng đọc TTS = {raw_dur:.2f}s + Buffer = {buffer_sec:.1f}s -> Tổng hiển thị card = {actual_padded_dur:.2f}s")
+        return padded_audio, actual_padded_dur
+    else:
+        log(f"   └─ Seg '{idx_tag}': Thời lượng đọc TTS = {raw_dur:.2f}s (Lỗi tạo buffer -> giữ audio gốc)")
+        return audio_path, raw_dur
 
 # ==========================================
 # 1. DATA FETCHERS (REDDIT RSS & THREADS)
@@ -251,17 +328,144 @@ def fetch_threads_data(threads_url, max_comments=2):
         "comments": comments[:max_comments]
     }
 
+def fetch_hot_threads_posts(target_input="@zuck", max_days=7, min_likes=50, limit=12):
+    """
+    Fetches recent HOT Threads posts by username, keyword search or URL.
+    Filters posts by age (max_days) and likes (min_likes), sorted by likes descending.
+    """
+    from playwright.sync_api import sync_playwright
+    import re
+
+    if target_input.startswith("http"):
+        target_url = target_input
+    elif target_input.startswith("@"):
+        target_url = f"https://www.threads.net/{target_input}"
+    elif not target_input:
+        target_url = "https://www.threads.net/@zuck"
+    else:
+        target_url = f"https://www.threads.net/search?q={target_input}"
+
+    log(f"🔥 Đang tìm bài viết Threads HOT từ: {target_url} (Tối đa {max_days} ngày, >={min_likes} tim)")
+    raw_items = []
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            page = context.new_page()
+            page.goto(target_url, wait_until="domcontentloaded", timeout=25000)
+            page.wait_for_timeout(2500)
+
+            for _ in range(4):
+                page.mouse.wheel(0, 1500)
+                page.wait_for_timeout(1000)
+
+            js_extract = """
+            () => {
+                const items = [];
+                const containers = document.querySelectorAll('div[data-pressable-container="true"]');
+                containers.forEach(c => {
+                    const link = c.querySelector('a[href*="/post/"]');
+                    if(!link) return;
+                    const url = link.href;
+                    const fullText = c.innerText.trim();
+                    items.push({ url, fullText });
+                });
+                return items;
+            }
+            """
+            raw_items = page.evaluate(js_extract)
+            browser.close()
+    except Exception as ex:
+        log(f"Notice Playwright hot Threads search: {ex}")
+
+    posts = []
+    seen_urls = set()
+    for item in raw_items:
+        url = item.get("url")
+        if not url or url in seen_urls:
+            continue
+        seen_urls.add(url)
+
+        lines = [l.strip() for l in item.get("fullText", "").split("\n") if l.strip()]
+        if not lines:
+            continue
+
+        author = lines[0] if (lines[0].startswith("@") or len(lines[0]) < 30) else (target_input if target_input.startswith("@") else "@threads")
+        time_text = ""
+        age_days = 0.5
+        likes = 0
+        content_lines = []
+
+        for line in lines:
+            m_time = re.match(r"^(\d+)\s*([dhwmo]|days?|hours?|weeks?)$", line, re.I)
+            if m_time:
+                num = int(m_time.group(1))
+                unit = m_time.group(2).lower()
+                if "h" in unit or "m" in unit:
+                    age_days = round(num / 24.0, 2)
+                elif "d" in unit:
+                    age_days = num
+                elif "w" in unit:
+                    age_days = num * 7
+                elif "mo" in unit:
+                    age_days = num * 30
+                time_text = line
+                continue
+
+            s_clean = line.upper().replace(",", "").replace(" ", "")
+            m_lk = re.match(r"^([\d\.]+)([KM])?$", s_clean)
+            if m_lk and s_clean != time_text.upper():
+                val = float(m_lk.group(1))
+                mult = 1000 if m_lk.group(2) == "K" else (1000000 if m_lk.group(2) == "M" else 1)
+                calc_likes = int(val * mult)
+                if calc_likes > likes and calc_likes < 10000000:
+                    likes = calc_likes
+                continue
+
+            if len(line) > 15 and not line.startswith("@") and line != author:
+                content_lines.append(line)
+
+        post_text = " ".join(content_lines[:3]) if content_lines else item.get("fullText", "")[:180]
+
+        if age_days <= max_days and likes >= min_likes:
+            posts.append({
+                "url": url,
+                "author": author,
+                "text": post_text,
+                "likes": likes,
+                "age_days": age_days,
+                "time_text": time_text or f"{age_days}d"
+            })
+
+    posts.sort(key=lambda x: (x["likes"], -x["age_days"]), reverse=True)
+    return posts[:limit]
+
 # ==========================================
 # 2. TTS AUDIO GENERATOR (EDGE-TTS)
 # ==========================================
 
-def generate_tts_edge(text, out_mp3, lang="en"):
+def generate_tts_edge(text, out_mp3, lang="en", tts_rate="1.0"):
     """
-    Generates TTS audio file using edge-tts.
+    Generates TTS audio file using edge-tts with customizable reading speed.
     """
     voice = "en-US-ChristopherNeural" if lang == "en" else "vi-VN-HoaiMyNeural"
     
-    cmd = [sys.executable, "-m", "edge_tts", "--voice", voice, "--text", text, "--write-media", out_mp3]
+    rate_str = "+0%"
+    try:
+        if str(tts_rate).endswith("%"):
+            rate_str = str(tts_rate)
+        else:
+            r_val = float(tts_rate)
+            pct = int(round((r_val - 1.0) * 100))
+            rate_str = f"+{pct}%" if pct >= 0 else f"{pct}%"
+    except Exception:
+        rate_str = "+0%"
+
+    cmd = [sys.executable, "-m", "edge_tts", "--voice", voice]
+    if rate_str != "+0%":
+        cmd.extend(["--rate", rate_str])
+    cmd.extend(["--text", text, "--write-media", out_mp3])
+
     res = subprocess.run(cmd, capture_output=True, text=True)
     if os.path.exists(out_mp3) and os.path.getsize(out_mp3) > 0:
         return out_mp3
@@ -407,7 +611,9 @@ def composite_social_short(bg_video, segments, out_mp4):
 
     log(f"▶ Render Short Video: Tổng thời lượng = {total_audio_dur:.1f}s (Encoder: {encoder})")
 
-    temp_dir = os.path.dirname(out_mp4)
+    temp_dir = os.path.dirname(out_mp4) or "."
+    if temp_dir != ".":
+        os.makedirs(temp_dir, exist_ok=True)
     concat_list_file = os.path.join(temp_dir, f"audio_concat_{int(time.time())}.txt")
     combined_audio = os.path.join(temp_dir, f"combined_audio_{int(time.time())}.mp3")
 
@@ -416,7 +622,7 @@ def composite_social_short(bg_video, segments, out_mp4):
             safe_p = seg["audio_path"].replace("\\", "/")
             f.write(f"file '{safe_p}'\n")
 
-    cmd_a = [ffmpeg, "-y", "-f", "concat", "-safe", "0", "-i", concat_list_file, "-c", "copy", combined_audio]
+    cmd_a = [ffmpeg, "-y", "-f", "concat", "-safe", "0", "-i", concat_list_file, "-c:a", "libmp3lame", "-b:a", "192k", combined_audio]
     subprocess.run(cmd_a, capture_output=True, check=True)
 
     filter_complex = [
@@ -428,7 +634,7 @@ def composite_social_short(bg_video, segments, out_mp4):
 
     inputs = ["-i", bg_video]
     for i, seg in enumerate(segments):
-        inputs.extend(["-i", seg["image_path"]])
+        inputs.extend(["-loop", "1", "-i", seg["image_path"]])
         img_idx = i + 1
         seg_dur = seg["duration"]
         end_t = curr_t + seg_dur
@@ -452,7 +658,7 @@ def composite_social_short(bg_video, segments, out_mp4):
         "-map", prev_stream,
         "-map", f"{combined_audio_idx}:a",
         "-c:v", encoder,
-        "-preset", "p4" if encoder == "h264_nvenc" else "fast",
+        "-preset", "p4" if encoder == "h264_nvenc" else ("veryfast" if encoder in ("h264_qsv", "h264_amf") else "fast"),
         "-c:a", "aac",
         "-b:a", "192k",
         "-t", f"{total_audio_dur:.2f}",
@@ -471,14 +677,14 @@ def composite_social_short(bg_video, segments, out_mp4):
         log(f"✓ Hoàn tất Render Short Video -> {out_mp4}")
         return out_mp4
     else:
-        log(f"❌ Lỗi render FFmpeg (code {res.returncode}): {res.stderr[:300]}")
+        log(f"❌ Lỗi render FFmpeg (code {res.returncode}): {res.stderr[-1000:]}")
         raise Exception(f"FFmpeg render code {res.returncode}")
 
 # ==========================================
 # MAIN PIPELINE FUNCTION
 # ==========================================
 
-def make_social_short_video(input_target, platform="reddit", lang="en", max_comments=2, bg_type="minecraft", outro="", comment_delay=1.0, genre=""):
+def make_social_short_video(input_target, platform="reddit", lang="en", max_comments=2, bg_type="minecraft", outro="", comment_delay=1.0, genre="", tts_rate="1.0"):
     """
     Main orchestrator pipeline to create a Reddit/Threads Short video.
     """
@@ -509,55 +715,44 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
 
     log(f"Tiêu đề: '{data['title']}' ({len(data['comments'])} bình luận)")
 
-    log("--- 🔊 BƯỚC 2 & 3: TẠO GIỌNG ĐỌC TTS & VẼ THẺ UI CARD ---")
+    log(f"--- 🔊 BƯỚC 2 & 3: TẠO GIỌNG ĐỌC TTS (Tốc độ {tts_rate}x) & VẼ THẺ UI CARD ---")
     segments = []
 
     # Segment 0: Main Title
     title_text = data['title']
-    title_audio = os.path.join(temp_dir, f"seg_0_title_{timestamp}.mp3")
+    title_audio_raw = os.path.join(temp_dir, f"seg_0_title_raw_{timestamp}.mp3")
     title_card = os.path.join(temp_dir, f"seg_0_card_{timestamp}.png")
 
-    generate_tts_edge(title_text, title_audio, lang=lang)
+    log(f"🎙️ [0/Title] Đang tạo TTS & Thẻ UI...")
+    generate_tts_edge(title_text, title_audio_raw, lang=lang, tts_rate=tts_rate)
     create_ui_card(data["platform"], data["header_tag"], data["author"], title_text, data["score"], title_card, is_comment=False)
-    dur_0 = get_audio_duration(title_audio)
+
+    title_audio, dur_0 = add_audio_buffer(title_audio_raw, float(comment_delay), temp_dir, "title", timestamp)
     segments.append({"audio_path": title_audio, "image_path": title_card, "duration": dur_0})
 
     # Segments 1..N: Comments
     for idx, c in enumerate(data["comments"], 1):
         c_text = c["body"]
-        c_audio = os.path.join(temp_dir, f"seg_{idx}_c_{timestamp}.mp3")
+        c_audio_raw = os.path.join(temp_dir, f"seg_{idx}_c_raw_{timestamp}.mp3")
         c_card = os.path.join(temp_dir, f"seg_{idx}_card_{timestamp}.png")
 
-        generate_tts_edge(c_text, c_audio, lang=lang)
+        log(f"🎙️ [{idx}/{len(data['comments'])}] Đang tạo TTS & Thẻ UI Comment...")
+        generate_tts_edge(c_text, c_audio_raw, lang=lang, tts_rate=tts_rate)
         create_ui_card(data["platform"], data["header_tag"], c["author"], c_text, c["score"], c_card, is_comment=True)
-        dur_i = get_audio_duration(c_audio)
-        
-        # If comment_delay > 0, concat audio with silence
-        if float(comment_delay) > 0:
-            silence_p = os.path.join(temp_dir, f"silence_{idx}_{timestamp}.mp3")
-            padded_audio = os.path.join(temp_dir, f"padded_{idx}_{timestamp}.mp3")
-            generate_silence(float(comment_delay), silence_p)
-            concat_txt = os.path.join(temp_dir, f"concat_pad_{idx}_{timestamp}.txt")
-            c_audio_safe = c_audio.replace("\\", "/")
-            silence_p_safe = silence_p.replace("\\", "/")
-            with open(concat_txt, "w", encoding="utf-8") as f_pad:
-                f_pad.write(f"file '{c_audio_safe}'\nfile '{silence_p_safe}'\n")
-            subprocess.run([_tim_ffmpeg(), "-y", "-f", "concat", "-safe", "0", "-i", concat_txt, "-c", "copy", padded_audio], capture_output=True)
-            if os.path.exists(padded_audio):
-                c_audio = padded_audio
-                dur_i += float(comment_delay)
 
+        c_audio, dur_i = add_audio_buffer(c_audio_raw, float(comment_delay), temp_dir, f"c_{idx}", timestamp)
         segments.append({"audio_path": c_audio, "image_path": c_card, "duration": dur_i})
 
     # Segment Outro (if provided)
     if outro and outro.strip():
         o_text = outro.strip()
-        log(f"Thêm đoạn Outro kết video: '{o_text}'")
-        o_audio = os.path.join(temp_dir, f"seg_outro_{timestamp}.mp3")
+        log(f"🎙️ [Outro] Thêm đoạn Outro kết video: '{o_text}'")
+        o_audio_raw = os.path.join(temp_dir, f"seg_outro_raw_{timestamp}.mp3")
         o_card = os.path.join(temp_dir, f"seg_outro_card_{timestamp}.png")
-        generate_tts_edge(o_text, o_audio, lang=lang)
+        generate_tts_edge(o_text, o_audio_raw, lang=lang, tts_rate=tts_rate)
         create_ui_card(data["platform"], "💬 Câu Hỏi Kết Video", "Host", o_text, 9999, o_card, is_comment=True)
-        dur_o = get_audio_duration(o_audio)
+
+        o_audio, dur_o = add_audio_buffer(o_audio_raw, float(comment_delay), temp_dir, "outro", timestamp)
         segments.append({"audio_path": o_audio, "image_path": o_card, "duration": dur_o})
 
     log("--- 🎮 BƯỚC 4: CHUẨN BỊ VIDEO NỀN GAMEPLAY ---")
@@ -589,6 +784,7 @@ def main():
     parser.add_argument("--outro", default="", help="Câu hỏi/kêu gọi kết video (Outro CTA)")
     parser.add_argument("--comment-delay", type=float, default=1.0, help="Thời gian chờ giữa các comment (giây)")
     parser.add_argument("--genre", default="", help="Thể loại nội dung (funny, confession, horror, quotes)")
+    parser.add_argument("--tts-rate", default="1.0", help="Tốc độ giọng đọc TTS (1.0, 1.1, 1.2, 1.25, 1.5)")
 
     args = parser.parse_args()
 
@@ -600,7 +796,8 @@ def main():
         bg_type=args.bg_type,
         outro=args.outro,
         comment_delay=args.comment_delay,
-        genre=args.genre
+        genre=args.genre,
+        tts_rate=args.tts_rate
     )
 
 if __name__ == "__main__":

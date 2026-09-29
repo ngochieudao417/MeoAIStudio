@@ -3,57 +3,392 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ViralCrawl</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com;">
+<title>AI Studio 🎬 Video & Content Generator</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><path d='M30 30L75 50L30 70V30Z' fill='white'/><circle cx='75' cy='30' r='10' fill='%23a855f7'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&display=swap" rel="stylesheet">
 <style>
-  :root{
-    /* ViralCrawl 2026 SaaS design system (theo spec user): nền near-black xanh + glass tím neon */
-    --bg:#070711; --bg2:#111325; --panel:#10162400; --card:#0d0f1f; --card2:#16182c;
-    --line:rgba(255,255,255,.08); --text:#ffffff; --muted:#a1a1aa;
-    --accent:#ec4899; --accent2:#38bdf8; --ok:#22c55e; --warn:#f59e0b; --purple:#8b5cf6;
-    /* Glassmorphism: thẻ kính mờ rgba trắng (nổi trên nền near-black) + blur + viền sáng nhẹ */
-    --glass:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));
-    --glass-bd:rgba(255,255,255,.085);
-    --grad:linear-gradient(135deg,#8b5cf6 0%,#a855f7 50%,#ec4899 100%);
-    --glow:0 0 35px rgba(139,92,246,.45);
-  }
-  /* Inter — font thiết kế của app, BUNDLE offline (web/fonts/*.woff2, stage_app copy web/ -Recurse).
-     'Inter' đứng đầu stack ở body + #v-render2/.r2-scope + #vcpd ⇒ MỌI tab render CÙNG một font.
-     Thiếu file (404) → fallback 'Segoe UI' đồng nhất, không vỡ. Variable wght 400..800 phủ 400/600/650/700/750. */
-  @font-face{font-family:'Inter';font-style:normal;font-weight:400 800;font-display:swap;
-    src:url('fonts/inter-latin.woff2') format('woff2');
-    unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-  @font-face{font-family:'Inter';font-style:normal;font-weight:400 800;font-display:swap;
-    src:url('fonts/inter-latin-ext.woff2') format('woff2');
-    unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-  @font-face{font-family:'Inter';font-style:normal;font-weight:400 800;font-display:swap;
-    src:url('fonts/inter-vietnamese.woff2') format('woff2');
-    unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Inter','Segoe UI',system-ui,Arial,sans-serif;background:
-       radial-gradient(circle at 100% 0%, rgba(139,92,246,.18), transparent 38%),
-       radial-gradient(900px 560px at 6% -10%, rgba(99,102,241,.12), transparent 55%),
-       linear-gradient(135deg, #070711, #111325) fixed;
-       color:var(--text);height:100vh;overflow:hidden}
-  .app{display:flex;height:100vh}
+  :root {
+    /* Surfaces */
+    --bg: #0a0a0b;
+    --bg-deep: #070708;
+    --surface: #111113;
+    --surface-raised: #17171a;
 
-  /* Sidebar (glass theo spec) */
-  .side{width:230px;background:rgba(15,16,32,.72);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);
-        border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px}
-  .brand{display:flex;align-items:center;gap:11px;padding:6px 6px 18px}
-  .brand .logo{width:42px;height:42px;border-radius:13px;object-fit:cover;flex-shrink:0;
-        box-shadow:0 3px 16px rgba(124,92,255,.40),inset 0 1px 0 rgba(255,255,255,.07)}
-  .brand b{font-size:16px;letter-spacing:.2px}
-  .nav{display:flex;flex-direction:column;gap:4px;margin-top:6px;flex:1 1 auto;overflow-y:auto;min-height:0}
-  .nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;color:var(--muted);
-        cursor:pointer;font-size:14px;font-weight:600;transition:.15s}
-  .nav a:hover{background:rgba(139,92,246,.15);color:var(--text)}
-  .nav a.active{background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(99,102,241,.22));
-        color:#fff;border:1px solid rgba(139,92,246,.4);box-shadow:0 0 30px rgba(139,92,246,.25)}
-  .nav a .ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .nav a .ic svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;
-        stroke-linecap:round;stroke-linejoin:round;opacity:.9;transition:.15s}
-  .nav a:hover .ic svg,.nav a.active .ic svg{opacity:1}
-  .nav a.active .ic svg{stroke:#a78bff;filter:drop-shadow(0 0 6px rgba(124,92,255,.6))}
+    /* Text */
+    --text: #ece9e4;
+    --text-strong: #ffffff;
+    --muted: #8b877f;
+    --muted-dim: #7d7a73;
+
+    /* Lines */
+    --border: #232326;
+    --border-strong: #35353a;
+
+    /* The single accent — an ember. Emphasis only, never decoration. */
+    --accent: #c96f3f;
+    --accent-dim: #8a4c2b;
+    --accent-wash: rgba(201, 111, 63, 0.09);
+
+    /* Status — desaturated on purpose. Never a traffic light. */
+    --ok: #7f9a72;
+    --warn: #c2a24a;
+    --err: #c07a6b;
+    --idle: #6b7280;
+
+    /* Typography */
+    --font-display: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+    /* Fluid type scale */
+    --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.86rem);
+    --step-0:  clamp(0.98rem, 0.95rem + 0.15vw, 1.06rem);
+    --step-1:  clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+    --step-2:  clamp(1.5rem, 1.3rem + 1vw, 2.1rem);
+    --step-3:  clamp(2rem, 1.6rem + 2vw, 3.2rem);
+    --step-4:  clamp(2.6rem, 1.8rem + 4vw, 5rem);
+
+    /* Rhythm */
+    --space-1: 0.4rem;
+    --space-2: 0.8rem;
+    --space-3: 1.2rem;
+    --space-4: 2rem;
+    --space-5: 3.2rem;
+    --space-6: 5rem;
+
+    --measure: 34rem;   /* max line length for prose */
+    --page: 64rem;      /* default content column */
+    --page-wide: 90rem; /* queue / table screens only */
+
+    --radius: 2px;
+    --radius-lg: 4px;
+
+    --transition: 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+
+    /* System legacy mappings for existing elements */
+    --bg2: var(--bg-deep);
+    --panel: var(--surface);
+    --card: var(--surface);
+    --card2: var(--surface-raised);
+    --line: var(--border);
+    --purple: var(--accent);
+    --glass: var(--surface);
+    --glass-bd: var(--border);
+    --grad: linear-gradient(135deg, #c96f3f 0%, #8a4c2b 100%);
+    --glow: 0 0 16px rgba(201, 111, 63, 0.2);
+  }
+
+  :root[data-theme="light"], body.light {
+    --bg: #f6f4f0;
+    --bg-deep: #edeae3;
+    --surface: #ffffff;
+    --surface-raised: #faf9f6;
+    --text: #1a1917;
+    --text-strong: #000000;
+    --muted: #6b675f;
+    --muted-dim: #8e8a82;
+    --border: #e0dcd4;
+    --border-strong: #c9c4ba;
+    --accent: #a8512a;
+    --accent-dim: #7a3a1d;
+    --accent-wash: rgba(168, 81, 42, 0.09);
+
+    --bg2: var(--bg-deep);
+    --card: var(--surface);
+    --card2: var(--surface-raised);
+    --line: var(--border);
+    --glass: var(--surface);
+    --glass-bd: var(--border);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.65;
+    letter-spacing: .005em;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+  }
+  h1, h2, h3, h4, h5, h6, .written, h1.page {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  p {
+    max-width: var(--measure);
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .num, .mono, .stat__value, .stat .val, .wiz .wn, .pwiz .pn, code, pre, .badge, .chip-kw, .status, .filter, .btn, .field__label, .job__meta, .segment__time, .log {
+    font-family: var(--font-mono);
+  }
+
+  /* Layout Utilities */
+  .page { width: min(100% - 2rem, var(--page)); margin-inline: auto; }
+  .page--narrow { width: min(100% - 2rem, 42rem); margin-inline: auto; }
+  .page--wide { width: min(100% - 2rem, var(--page-wide)); margin-inline: auto; }
+
+  .stack > * + * { margin-top: var(--space-3); }
+  .stack-lg > * + * { margin-top: var(--space-5); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+  .spread { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: baseline; justify-content: space-between; }
+  .rule { border-top: 1px solid var(--border); margin-top: var(--space-4); padding-top: var(--space-4); }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    min-height: 44px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+  }
+
+  .btn--primary, .btn.go {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+    font-weight: 500;
+  }
+  .btn--primary:hover, .btn.go:hover {
+    background: var(--accent);
+    color: var(--text-strong);
+    border-color: var(--accent);
+  }
+
+  .btn--ghost, .btn.ghost {
+    background: transparent;
+    color: var(--muted);
+    border-color: var(--border);
+  }
+  .btn--ghost:hover, .btn.ghost:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .btn--danger, .btn.danger {
+    background: transparent;
+    color: var(--err);
+    border-color: var(--err);
+  }
+  .btn--danger:hover, .btn.danger:hover {
+    background: rgba(192, 122, 107, 0.12);
+  }
+
+  .btn--block { width: 100%; }
+
+  /* Form Fields & Focus Rings */
+  .field { display: flex; flex-direction: column; gap: var(--space-1); }
+  .field__label { font-family: var(--font-mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+  .field__hint { font-size: var(--step--1); color: var(--muted-dim); }
+  .field__error { font-size: var(--step--1); color: var(--err); }
+
+  .input, .textarea, .select, input, select, textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    transition: var(--transition);
+  }
+
+  *:focus-visible, .input:focus, .textarea:focus, .select:focus, input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--accent) !important;
+    outline-offset: 3px !important;
+    border-color: var(--border-strong) !important;
+    background: var(--surface-raised) !important;
+  }
+
+  /* Choices & Chips */
+  .choices { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .choice { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-2); border: 1px solid var(--border); border-radius: var(--radius); font-size: var(--step--1); color: var(--muted); cursor: pointer; background: var(--surface); transition: var(--transition); }
+  .choice:has(input:checked), .choice.checked { border-color: var(--accent); background: var(--accent-wash); color: var(--text-strong); }
+
+  /* Panels */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-4); margin-top: var(--space-3); }
+  .panel--quiet { background: transparent; border: 1px dashed var(--border); border-radius: var(--radius-lg); padding: var(--space-4); }
+
+  /* Job Items */
+  .job { display: grid; grid-template-columns: 140px 1fr auto; gap: var(--space-3); align-items: center; padding: var(--space-3) 0; border-bottom: 1px solid var(--border); }
+  .job__thumb { aspect-ratio: 16/9; border-radius: var(--radius); border: 1px solid var(--border); object-fit: cover; width: 100%; background: var(--surface-raised); }
+  .job__title { font-family: var(--font-display); font-size: var(--step-1); font-weight: 400; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .job__meta { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+
+  /* Status Indicators */
+  .status { font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.16em; text-transform: uppercase; display: inline-flex; align-items: center; gap: var(--space-1); color: var(--muted); }
+  .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--idle); display: inline-block; flex-shrink: 0; }
+  .status[data-state="queued"]::before { background: var(--idle); }
+  .status[data-state="crawling"]::before, .status[data-state="transcribing"]::before, .status[data-state="dubbing"]::before, .status[data-state="rendering"]::before { background: var(--accent); }
+  .status[data-state="done"]::before { background: var(--ok); }
+  .status[data-state="failed"]::before { background: var(--err); }
+  .status[data-state="cancelled"]::before { background: var(--muted-dim); }
+
+  /* Progress Bar & Readouts */
+  .progress { display: flex; flex-direction: column; gap: var(--space-1); width: 100%; }
+  .progress__track, .pbar, .goi-bar { height: 2px; background: var(--border); width: 100%; overflow: hidden; border-radius: 0; margin: 0; }
+  .progress__fill, .pbar i, .goi-bar i { height: 100%; background: var(--accent); transition: width var(--transition); border-radius: 0; }
+  .progress__readout { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+
+  /* Processing Logs */
+  .log { font-family: var(--font-mono); font-size: var(--step--1); line-height: 1.5; background: var(--bg-deep); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-3); max-height: 20rem; overflow-y: auto; color: var(--muted); margin-top: var(--space-2); }
+  .log__line { display: flex; gap: var(--space-2); }
+  .log__time { color: var(--muted-dim); flex-shrink: 0; }
+  .log__line--err, .log .err { color: var(--err); }
+  .log .ok { color: var(--ok); }
+  .log .wn { color: var(--warn); }
+
+  /* Player & Subtitle Cue List */
+  .player { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg-deep); }
+  .player video { width: 100%; display: block; }
+  .segments { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius); margin-top: var(--space-2); }
+  .segment { display: grid; grid-template-columns: 9rem 1fr; gap: var(--space-2); padding: var(--space-2); align-items: start; border-bottom: 1px solid var(--border); }
+  .segment.playing { border-left: 2px solid var(--accent); }
+  .segment__time { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+  .segment__text { font-family: var(--font-display); font-size: var(--step-0); color: var(--text); }
+
+  /* Sticky Batch Toolbar */
+  .toolbar { position: sticky; bottom: 0; backdrop-filter: blur(10px); background: color-mix(in srgb, var(--bg) 92%, transparent); border-top: 1px solid var(--border); padding: var(--space-2) var(--space-4); padding-bottom: max(var(--space-2), env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+  .toolbar__count { font-family: var(--font-mono); font-size: var(--step--1); color: var(--text); }
+
+  /* Stats Grid */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: var(--space-3); }
+  .stat { border-top: 1px solid var(--border); border-radius: 0; background: transparent; box-shadow: none; padding: var(--space-2) 0 0 0; display: flex; flex-direction: column; }
+  .stat__value, .stat .val { font-family: var(--font-mono); font-size: var(--step-2); color: var(--text-strong); font-weight: 400; margin: 0; }
+  .stat__label, .stat .lbl { font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); text-transform: uppercase; margin-top: var(--space-1); letter-spacing: 0.12em; }
+
+  /* Filters */
+  .filters { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+  .filter { font-family: var(--font-mono); font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.12em; background: transparent; border: 1px solid transparent; color: var(--muted); padding: var(--space-1) var(--space-2); border-radius: var(--radius); cursor: pointer; transition: var(--transition); }
+  .filter[aria-pressed="true"], .filter.active { border-color: var(--border-strong); color: var(--text-strong); background: var(--surface); }
+
+  /* Toast & Dialog */
+  .toast { position: fixed; bottom: var(--space-4); left: 50%; transform: translateX(-50%); background: var(--surface-raised); border: 1px solid var(--border); border-left: 2px solid var(--accent); padding: var(--space-2) var(--space-4); border-radius: var(--radius); font-size: var(--step-0); color: var(--text); z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.5); animation: toast-in var(--transition); }
+  .confirm, dialog { background: var(--surface-raised); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: var(--space-4); color: var(--text); max-width: 28rem; }
+
+  /* Motion & Animations */
+  @keyframes page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes tl-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes seal { from { transform: scale(0.97); } to { transform: scale(1); } }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes dots { 0%, 20% { opacity: 0; } 50% { opacity: 1; } 80%, 100% { opacity: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Single Responsive Breakpoint */
+  @media (max-width: 640px) {
+    .job { grid-template-columns: 1fr; }
+    .segment { grid-template-columns: 1fr; }
+    .segment__time { margin-bottom: var(--space-1); }
+    .toolbar { flex-direction: column; gap: var(--space-2); align-items: stretch; }
+    .spread { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+    .page, .page--narrow, .page--wide { width: calc(100% - 2rem); }
+  }
+
+  .app { display: flex; flex-direction: column; height: 100vh; background: var(--bg); color: var(--text); overflow: hidden; }
+
+  /* Studio Top Command Header */
+  .studio-header {
+    position: relative;
+    height: 56px;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-4);
+    flex-shrink: 0;
+    z-index: 1000;
+  }
+  .brand { display: flex; align-items: center; gap: var(--space-2); }
+  .brand .logo { width: 32px; height: 32px; border-radius: var(--radius-lg); object-fit: cover; }
+  .brand b { font-family: var(--font-display); font-size: var(--step-0); color: var(--text-strong); font-weight: 600; letter-spacing: -0.02em; }
+  
+  /* Horizontal Navigation Tabs & Hamburger Menu */
+  .nav-toggle { display: none; }
+  .nav { display: flex; align-items: center; gap: var(--space-1); flex: 1; margin: 0 var(--space-4); overflow: visible; }
+  .nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: 6px var(--space-2);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    border: 1px solid transparent;
+    text-decoration: none;
+    user-select: none;
+  }
+  .nav a:hover { background: var(--surface-raised); color: var(--text-strong); }
+  .nav a.active { background: var(--surface-raised); color: var(--accent); border-color: var(--border-strong); font-weight: 600; }
+
+  @media (max-width: 880px) {
+    .nav-toggle { display: inline-flex; }
+    .nav {
+      display: none;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--border-strong);
+      flex-direction: column;
+      padding: var(--space-3);
+      gap: var(--space-2);
+      z-index: 1001;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.85);
+      margin: 0;
+    }
+    .nav.open { display: flex !important; }
+    .nav a { width: 100%; justify-content: flex-start; padding: 10px 14px; font-size: 13px; }
+  }
+
+  /* Top Right Controls */
+  .top-controls { display: flex; align-items: center; gap: var(--space-2); }
+  .user { display: flex; align-items: center; gap: var(--space-1); font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); }
+
+  /* Main Canvas Container */
+  .main { flex: 1; overflow-y: auto; padding: var(--space-4); background: var(--bg); }
+  .content { flex: 1; overflow-y: auto; }
   /* ===== Gói & Bảng giá ===== */
   .nav a.locked{opacity:.5}
   .nav a.locked::after{content:"🔒";margin-left:auto;font-size:12px}
@@ -657,111 +992,64 @@
 <body>
 <!-- ===== BANNER CẬP NHẬT (nổi bật, mọi tab đều thấy — mặc định ẩn, hiện khi có bản mới) ===== -->
 <div id="updBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:900;background:linear-gradient(90deg,#1d4ed8,#2563eb);color:#fff;padding:9px 16px;font-size:13.5px;font-weight:600;box-shadow:0 2px 12px rgba(0,0,0,.35);align-items:center;justify-content:center;gap:14px">
-  <span id="updBannerTxt">⬇ Đã có phiên bản mới của ViralCrawl!</span>
+  <span id="updBannerTxt">⬇ Đã có phiên bản mới của MeowCrawl!</span>
   <button id="updBannerBtn" onclick="updBannerAction()" style="background:#fff;color:#1d4ed8;border:none;padding:5px 14px;border-radius:7px;font-weight:700;font-size:12.5px;cursor:pointer">Cập nhật ngay</button>
   <span onclick="document.getElementById('updBanner').style.display='none'" style="cursor:pointer;opacity:.8;font-size:16px;line-height:1" title="Ẩn">✕</span>
 </div>
-<!-- ===== CỔNG ĐĂNG NHẬP / ĐĂNG KÝ ===== -->
-<div id="authGate" style="position:fixed;inset:0;z-index:1000;background:radial-gradient(900px 500px at 50% -10%,#1a2540,#0b0f1a 60%);display:flex;align-items:center;justify-content:center">
-  <div style="width:380px;max-width:92vw;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
-    <div style="text-align:center;margin-bottom:18px">
-      <div style="font-size:34px">🎬</div>
-      <b style="font-size:18px">ViralCrawl</b>
-      <div class="sub" id="authSub" style="margin:4px 0 0">Đăng nhập để tiếp tục</div>
-    </div>
-    <div class="seg" id="authSeg" style="max-width:none;margin-bottom:14px">
-      <button data-a="login" class="on">Đăng nhập</button>
-      <button data-a="register">Đăng ký</button>
-    </div>
-    <input class="num" id="authUser" placeholder="Tên đăng nhập (chữ không dấu, số, dấu _)" autocomplete="username" style="margin-bottom:10px" oninput="this.value=this.value.replace(/[^A-Za-z0-9_]/g,'')">
-    <input class="num" id="authPass" type="password" placeholder="Mật khẩu" autocomplete="current-password" style="margin-bottom:10px">
-    <input class="num" id="authPass2" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" style="margin-bottom:10px;display:none">
-    <div id="authMsg" class="sub" style="color:var(--accent);margin:0 0 10px;min-height:16px"></div>
-    <button class="btn go" id="authBtn" style="width:100%;justify-content:center" onclick="authSubmit()">Đăng nhập</button>
-    <div class="sub" style="text-align:center;margin:12px 0 0;font-size:11px">🔒 Mật khẩu được hash, dữ liệu khách mã hóa.</div>
-  </div>
-</div>
+<!-- ===== BỎ CỔNG ĐĂNG NHẬP / ĐĂNG KÝ ===== -->
+<div id="authGate" style="display:none!important"></div>
 <div class="app">
-  <!-- Sidebar -->
-  <aside class="side">
-    <div class="brand"><img class="logo" src="logos/applogo.png" alt="ViralCrawl"><b>ViralCrawl</b></div>
+  <header class="studio-header">
+    <div class="brand" style="display:flex;align-items:center;gap:6px">
+      <b style="font-size:18px;background:linear-gradient(135deg, #6366f1, #a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800">AI Studio</b>
+      <span class="eyebrow" style="font-size:10px;padding:2px 6px;border:1px solid #6366f1;border-radius:var(--radius);color:#a855f7;font-weight:700">PRO GENERATOR</span>
+    </div>
+
     <nav class="nav" id="nav">
-      <!-- 📖 Tab "Hướng dẫn" — ẨN KHỎI NAV theo yêu cầu chủ dự án (10/08/2026): nội dung đã lỗi thời.
-           Ẩn ĐÚNG CÁCH tab `#v-xuly` đã làm: bỏ thẻ <a> khỏi nav, GIỮ NGUYÊN `<section id="v-huongdan">`
-           và mọi hàm liên quan (`HD_ANH`, gán ảnh, lightbox) — khách không vào được nữa, code không chết
-           nửa vời. Cập nhật nội dung xong thì trả lại đúng thẻ <a> này.
-           ⚠ Panel "📖 Hướng dẫn sử dụng" dạng <details> ở tab Quy trình (~:2692) là CHỖ KHÁC, vẫn còn. -->
-      <!-- <a data-v="huongdan"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4z"/><path d="M20 5a2 2 0 0 0-2-2M12 3v14"/></svg></span> Hướng dẫn</a> -->
-      <a data-v="cao" class="active"><span class="ic"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></span> Cào ngay</a>
-      <a data-v="videomoi"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z"/></svg></span> Theo dõi kênh</a>
-      <a data-v="kenhnguon"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span> Kênh nguồn</a>
-      <a data-v="honggo"><span class="ic"><svg viewBox="0 0 24 24"><path d="M19.82 2H4.18C2.97 2 2 2.97 2 4.18v15.64C2 21.03 2.97 22 4.18 22h15.64c1.21 0 2.18-.97 2.18-2.18V4.18C22 2.97 21.03 2 19.82 2zM7 17H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V7h2v2zm12 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"/></svg></span> Tải Phim Hồng Quả</a>
-      <a data-v="nebanguoyen"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Né bản quyền</a>
-      <a data-v="socialshorts"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span> Reddit Shorts</a>
-      <a data-v="quytrinh"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.4"/><circle cx="6" cy="19" r="2.4"/><circle cx="18" cy="12" r="2.4"/><path d="M6 7.4v9.2M8.2 6.3 15.6 11M8.2 17.7 15.6 13"/></svg></span> Automation</a>
-      <a data-v="files"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span> File đã tải</a>
-      <a data-v="darender"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M8 6l-1.2 4M13 6l-1.2 4M18 6l-1.2 4"/></svg></span> Đã render</a>
-      <a data-v="lichsu"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span> Lịch sử cào</a>
-      <a data-v="render2"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 12h18M3 8h4M3 16h4M17 8h4M17 16h4"/></svg></span> Render</a>
-      <a data-v="bam"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.5 15.5M14.5 14.5 20 20M8.5 8.5 11 11"/></svg></span> Băm nhỏ</a>
-      <a data-v="ttsdoclap"><span class="ic"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg></span> Tạo Voice (TTS)</a>
-      <a data-v="dangbai"><span class="ic"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></span> Đăng Bài Tự Động</a>
-      <a data-v="caidat"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.2a1.6 1.6 0 0 0-1-1.4 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.2a1.6 1.6 0 0 0 1.4-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 1 1.4 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1z"/></svg></span> Cài đặt</a>
-      <a data-v="banggia"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 7v5l9 9 7-7-9-9H3z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span> Bảng Giá</a>
-      <a data-v="goi"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M9 6v12"/></svg></span> Gói của tôi</a>
+      <a href="javascript:void(0)" data-v="cao" class="active" onclick="handleNavClick(this, event)">Cào ngay</a>
+      <a href="javascript:void(0)" data-v="videomoi" onclick="handleNavClick(this, event)">Theo dõi kênh</a>
+      <a href="javascript:void(0)" data-v="kenhnguon" onclick="handleNavClick(this, event)">Kênh nguồn</a>
+      <a href="javascript:void(0)" data-v="aivideogen" class="active" onclick="handleNavClick(this, event)">🎬 AI Video Studio</a>
+      <a href="javascript:void(0)" data-v="socialshorts" onclick="handleNavClick(this, event)">Thread / Reddit</a>
+      <a href="javascript:void(0)" data-v="catqc" onclick="handleNavClick(this, event)">✂️ Cắt quảng cáo</a>
+
+      <a href="javascript:void(0)" data-v="files" onclick="handleNavClick(this, event)">File đã tải</a>
+      <a href="javascript:void(0)" data-v="darender" onclick="handleNavClick(this, event)">Đã render</a>
+      <a href="javascript:void(0)" data-v="lichsu" onclick="handleNavClick(this, event)">Lịch sử cào</a>
+      <a href="javascript:void(0)" data-v="render2" onclick="handleNavClick(this, event)">Render</a>
     </nav>
-    <div class="pro">
-      <b id="proBoxTen">👑 Nâng cấp gói</b>
-      <p id="proBoxSub">Mở khoá đầy đủ tính năng, không giới hạn.</p>
-      <button onclick="goNangCap()">Nâng cấp ngay</button>
-    </div>
-  </aside>
 
-  <!-- Main -->
-  <div class="main">
-    <div class="top">
-      <div class="t">
-        <div class="wiz" id="wiz">
-          <button class="ws" data-step="1" onclick="wizGo(1)" title="Đăng nhập nền tảng"><span class="wn">1</span><span class="wt">Đăng nhập</span></button>
-          <span class="wsep"></span>
-          <button class="ws" data-step="2" onclick="wizGo(2)" title="Chọn nền tảng cào"><span class="wn">2</span><span class="wt">Chọn nền tảng</span></button>
-          <span class="wsep"></span>
-          <button class="ws" data-step="3" onclick="wizGo(3)" title="Cào video"><span class="wn">3</span><span class="wt">Cào video</span></button>
-          <span class="wsep"></span>
-          <button class="ws" data-step="4" onclick="wizGo(4)" title="Render & Đăng bài"><span class="wn">4</span><span class="wt">Render &amp; Đăng</span></button>
-        </div>
+    <div class="top-controls">
+      <div class="wiz" id="wiz" style="display:none">
+        <button class="ws" data-step="1" onclick="wizGo(1)"><span class="wn">1</span></button>
+        <button class="ws" data-step="2" onclick="wizGo(2)"><span class="wn">2</span></button>
+        <button class="ws" data-step="3" onclick="wizGo(3)"><span class="wn">3</span></button>
+        <button class="ws" data-step="4" onclick="wizGo(4)"><span class="wn">4</span></button>
       </div>
-      <div class="r">
-        <div class="chip" style="display:none">🟢 <span id="runState">Sẵn sàng</span></div>
-        <div class="chip" style="gap:7px;padding:5px 11px" title="Ngôn ngữ (giao diện + nội dung dịch/lồng tiếng)">
-          🌐 <select id="appLang" onchange="appLangSave()" title="Ngôn ngữ"
-                style="background:transparent;border:none;color:inherit;font-size:12px;font-weight:700;cursor:pointer;outline:none">
-            <option value="vi">VI</option><option value="en">EN</option></select>
-          <span class="sub" id="langMsg" style="margin:0;font-size:11px"></span>
-        </div>
-        <span class="ticon" id="themeBtn" title="Đổi sáng/tối" onclick="toggleTheme()" style="display:none">🌙</span>
-        <span class="ticon" title="Thông báo">🔔</span>
-        <div class="user"><span class="av">👤</span> <span id="meName">User</span>
-          <span class="ticon" id="logoutBtn" title="Đăng xuất" onclick="dangXuat()" style="display:none">⏻</span></div>
-      </div>
+      <div class="chip" style="display:none"><span id="runState">Sẵn sàng</span></div>
+      <div class="user"><span id="meName">User</span>
+        <span class="ticon" id="logoutBtn" title="Đăng xuất" onclick="dangXuat()" style="display:none">⏻</span></div>
+      <button class="nav-toggle btn btn--ghost" id="navToggle" onclick="toggleNavMenu()" title="Mở danh sách menu" style="min-height:34px;padding:0 10px;font-size:12px;margin-left:6px">
+        ☰ Menu
+      </button>
     </div>
+  </header>
 
-    <div id="goiBanner">
+  <main class="main content page--wide" id="main">
+    <div id="goiBanner" style="display:none">
       <span style="font-size:18px">⚠️</span>
       <span id="goiBannerMsg" style="flex:1"></span>
       <button class="bn-up" onclick="goNangCap()">Nâng Cấp Gói</button>
       <button class="bn-x" title="Đóng" onclick="document.getElementById('goiBanner').style.display='none'">×</button>
     </div>
-    <div id="gprogWrap" style="display:none;padding:8px 26px 0">
+    <div id="gprogWrap" style="display:none;padding:8px 0 0">
       <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px">
         <span id="gprogLabel">Đang xử lý...</span><span id="gprogPct">0%</span>
       </div>
-      <div style="height:8px;background:#0e1422;border-radius:6px;overflow:hidden">
-        <div id="gprogBar" style="height:100%;width:0%;background:linear-gradient(90deg,#00d4ff,#3ddc84);transition:width .3s"></div>
+      <div class="progress__track">
+        <div id="gprogBar" class="progress__fill"></div>
       </div>
     </div>
-
-    <div class="content">
       <!-- ===== HƯỚNG DẪN SỬ DỤNG (siêu chi tiết, ảnh UI thật) ===== -->
       <section id="v-huongdan" class="hidden">
         <style>
@@ -799,7 +1087,7 @@
         </style>
 
         <div class="hd-hero">
-          <h1>📖 Hướng dẫn sử dụng ViralCrawl</h1>
+          <h1>📖 Hướng dẫn sử dụng MeowCrawl</h1>
           <div class="sub" style="font-size:14.5px">Từ A→Z: cào video → dịch/lồng tiếng → né bản quyền → xuất video hoàn chỉnh. Bấm mục bên dưới để nhảy nhanh. Ảnh minh hoạ là giao diện <b>thật</b> của app.</div>
           <div class="hd-flow">
             <span class="step">1️⃣ Đăng nhập nền tảng</span><span class="arr">→</span>
@@ -1073,6 +1361,109 @@
       </section>
       <div id="hdLightbox" onclick="this.style.display='none'"><img id="hdLightboxImg" alt=""></div>
 
+      <!-- ===== CẮT QUẢNG CÁO ===== -->
+      <section id="v-catqc" class="hidden">
+        <div class="card" style="margin-bottom:16px;">
+          <div class="spread">
+            <div>
+              <h1 class="page" style="margin:0">✂️ Dò & Cắt Quảng Cáo Chèn Giữa Video</h1>
+              <div class="sub">Tự động phát hiện quảng cáo chèn giữa (phim 720p vs QC 1080p hoặc màu Đỏ/Vàng rực), cắt bỏ và dời mốc thời gian phụ đề SRT.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="caorow">
+          <div class="caoleft">
+            <div class="card" style="margin-bottom:14px;">
+              <div class="fld">
+                <label>Đường dẫn File Video gốc:</label>
+                <div class="row">
+                  <input type="text" id="adVidPath" placeholder="Dán hoặc nhập đường dẫn file video (vd: C:\phim.mp4)" style="flex:1;">
+                  <button class="btn ghost" onclick="adOpenVideo()">Mở Video</button>
+                </div>
+                <div id="adInfo" class="muted" style="margin-top:6px;font-size:12px;"></div>
+              </div>
+              <div class="player" style="margin-top:10px;">
+                <video id="adPlayer" controls preload="metadata" style="max-height:420px;width:100%;background:#000;"></video>
+              </div>
+              <div class="tl" id="adTl" title="Bấm để tua video" style="position:relative;height:24px;background:var(--bg-deep);border:1px solid var(--border);border-radius:6px;margin-top:10px;cursor:pointer;overflow:hidden;">
+                <b id="adTlHead" style="position:absolute;top:0;bottom:0;width:2px;background:var(--accent);left:0%;"></b>
+              </div>
+              <div class="spread" style="margin-top:8px;">
+                <label class="toggle" id="tglSkipAds"><input type="checkbox" id="adSkipCheck"> <span class="sw"></span> <span>Xem như đã cắt (tự động nhảy qua quảng cáo)</span></label>
+                <span class="muted mono" id="adNowTime" style="font-size:12px;">Đang xem: 00:00:00.000</span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="spread" style="margin-bottom:10px;">
+                <b style="font-size:14px">Các Đoạn Quảng Cáo Phát Hiện / Nhập Mốc</b>
+                <div class="row">
+                  <button class="btn ghost" onclick="adAddSegment()" style="padding:6px 12px;font-size:12px;">+ Thêm đoạn</button>
+                  <button class="btn go" onclick="adDetect('resolution')" style="padding:6px 12px;font-size:12px;">🎯 Dò theo ĐỘ PHÂN GIẢI</button>
+                  <button class="btn ghost" onclick="adDetect('color')" style="padding:6px 12px;font-size:12px;">🎨 Dò theo MÀU (Đỏ/Vàng)</button>
+                </div>
+              </div>
+              <div style="overflow-x:auto;">
+                <table class="ads" style="width:100%;border-collapse:collapse;font-size:13px;">
+                  <thead>
+                    <tr style="border-bottom:1px solid var(--border);text-align:left;color:var(--muted);">
+                      <th style="padding:6px;">#</th>
+                      <th style="padding:6px;">Thời gian bắt đầu</th>
+                      <th style="padding:6px;">Thời gian kết thúc</th>
+                      <th style="padding:6px;">Độ dài</th>
+                      <th style="padding:6px;">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adTableBody">
+                    <tr><td colspan="5" class="muted" style="padding:12px;text-align:center;">Chưa có đoạn quảng cáo nào. Bấm nút dò tự động hoặc dán danh sách mốc bên dưới.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <details class="dub-adv" style="margin-top:14px;">
+                <summary>Dán danh sách mốc thời gian hàng loạt (SRT / Timecode / mm:ss)</summary>
+                <textarea id="adPasteArea" class="inp" rows="3" placeholder="00:05:00:19 - 00:05:26:29&#10;00:40:27:30 - 00:40:54:01" style="margin-top:8px;"></textarea>
+                <div class="row" style="margin-top:8px;">
+                  <div style="flex:1;">
+                    <label class="muted" style="font-size:11px;">FPS của Timecode (khi có ô khung hình):</label>
+                    <input type="number" id="adTcFps" value="25" class="num" style="width:100px;padding:4px 8px;">
+                  </div>
+                  <button class="btn ghost" onclick="adImportPaste()" style="padding:6px 12px;font-size:12px;">Nhập Danh Sách</button>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <div>
+            <div class="card cao-action">
+              <b style="font-size:14px">Cấu Hình & Thực Hiện Cắt</b>
+              
+              <div class="fld" style="margin-top:12px;">
+                <label>File Subtitle SRT cần dời giờ theo (tùy chọn):</label>
+                <input type="text" id="adSrtPath" placeholder="Dán đường dẫn file .srt (nếu có)" style="width:100%;">
+              </div>
+
+              <div class="fld" style="margin-top:12px;">
+                <label>Chất lượng render video (Quality 20 = Nét cao, 28 = File nhỏ):</label>
+                <input type="number" id="adQuality" value="23" min="15" max="35" class="num">
+              </div>
+
+              <div class="fld" style="margin-top:12px;">
+                <button class="btn go big b2" onclick="adRunCut()" style="margin-top:10px;">
+                  <span>✂️ Cắt Quảng Cáo & Xuất Video</span>
+                  <span class="bsub">Re-encode đồng nhất + Dời mốc SRT</span>
+                </button>
+              </div>
+
+              <div id="adStatusBox" class="log" style="height:140px;margin-top:14px;font-size:11px;display:none;"></div>
+              <div id="adResultOut" style="margin-top:12px;font-size:13px;word-break:break-all;color:var(--ok);"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
       <!-- ===== CÀO NGAY ===== -->
       <section id="v-cao">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -1131,6 +1522,23 @@
              "Theo từ khóa" KHÔNG có link để suy, mà đó là chế độ dùng nhiều. Chủ dự án chốt
              "thôi đem lại đi không ẩn". Bộ tự-nhận-link vẫn chạy — nó chỉ CHỌN HỘ thẻ ở lưới này
              (và nói ra bằng toast), không giấu lưới đi nữa. -->
+
+        <!-- Panel Tải Phim Hồng Quả (Gộp vào Cào ngay) -->
+        <div class="panel" style="margin-top:16px;border:1px solid rgba(236,72,153,.3);background:linear-gradient(180deg,rgba(236,72,153,.04),transparent)">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <b style="font-size:14px;color:var(--pink,#ec4899);display:flex;align-items:center;gap:6px">📥 Tải Phim Ngắn Hồng Quả (红果短剧)</b>
+            <span class="sub" style="font-size:11.5px">Hỗ trợ hongguoapp.cn & hongguoduanju.com</span>
+          </div>
+          <div class="sub" style="margin-top:4px;font-size:12.5px">Nhập đường dẫn link hoặc ID phim ngắn Hồng Quả để kiểm tra link trước khi tải.</div>
+          
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <input type="text" id="hgUrlCao" style="flex:1;min-width:280px;padding:10px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:#fff;font-size:13px" placeholder="Ví dụ: https://www.hongguoapp.cn/voddetail/55317.html hoặc ID 55317...">
+            <button class="btn ghost" type="button" onclick="hgCheckLinkCao()" style="border-color:#8b5cf6;color:#a855f7;font-weight:700">🔍 Kiểm Tra Link</button>
+            <button class="btn go" type="button" onclick="hgListCao()" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">📋 Lấy Danh Sách Tập</button>
+          </div>
+
+          <div id="hgPreviewCao" style="margin-top:12px"></div>
+        </div>
         <div class="section-label">Chọn nền tảng</div>
         <div class="plats" id="plats">
           <div class="plat sel" data-p="dy"><div class="tick">✓</div>
@@ -1139,30 +1547,9 @@
           <div class="plat" data-p="bili"><div class="tick">✓</div>
             <div class="pic"><img src="logos/bili.png" alt="Bilibili"></div>
             <b>Bilibili</b><span id="cnt-bili">0 đã cào</span><span style="font-size:10px;opacity:.6">nội địa (bilibili.com)</span></div>
-          <!-- BILIBILI TÁCH 2 nền riêng (26/08) — mirror đúng cặp Xiaohongshu/RedNote: .com đi MediaCrawler,
-               .tv đi yt-dlp (extractor BiliIntl), thư mục data RIÊNG. .tv KHÔNG cần đăng nhập với video
-               công khai (đã đo: tải ra mp4 thật); video hạn chế thì bilibili.tv tự báo "cần tài khoản". -->
-          <!-- 🔴 02/09/2026 — BỎ THẺ "Bilibili quốc tế" khỏi lưới (chủ dự án: "tự nhận biết rồi mà,
-               xóa để nó 1 dòng"). Nền `bilitv` VẪN SỐNG: `_LINK_DOM.bilitv` nhận `bilibili.tv` và
-               `_datNen("bilitv")` đặt nền KHÔNG CẦN thẻ. Xoá thẻ mà không có đường đó thì link .tv
-               hết đổi được nền → rơi xuống báo "link của nền khác" = xoá thẻ hoá ra giết cả nền. -->
-          <!-- 🔴 02/09/2026 — HAI NỀN MỚI. Không có file logo (cố ý KHÔNG tải logo thương hiệu về repo)
-               ⇒ vẽ ô chữ inline, khỏi phát sinh CSS mới và khỏi <img> hỏng.
-               · Kuaishou: đi MediaCrawler; CẦN đăng nhập (ẩn danh bị captcha ANTICRAWL).
-               · Honggo:   module riêng `tai_honggo.py`; CHỈ theo LINK/BỘ (search dính Cloudflare). -->
-          <div class="plat" data-p="ks"><div class="tick">✓</div>
-            <div class="pic"><img src="logos/ks.png" alt="Kuaishou" onerror="this.style.display='none'"></div>
-            <b>Kuaishou</b><span id="cnt-ks">0 đã cào</span><span style="font-size:10px;opacity:.6">cần đăng nhập</span></div>
           <div class="plat" data-p="hg"><div class="tick">✓</div>
             <div class="pic"><img src="logos/hg.png" alt="Honggo" onerror="this.style.display='none'"></div>
             <b>Honggo</b><span id="cnt-hg">0 đã cào</span><span style="font-size:10px;opacity:.6">phim ngắn · theo link bộ</span></div>
-          <!-- XHS TÁCH 2 nền riêng: Xiaohongshu (nội địa) + RedNote (quốc tế) — profile/data riêng -->
-          <div class="plat" data-p="xhs"><div class="tick">✓</div>
-            <div class="pic"><img src="logos/xhs.png" alt="Xiaohongshu"></div>
-            <b>Xiaohongshu</b><span id="cnt-xhs">0 đã cào</span><span style="font-size:10px;opacity:.6">nội địa (xiaohongshu.com)</span></div>
-          <div class="plat" data-p="rednote"><div class="tick">✓</div>
-            <div class="pic"><img src="logos/xhs.png" alt="RedNote"></div>
-            <b>RedNote</b><span id="cnt-rednote">0 đã cào</span><span style="font-size:10px;opacity:.6">quốc tế (rednote.com)</span></div>
           <div class="plat" data-p="wb"><div class="tick">✓</div>
             <div class="pic"><img src="logos/wb.png" alt="Weibo"></div>
             <b>Weibo (ảnh)</b><span id="cnt-wb">0 đã cào</span></div>
@@ -1172,15 +1559,6 @@
           <div class="plat" data-p="tt"><div class="tick">✓</div>
             <div class="pic"><img src="logos/tt.png" alt="TikTok"></div>
             <b>TikTok</b><span id="cnt-tt">0 đã cào</span></div>
-          <div class="plat" data-p="fb"><div class="tick">✓</div>
-            <div class="pic"><img src="logos/fb.png" alt="Facebook" onerror="this.style.display='none'"></div>
-            <b>Facebook</b><span id="cnt-fb">0 đã cào</span></div>
-          <div class="plat" data-p="tw"><div class="tick">✓</div>
-            <div class="pic"><img src="logos/tw.png" alt="Twitter (X)" onerror="this.style.display='none'"></div>
-            <b>Twitter (X)</b><span id="cnt-tw">0 đã cào</span></div>
-          <div class="plat" data-p="ig"><div class="tick">✓</div>
-            <div class="pic"><img src="logos/ig.png" alt="Instagram" onerror="this.style.display='none'"></div>
-            <b>Instagram</b><span id="cnt-ig">0 đã cào</span></div>
           <div class="plat" data-p="rd"><div class="tick">✓</div>
             <div class="pic"><img src="logos/reddit.png" alt="Reddit" onerror="this.style.display='none'"></div>
             <b>Reddit</b><span>chụp + sub ảnh</span></div>
@@ -1377,67 +1755,7 @@
         </div>
       </section>
 
-      <!-- ===== TẢI PHIM HỒNG QUẢ ===== -->
-      <section id="v-honggo" class="hidden">
-        <h1 class="page">🎬 Tải Phim Ngắn Hồng Quả (红果短剧)<span class="help" data-tip="Tải phim ngắn từ Hồng Quả (hongguoduanju.com hoặc hongguoapp.cn).&#10;1. Dán link bộ phim hoặc ID phim.&#10;2. Bấm 'Kiểm tra danh sách tập' để xem thông tin phim & các tập.&#10;3. Chọn số tập / khoảng tập muốn tải và bấm 'BẮT ĐẦU TẢI'.">?</span></h1>
-        <div class="sub">Tải trọn bộ hoặc chọn khoảng tập phim ngắn Hồng Quả với tốc độ cao, hỗ trợ tự động giải mã m3u8 và stream MP4 trực tiếp.</div>
-
-        <div class="panel" style="margin-top:16px">
-          <b style="font-size:14px">🔗 Đường dẫn phim hoặc ID phim</b>
-          <div style="display:flex;gap:10px;margin-top:10px">
-            <input type="text" id="hgUrl" style="flex:1;padding:10px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:#fff;font-size:14px" placeholder="Dán link phim Hồng Quả (vd: https://www.hongguoapp.cn/voddetail/34680.html hoặc ID 34680)...">
-            <button class="btn go" id="hgBtnCheck" onclick="hgCheckList()" style="padding:10px 20px;white-space:nowrap;font-weight:700">🔍 Kiểm Tra Danh Sách Tập</button>
-          </div>
-          <div class="sub" style="margin-top:8px;font-size:12px;color:var(--ok)">
-            💡 Để tải <b>TRỌN BỘ FULL (tất cả 70–100 tập)</b>: Dán link hoặc ID từ <b>hongguoapp.cn</b> (vd: <code>https://www.hongguoapp.cn/voddetail/15297.html</code> hoặc ID <code>15297</code>). Link web <code>hongguoduanju.com</code> chính chủ chỉ mở xem trước 3 tập trên Web.
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:16px">
-          <b style="font-size:14px">⚙️ Thiết lập tải phim</b>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px">
-            <div>
-              <label class="sub" style="display:block;margin-bottom:4px">🎯 Chế độ tải:</label>
-              <select id="hgMode" style="width:100%;padding:8px 12px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);color:#fff" onchange="hgModeChange()">
-                <option value="all">🎬 Trọn bộ (tất cả các tập)</option>
-                <option value="range">🔢 Khoảng tập (vd: 1-10)</option>
-                <option value="count">⚡ N tập đầu tiên (vd: 5)</option>
-              </select>
-            </div>
-            <div id="hgBoxTap" style="display:none">
-              <label class="sub" style="display:block;margin-bottom:4px">🔢 Khoảng tập cần tải:</label>
-              <input type="text" id="hgTap" style="width:100%;padding:8px 12px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);color:#fff" placeholder="Vd: 1-10 hoặc 5">
-            </div>
-            <div id="hgBoxCount" style="display:none">
-              <label class="sub" style="display:block;margin-bottom:4px">⚡ Số tập cần tải:</label>
-              <input type="number" id="hgCount" style="width:100%;padding:8px 12px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);color:#fff" value="5" min="1">
-            </div>
-            <div>
-              <label class="sub" style="display:block;margin-bottom:4px">⏱️ Độ trễ (giây / request):</label>
-              <input type="number" id="hgDelay" style="width:100%;padding:8px 12px;border-radius:8px;background:var(--bg2);border:1px solid var(--line);color:#fff" value="1.5" step="0.5" min="0.5">
-            </div>
-          </div>
-          <div style="margin-top:16px;display:flex;justify-content:flex-end">
-            <button class="btn go" id="hgBtnStart" onclick="hgStartDownload()" style="padding:12px 28px;font-size:15px;font-weight:800;background:linear-gradient(135deg,#ec4899,#8b5cf6)">⚡ BẮT ĐẦU TẢI PHIM HỒNG QUẢ</button>
-          </div>
-        </div>
-
-        <div id="hgInfoCard" class="panel" style="margin-top:16px;display:none">
-          <div style="display:flex;gap:16px;align-items:flex-start">
-            <img id="hgPoster" src="" style="width:110px;height:150px;object-fit:cover;border-radius:10px;border:1px solid var(--line);flex-shrink:0" alt="Poster">
-            <div style="flex:1">
-              <h2 id="hgSeriesTitle" style="font-size:18px;margin-bottom:8px;color:var(--accent2)">—</h2>
-              <div class="sub" style="font-size:13px;margin-bottom:12px">Tổng số tập: <b id="hgTotalEp" style="color:var(--ok)">0</b> tập</div>
-              <div id="hgEpGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;max-height:220px;overflow-y:auto;padding-right:4px"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel" style="margin-top:16px">
-          <b style="font-size:14px">📜 Nhật ký tiến trình tải phim</b>
-          <div class="log" id="hgLog" style="height:220px;margin-top:10px">Sẵn sàng. Nhập link phim Hồng Quả và bấm 'Kiểm tra danh sách tập'...</div>
-        </div>
-      </section>
+      
 
       <!-- ===== RENDER NÉ BẢN QUYỀN THÔNG MINH ===== -->
       <section id="v-nebanguoyen" class="hidden">
@@ -1554,127 +1872,471 @@
 
 <!-- ===== REDDIT & THREADS SHORTS GENERATOR ===== -->
 <section id="v-socialshorts" class="hidden">
-<h1 class="page">🎬 Reddit & Threads Shorts Generator <span class="help" data-tip="Tự động cào bài viết Reddit/Threads, tạo giọng đọc TTS, vẽ thẻ UI Card Dark Mode và ghép video nền Minecraft/Subway Surfers tạo Video Short dọc (9:16 - 1080x1920) cực cuốn.">?</span></h1>
-<div class="sub">Tự động chuyển đổi các bài viết/thảo luận HOT trên Reddit và Threads thành Video Short 9:16 chất lượng cao với video nền Gameplay cuốn hút.</div>
-
-<!-- 1. Input Config Panel -->
-<div class="panel" style="margin-top:16px">
-<b style="font-size:14px">⚙️ Cấu Hình Bài Viết Đầu Vào</b>
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:14px">
-  <!-- Left: Target Input & Platform -->
-  <div style="background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:12px;padding:14px">
-    <h4 style="font-size:13px;color:var(--accent2);margin-bottom:10px">1. Chọn Nguồn Bài Viết</h4>
-    
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Nền tảng Mạng Xã Hội:</label>
-      <select id="socPlatform" class="num" onchange="socPlatformChange(this.value)">
-        <option value="reddit" selected>Reddit (r/AskReddit, r/tifu, r/AITAH...)</option>
-        <option value="threads">Threads (@username / Post URL)</option>
-      </select>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <h1 class="page" style="margin:0;display:flex;align-items:center;gap:10px">
+        🎬 Social Shorts Generator 
+        <span id="socModeBadge" style="background:#FF4500;color:#fff;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700">REDDIT MODE</span>
+        <span class="help" data-tip="Tự động cào bài viết Reddit/Threads, tạo giọng đọc TTS, vẽ thẻ UI Card Dark Mode và ghép video nền Minecraft/Subway Surfers tạo Video Short dọc (9:16 - 1080x1920) cực cuốn.">?</span>
+      </h1>
+      <div class="sub" style="margin-top:4px">Tự động chuyển đổi các bài viết/thảo luận HOT trên Reddit và Threads thành Video Short 9:16 chuẩn TikTok / Reels / Shorts.</div>
     </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Thể loại / Chủ đề Nội dung (Genre):</label>
-      <select id="socGenre" class="num" onchange="socGenreChange(this.value)">
-        <option value="" selected>Tự chọn / Nhập Subreddit bên dưới</option>
-        <option value="funny">😂 Hài hước & Giải trí (r/AskReddit, r/tifu)</option>
-        <option value="confession">🔥 Tâm sự & Drama (r/AITAH, r/confession)</option>
-        <option value="horror">👻 Kinh dị & Truyện đêm khuya (r/nosleep)</option>
-        <option value="quotes">💡 Triết lý & Suy ngẫm (r/Showerthoughts)</option>
-        <option value="gaming">🎮 Game & Công nghệ (r/gaming)</option>
-      </select>
-    </div>
-
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Tên Subreddit hoặc Đường dẫn Link Bài Viết:</label>
-      <input type="text" id="socTarget" style="width:100%;padding:10px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:#fff;font-size:13px" placeholder="Ví dụ: AskReddit hoặc link bài viết..." value="AskReddit">
-    </div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AskReddit'">r/AskReddit</button>
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='tifu'">r/tifu</button>
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AITAH'">r/AITAH</button>
-      <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='confession'">r/confession</button>
+    <!-- Mode Switcher (Segmented Control) -->
+    <div style="background:#0f172a;padding:4px;border-radius:12px;display:flex;gap:4px;border:1px solid #334155">
+      <button type="button" id="socTabReddit" onclick="socSwitchMode('reddit')" style="padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:13px;cursor:pointer;background:#FF4500;color:#fff;transition:all 0.2s">
+        🤖 Reddit Mode
+      </button>
+      <button type="button" id="socTabThreads" onclick="socSwitchMode('threads')" style="padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:13px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        🌀 Threads Mode
+      </button>
     </div>
   </div>
 
-  <!-- Right: Voice & Gameplay Config -->
-  <div style="background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:12px;padding:14px">
-    <h4 style="font-size:13px;color:var(--purple);margin-bottom:10px">2. Giọng Đọc & Video Nền Gameplay</h4>
+  <!-- 1. Input Config Panel -->
+  <div class="panel" style="margin-top:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <!-- Left: Target Input & Platform -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <h4 style="font-size:14px;color:#38bdf8;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span>📌</span> 1. Chọn Nguồn & Nội Dung Bài Viết
+        </h4>
+        
+        <input type="hidden" id="socPlatform" value="reddit">
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Ngôn ngữ Giọng đọc TTS:</label>
-      <select id="socLang" class="num">
-        <option value="en" selected>🇺🇸 Tiếng Anh (en-US-Christopher - Giọng Mỹ Reddit)</option>
-        <option value="vi">🇻🇳 Tiếng Việt (vi-VN-HoaiMy - Giọng Việt Nam mượt)</option>
-      </select>
-    </div>
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600" id="socGenreLabel">Thể loại / Chủ đề Nội dung (Genre):</label>
+          <select id="socGenre" class="num" onchange="socGenreChange(this.value)" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="" selected>Tự chọn / Nhập Subreddit bên dưới</option>
+            <option value="funny">😂 Hài hước & Giải trí (r/AskReddit, r/tifu)</option>
+            <option value="confession">🔥 Tâm sự & Drama (r/AITAH, r/confession)</option>
+            <option value="horror">👻 Kinh dị & Truyện đêm khuya (r/nosleep)</option>
+            <option value="quotes">💡 Triết lý & Suy ngẫm (r/Showerthoughts)</option>
+            <option value="gaming">🎮 Game & Công nghệ (r/gaming)</option>
+          </select>
+        </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Số lượng Bình luận (Comments) tối đa:</label>
-      <select id="socMaxComments" class="num">
-        <option value="1">1 Bình luận (~15s)</option>
-        <option value="2" selected>2 Bình luận (~30s)</option>
-        <option value="3">3 Bình luận (~45s)</option>
-        <option value="4">4 Bình luận (~60s)</option>
-        <option value="5">5 Bình luận (~75s)</option>
-        <option value="6">6 Bình luận (~90s)</option>
-        <option value="7">7 Bình luận (~105s)</option>
-        <option value="8">8 Bình luận (~120s)</option>
-        <option value="9">9 Bình luận (~135s)</option>
-        <option value="10">10 Bình luận (~150s)</option>
-      </select>
-    </div>
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600" id="socTargetLabel">Tên Subreddit hoặc Đường dẫn Link Bài Viết:</label>
+          <input type="text" id="socTarget" style="width:100%;padding:10px 14px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:13px" placeholder="Ví dụ: AskReddit hoặc link bài viết..." value="AskReddit">
+        </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Loại Video Nền Gameplay:</label>
-      <select id="socBgType" class="num">
-        <option value="minecraft" selected>🎮 Minecraft Parkour (Khung dọc 9:16)</option>
-        <option value="subway">🏃 Subway Surfers (Khung dọc 9:16)</option>
-      </select>
-    </div>
+        <!-- Reddit Presets -->
+        <div id="socRedditPresets" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AskReddit'" style="background:#334155;color:#f8fafc">r/AskReddit</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='tifu'" style="background:#334155;color:#f8fafc">r/tifu</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='AITAH'" style="background:#334155;color:#f8fafc">r/AITAH</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='confession'" style="background:#334155;color:#f8fafc">r/confession</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='nosleep'" style="background:#334155;color:#f8fafc">r/nosleep</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='Showerthoughts'" style="background:#334155;color:#f8fafc">r/Showerthoughts</button>
+        </div>
 
-    <div class="fld" style="margin-bottom:12px">
-      <label style="color:var(--text);font-weight:600">Câu Hỏi Kết Video (Outro Question / CTA):</label>
-      <input type="text" id="socOutro" style="width:100%;padding:10px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line);color:#fff;font-size:13px" placeholder="Ví dụ: Cảm nghĩ của bạn thế nào với vấn đề này? (Để trống nếu không dùng)" value="Cảm nghĩ của bạn thế nào với vấn đề này? Hãy để lại bình luận nhé!">
-    </div>
+        <!-- Threads Presets -->
+        <div id="socThreadsPresets" style="display:none;gap:8px;flex-wrap:wrap">
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@zuck'" style="background:#334155;color:#f8fafc">@zuck</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@mosseri'" style="background:#334155;color:#f8fafc">@mosseri</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@threads'" style="background:#334155;color:#f8fafc">@threads</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@techcrunch'" style="background:#334155;color:#f8fafc">@techcrunch</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@forbes'" style="background:#334155;color:#f8fafc">@forbes</button>
+          <button class="chip-kw" type="button" onclick="document.getElementById('socTarget').value='@netflix'" style="background:#334155;color:#f8fafc">@netflix</button>
+        </div>
 
-    <div class="fld">
-      <label style="color:var(--text);font-weight:600">Thời gian chờ giữa 2 Comment (Giây):</label>
-      <input type="number" id="socCommentDelay" step="0.5" min="0" max="5" class="num" value="1.0" placeholder="Mặc định: 1.0 giây">
+        <!-- Threads Hot Post Finder Panel -->
+        <div id="socThreadsHotPanel" style="display:none;margin-top:14px;padding:12px;background:#1e293b;border:1px solid #0084FF;border-radius:10px">
+          <b style="color:#0084FF;font-size:13px;display:flex;align-items:center;gap:6px;margin-bottom:8px">
+            🔥 Tìm Bài Viết Threads HOT Gần Đây (N Lượt Tim / N Ngày)
+          </b>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:8px;margin-bottom:8px">
+            <div>
+              <label style="font-size:11px;color:#94a3b8;display:block">Tối đa N ngày:</label>
+              <input type="number" id="socThreadsDays" value="7" min="1" max="30" style="width:100%;padding:6px;border-radius:6px;background:#0f172a;border:1px solid #334155;color:#fff;font-size:12px">
+            </div>
+            <div>
+              <label style="font-size:11px;color:#94a3b8;display:block">Tối thiểu Min Tim:</label>
+              <input type="number" id="socThreadsMinLikes" value="50" min="0" step="10" style="width:100%;padding:6px;border-radius:6px;background:#0f172a;border:1px solid #334155;color:#fff;font-size:12px">
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button type="button" onclick="socFindHotThreads()" style="width:100%;padding:6px 10px;border-radius:6px;border:none;background:linear-gradient(135deg,#0084FF,#A855F7);color:#fff;font-weight:700;font-size:12px;cursor:pointer">
+                🔍 Quét Bài HOT
+              </button>
+            </div>
+          </div>
+          <div id="socHotThreadsList" style="display:none;max-height:220px;overflow-y:auto;gap:8px;flex-direction:column;margin-top:8px"></div>
+        </div>
+      </div>
+
+      <!-- Right: Voice & Gameplay Config -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <h4 style="font-size:14px;color:#a855f7;margin-bottom:12px;display:flex;align-items:center;gap:6px">
+          <span>🎤</span> 2. Giọng Đọc & Video Nền Gameplay
+        </h4>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Ngôn ngữ Giọng đọc TTS:</label>
+          <select id="socLang" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="en" selected>🇺🇸 Tiếng Anh (en-US-Christopher - Giọng Mỹ Reddit)</option>
+            <option value="vi">🇻🇳 Tiếng Việt (vi-VN-HoaiMy - Giọng Việt Nam mượt)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Tốc độ Giọng đọc TTS (Voice Speed):</label>
+          <select id="socTtsRate" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="1.0" selected>⚡ Chuẩn (1.0x - Giọng đọc bình thường)</option>
+            <option value="1.1">⏩ Nhanh vừa (1.1x - Tăng nhẹ 10%)</option>
+            <option value="1.2">🚀 Nhanh (1.2x - Tăng 20% cuốn hơn)</option>
+            <option value="1.25">🔥 Nhanh cuốn (1.25x - Tăng 25% tối ưu TikTok/Shorts)</option>
+            <option value="1.35">⚡ Siêu nhanh (1.35x - Tăng 35%)</option>
+            <option value="1.5">🏎️ Siêu tốc (1.5x - Tăng 50%)</option>
+            <option value="0.9">🐢 Chậm (0.9x - Giảm 10%)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Số lượng Bình luận (Comments) tối đa:</label>
+          <select id="socMaxComments" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="1">1 Bình luận</option>
+            <option value="2" selected>2 Bình luận</option>
+            <option value="3">3 Bình luận</option>
+            <option value="4">4 Bình luận</option>
+            <option value="5">5 Bình luận</option>
+            <option value="6">6 Bình luận</option>
+            <option value="7">7 Bình luận</option>
+            <option value="8">8 Bình luận</option>
+            <option value="9">9 Bình luận</option>
+            <option value="10">10 Bình luận</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Loại Video Nền Gameplay:</label>
+          <select id="socBgType" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="minecraft" selected>🎮 Minecraft Parkour (Khung dọc 9:16)</option>
+            <option value="subway">🏃 Subway Surfers (Khung dọc 9:16)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Câu Hỏi Kết Video (Outro Question / CTA):</label>
+          <input type="text" id="socOutro" style="width:100%;padding:10px 14px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:13px" placeholder="Ví dụ: Cảm nghĩ của bạn thế nào với vấn đề này?" value="Cảm nghĩ của bạn thế nào với vấn đề này? Hãy để lại bình luận nhé!">
+        </div>
+
+        <div class="fld">
+          <label style="color:#e2e8f0;font-weight:600">Khoảng Nghỉ Buffer Giữa Các Comment (Giây):</label>
+          <input type="number" id="socCommentDelay" step="0.5" min="0" max="5" class="num" value="1.0" style="background:#1e293b;color:#fff;border:1px solid #475569" placeholder="Mặc định: 1.0 giây">
+          <div class="sub" style="font-size:11px;color:#94a3b8;margin-top:4px">Thời gian chờ sau khi đọc xong 1 comment trước khi chuyển sang comment kế tiếp.</div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</div>
 
-<!-- 2. Action & Progress -->
-<div class="panel" style="margin-top:16px">
-<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-<button class="btn go" id="socBtnStart" onclick="socStartRender()" style="padding:14px 28px;font-size:16px;font-weight:800">🚀 Tạo Short Video Ngay (Tự động cào & Render)</button>
-<div class="sub" style="font-size:12px">Tự động cào post, xuất audio TTS, vẽ UI Card Dark Mode và ghép video nền 9:16 siêu tốc.</div>
-</div>
+  <!-- 2. Action & Progress Panel -->
+  <div class="panel" style="margin-top:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <button class="btn go" id="socBtnStart" onclick="socStartRender()" style="padding:14px 28px;font-size:16px;font-weight:800;background:linear-gradient(135deg, #2563eb, #7c3aed);border:none;border-radius:10px;box-shadow:0 4px 14px rgba(37,99,235,0.4)">
+        🚀 Tạo Short Video Ngay (Tự động cào & Render)
+      </button>
+      <div class="sub" style="font-size:12px;color:#94a3b8">Tự động cào post, xuất audio TTS, vẽ UI Card Dark Mode và ghép video nền 9:16 siêu tốc.</div>
+    </div>
 
-<div class="log" id="socLog" style="height:180px;margin-top:14px">Sẵn sàng. Chọn Subreddit/Link và bấm 'Tạo Short Video Ngay'...</div>
-</div>
+    <!-- Progress Bar Section -->
+    <div style="margin-top:16px;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span id="socStatusText" style="font-weight:700;font-size:13px;color:#38bdf8">⚡ Sẵn sàng. Chọn Subreddit/Link và bấm 'Tạo Short Video Ngay'...</span>
+        <span id="socProgressPct" style="font-weight:800;font-size:14px;color:#10b981">0%</span>
+      </div>
+      <div style="width:100%;height:10px;background:#1e293b;border-radius:6px;overflow:hidden">
+        <div id="socProgressBar" style="width:0%;height:100%;background:linear-gradient(90deg, #3b82f6, #10b981);transition:width 0.4s ease;border-radius:6px"></div>
+      </div>
+    </div>
 
-<!-- 3. Output Gallery -->
-<div class="panel" style="margin-top:16px">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-<b style="font-size:14px">🎬 Danh Sách Short Video Đã Render</b>
-<div style="display:flex;gap:8px">
-<button class="chip-add" type="button" onclick="socLoadList()">🔄 Làm mới</button>
-<button class="chip-add" type="button" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở Thư Mục Kết Quả</button>
-</div>
-</div>
-<div id="socOutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
-<div class="sub">Chưa có Short Video Reddit/Threads nào...</div>
-</div>
-</div>
+    <!-- Terminal Log -->
+    <div class="log" id="socLog" style="height:180px;margin-top:14px;background:#090d16;border:1px solid #1e293b;border-radius:8px;color:#a7f3d0;font-family:monospace;font-size:12px;line-height:1.5;padding:12px;overflow-y:auto">
+      Sẵn sàng. Nhật ký tiến trình cào bài & render video sẽ xuất hiện ở đây...
+    </div>
+  </div>
+
+  <!-- 3. Output Gallery -->
+  <div class="panel" style="margin-top:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <b style="font-size:14px;color:#f8fafc">🎬 Danh Sách Short Video Đã Render</b>
+      <div style="display:flex;gap:8px">
+        <button class="chip-add" type="button" onclick="socLoadList()" style="background:#334155;color:#fff">🔄 Làm mới</button>
+        <button class="chip-add" type="button" onclick="openFolder('MediaCrawler/data/social_shorts/videos')" style="background:#334155;color:#fff">📁 Mở Thư Mục Kết Quả</button>
+      </div>
+    </div>
+    <div id="socOutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
+      <div class="sub">Chưa có Short Video Reddit/Threads nào...</div>
+    </div>
+  </div>
 </section>
 
 
-      <!-- ===== FILE ĐÃ TẢI ===== -->
+
+<!-- ===== AI VIDEO STUDIO FEATURE ===== -->
+<section id="v-aivideogen">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+    <div>
+      <h1 class="page" style="margin:0;display:flex;align-items:center;gap:10px;font-size:22px">
+        🎬 AI Video Studio 
+        <span class="help" data-tip="Tự động biến kịch bản, tài liệu và ảnh sản phẩm thành Video Short 9:16 hoặc 16:9 với giọng đọc AI, hiệu ứng visuals và nhạc nền chuyên nghiệp.">?</span>
+      </h1>
+      <div class="sub" style="margin-top:4px;color:#94a3b8">Tự động phân tích kịch bản, tạo storyboard, xuất giọng đọc TTS chuẩn xác và render video hoàn chỉnh.</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
+        <button type="button" class="btn go" onclick="openFolder('processed_videos')" style="padding:6px 14px;font-size:12px;font-weight:700;background:#3b82f6;color:#fff;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px">
+          📁 Mở Thư Mục Xuất Video (processed_videos)
+        </button>
+      </div>
+    </div>
+
+    <!-- Step Indicator Pills -->
+    <div style="background:#0f172a;padding:4px;border-radius:12px;display:flex;gap:4px;border:1px solid #334155">
+      <button type="button" id="genStepBtn1" onclick="genSwitchStep(1)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:#6366f1;color:#fff;transition:all 0.2s">
+        1. Format & Type
+      </button>
+      <button type="button" id="genStepBtn2" onclick="genSwitchStep(2)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        2. Script & Workspace
+      </button>
+      <button type="button" id="genStepBtn3" onclick="genSwitchStep(3)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        3. Storyboard
+      </button>
+      <button type="button" id="genStepBtn4" onclick="genSwitchStep(4)" style="padding:6px 14px;border-radius:8px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#94a3b8;transition:all 0.2s">
+        4. Render & Player
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 1: VIDEO TYPE PICKER -->
+  <div id="genStep1" class="panel" style="background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <b style="font-size:14px;color:#f8fafc;display:block;margin-bottom:12px">🎯 1. Chọn Định Dạng & Loại Video Target</b>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+      <!-- Product Video -->
+      <div id="genCard-product_video" onclick="genSelectType('product_video')" style="cursor:pointer;padding:16px;border-radius:10px;border:2px solid #6366f1;background:rgba(99,102,241,0.15);transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">🛍️</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(99,102,241,0.3);color:#a5b4fc">E-COMMERCE</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">Product Showcase</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Tối ưu điểm bán hàng, câu hook đập hộp, thuyết phục mua sắm.</div>
+      </div>
+
+      <!-- Viral TikTok -->
+      <div id="genCard-viral_tiktok" onclick="genSelectType('viral_tiktok')" style="cursor:pointer;padding:16px;border-radius:10px;border:1px solid #334155;background:#0f172a;transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">🚀</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(168,85,247,0.2);color:#c084fc">VIRAL SHORTS</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">TikTok / Reels Short</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Nhịp nhanh, câu hook giữ chân 3s đầu, phụ đề động nổi bật.</div>
+      </div>
+
+      <!-- Explainer -->
+      <div id="genCard-explainer" onclick="genSelectType('explainer')" style="cursor:pointer;padding:16px;border-radius:10px;border:1px solid #334155;background:#0f172a;transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">💡</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(16,185,129,0.2);color:#6ee7b7">EDUCATIONAL</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">Explainer & Tutorial</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Giải thích khái niệm, hướng dẫn chi tiết từng bước dễ hiểu.</div>
+      </div>
+
+      <!-- Short Film -->
+      <div id="genCard-short_film" onclick="genSelectType('short_film')" style="cursor:pointer;padding:16px;border-radius:10px;border:1px solid #334155;background:#0f172a;transition:all 0.2s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:24px">🎬</span>
+          <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;background:rgba(245,158,11,0.2);color:#fcd34d">CINEMATIC</span>
+        </div>
+        <b style="display:block;font-size:14px;color:#fff;margin-bottom:4px">Cinematic Short Film</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Truyện kể điện ảnh, không gian hình ảnh & âm thanh cảm xúc.</div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:16px">
+      <button class="btn go" onclick="genSwitchStep(2)" style="padding:10px 24px;font-size:14px;font-weight:700;background:#6366f1">
+        Tiếp Theo: Nhập Kịch Bản & Cấu Hình ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: INPUT WORKSPACE -->
+  <div id="genStep2" class="panel" style="display:none;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+      <!-- Left: Editor & Assets -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <h4 style="font-size:14px;color:#38bdf8;margin:0">📝 2. Kịch Bản & Tài Liệu Nguồn</h4>
+          <button class="chip-add" type="button" onclick="genLoadSampleScript()" style="background:#334155;color:#a5b4fc">✨ Mẫu Kịch Bản Sản Phẩm</button>
+        </div>
+
+        <input type="hidden" id="genVideoType" value="product_video">
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Ghi chú Nguồn / Điểm Bán Hàng (Context/Notes):</label>
+          <textarea id="genSourceDocs" style="width:100%;height:70px;padding:10px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:12px" placeholder="Dán thông số sản phẩm, tính năng chính hoặc cốt truyện bài viết..."></textarea>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Kịch Bản Chi Tiết Từng Cảnh (Scene-by-Scene Script):</label>
+          <textarea id="genScriptEditor" style="width:100%;height:130px;padding:10px;border-radius:8px;background:#1e293b;border:1px solid #475569;color:#fff;font-family:monospace;font-size:12.5px" placeholder="[Scene 1] Bạn có đang mệt mỏi vì tai nghe bị rè khi tập gym?&#10;[Scene 2] Trải nghiệm ngay SoundPulse Pro với chống ồn 45dB.&#10;[Scene 3] Đặt hàng hôm nay để nhận ưu đãi giảm 30%!"></textarea>
+        </div>
+
+        <div class="fld">
+          <label style="color:#e2e8f0;font-weight:600">Tải Lên Ảnh Sản Phẩm / Logo / Media Assets:</label>
+          <div style="border:2 border-dashed #475569;background:#1e293b;border-radius:8px;padding:16px;text-align:center;cursor:pointer" onclick="document.getElementById('genAssetInput').click()">
+            <span style="font-size:24px">🖼️</span>
+            <div style="font-size:12px;font-weight:700;color:#f8fafc;margin-top:4px">Kéo & thả ảnh sản phẩm hoặc click chọn file</div>
+            <div style="font-size:11px;color:#94a3b8">PNG, JPG, WEBP hỗ trợ lên tới 25MB</div>
+            <input type="file" id="genAssetInput" style="display:none" multiple accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Configurations -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px">
+        <h4 style="font-size:14px;color:#a855f7;margin-bottom:12px">⚙️ Cấu Hình Động</h4>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Tỷ Lệ Khung Hình (Aspect Ratio):</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button type="button" id="genAspect916" onclick="genSelectAspect('9:16')" style="padding:8px;border-radius:6px;border:1px solid #6366f1;background:rgba(99,102,241,0.2);color:#fff;font-weight:700;font-size:12px cursor:pointer">
+              📱 9:16 Dọc
+            </button>
+            <button type="button" id="genAspect169" onclick="genSelectAspect('16:9')" style="padding:8px;border-radius:6px;border:1px solid #475569;background:#1e293b;color:#94a3b8;font-weight:700;font-size:12px cursor:pointer">
+              💻 16:9 Ngang
+            </button>
+          </div>
+          <input type="hidden" id="genAspect" value="9:16">
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <label style="color:#e2e8f0;font-weight:600">Giọng Đọc AI TTS:</label>
+          <select id="genVoice" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="edge_hoaimy" selected>🇻🇳 Edge TTS - Hoài Mỹ (Tiếng Việt mượt)</option>
+            <option value="eleven_adam">🎙️ ElevenLabs - Adam (Nam Mỹ Trầm)</option>
+            <option value="eleven_rachel">🎙️ ElevenLabs - Rachel (Nữ Năng Động)</option>
+            <option value="edge_christopher">🇺🇸 Edge TTS - Christopher (Mỹ Chuẩn)</option>
+          </select>
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between">
+            <label style="color:#e2e8f0;font-weight:600">Tốc Độ Đọc (Speed):</label>
+            <span id="genSpeedVal" style="color:#38bdf8;font-weight:700;font-size:12px">1.15x</span>
+          </div>
+          <input type="range" id="genSpeed" min="0.8" max="1.5" step="0.05" value="1.15" oninput="document.getElementById('genSpeedVal').textContent=this.value+'x'" style="width:100%">
+        </div>
+
+        <div class="fld" style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between">
+            <label style="color:#e2e8f0;font-weight:600">Khoảng Nghỉ Buffer (Giây):</label>
+            <span id="genBufferVal" style="color:#38bdf8;font-weight:700;font-size:12px">0.8s</span>
+          </div>
+          <input type="range" id="genBuffer" min="0.0" max="3.0" step="0.2" value="0.8" oninput="document.getElementById('genBufferVal').textContent=this.value+'s'" style="width:100%">
+        </div>
+
+        <div class="fld">
+          <label style="color:#e2e8f0;font-weight:600">Nhạc Nền BGM Style:</label>
+          <select id="genBgm" class="num" style="background:#1e293b;color:#fff;border:1px solid #475569">
+            <option value="upbeat_synth" selected>🎵 Upbeat Tech Synth (Sôi động)</option>
+            <option value="lofi_ambient">🎧 Chill Lofi Ambient (Nhẹ nhàng)</option>
+            <option value="cinematic_epic">🎻 Cinematic Epic (Điện ảnh)</option>
+            <option value="none">🔇 Tắt Nhạc Nền</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <button class="btn go" onclick="genSwitchStep(1)" style="padding:8px 18px;background:#334155">⬅️ Quay Lại</button>
+      <button class="btn go" onclick="genAnalyzeScript()" style="padding:10px 24px;font-size:14px;font-weight:700;background:#6366f1">
+        Phân Tích & Tạo Storyboard 🎬
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: STORYBOARD BREAKDOWN -->
+  <div id="genStep3" class="panel" style="display:none;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div>
+        <b style="font-size:15px;color:#f8fafc">🎬 3. Storyboard & Phân Cảnh Tự Động</b>
+        <div class="sub" style="font-size:12px;color:#94a3b8">Kiểm tra prompt hình ảnh, lời thoại đọc và thời lượng dự kiến trước khi bấm Render.</div>
+      </div>
+      <span style="font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(16,185,129,0.2);color:#6ee7b7;border:1px solid rgba(16,185,129,0.3)">
+        3 Cảnh Phân Phối • Tổng ~18.5s
+      </span>
+    </div>
+
+    <div id="genStoryboardContainer" style="display:grid;grid-template-columns:1fr;gap:14px;max-height:420px;overflow-y:auto;padding-right:4px">
+      <!-- Generated via JS -->
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:16px">
+      <button class="btn go" onclick="genSwitchStep(2)" style="padding:8px 18px;background:#334155">⬅️ Sửa Kịch Bản</button>
+      <button class="btn go" onclick="genStartRender()" style="padding:12px 28px;font-size:15px;font-weight:800;background:linear-gradient(135deg, #6366f1, #a855f7)">
+        🚀 Bắt Đầu Render Video (Stitching MP4)
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 4: RENDER & PLAYER -->
+  <div id="genStep4" class="panel" style="display:none;background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px">
+    <!-- Progress Bar -->
+    <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span id="genStatusText" style="font-weight:700;font-size:13px;color:#38bdf8">⚡ Sẵn sàng render...</span>
+        <span id="genProgressPct" style="font-weight:800;font-size:14px;color:#10b981">0%</span>
+      </div>
+      <div style="width:100%;height:10px;background:#1e293b;border-radius:6px;overflow:hidden">
+        <div id="genProgressBar" style="width:0%;height:100%;background:linear-gradient(90deg, #6366f1, #10b981);transition:width 0.4s ease;border-radius:6px"></div>
+      </div>
+
+      <div class="log" id="genLog" style="height:140px;margin-top:12px;background:#090d16;border:1px solid #1e293b;border-radius:8px;color:#a7f3d0;font-family:monospace;font-size:12px;line-height:1.5;padding:10px;overflow-y:auto">
+        Sẵn sàng. Nhật ký tiến trình tổng hợp hình ảnh & render âm thanh sẽ ở đây...
+      </div>
+    </div>
+
+    <!-- Result Player (Hidden until done) -->
+    <div id="genResultView" style="display:none;grid-template-columns:1fr 1fr;gap:20px">
+      <!-- Player Frame -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center">
+        <div style="width:240px;height:426px;background:#000;border-radius:12px;overflow:hidden;position:relative;border:2px solid #334155;box-shadow:0 10px 30px rgba(0,0,0,0.5)">
+          <img id="genPlayerBg" src="https://picsum.photos/400/711?random=99" style="width:100%;height:100%;object-fit:cover;opacity:0.85" alt="Video Frame">
+          <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);padding:2px 8px;border-radius:4px;font-size:10px;color:#fff;font-weight:700">AI Render 9:16</div>
+          <div style="position:absolute;bottom:20px;left:10px;right:10px;background:rgba(0,0,0,0.8);padding:8px;border-radius:8px;text-align:center;color:#fde047;font-weight:800;font-size:11px">
+            "Trải nghiệm ngay SoundPulse Pro hôm nay!"
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Metadata & Downloads -->
+      <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:16px;display:flex;flex-direction:column;justify-content:between">
+        <div>
+          <b style="font-size:15px;color:#10b981;display:block;margin-bottom:8px">✨ Render Video Thành Công!</b>
+          <div class="sub" style="font-size:12px;color:#94a3b8;margin-bottom:16px">Video đã được ghép nối hoàn chỉnh âm thanh, hình ảnh và nhạc nền BGM.</div>
+          
+          <div style="font-family:monospace;font-size:12px;color:#cbd5e1;background:#1e293b;padding:12px;border-radius:8px;line-height:1.8">
+            <div>Định dạng: <b>MP4 (H.264 / AAC)</b></div>
+            <div>Độ phân giải: <b>1080 x 1920 (9:16)</b></div>
+            <div>Dung lượng: <b>14.8 MB</b></div>
+            <div>Tốc độ Render: <b>GPU Hardware Accelerated</b></div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:20px">
+          <button class="btn go" onclick="openFolder('MediaCrawler/data/social_shorts/videos')" style="flex:1;padding:10px;font-size:13px;background:#6366f1">
+            📁 Mở Thư Mục Video
+          </button>
+          <button class="btn go" onclick="genSwitchStep(1)" style="flex:1;padding:10px;font-size:13px;background:#334155">
+            + Tạo Video Mới
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FILE ĐÃ TẢI ===== -->
       <section id="v-files" class="hidden">
         <div class="fpage">
           <div class="fmain">
@@ -2178,7 +2840,8 @@
                 <span style="flex:1"></span>
                 <button type="button" class="chip-add" onclick="xlLoadVideos()" title="Tải lại danh sách video đã cào">🔄 Làm mới</button>
                 <button type="button" class="chip-add" onclick="xlSelectAll()" title="Chọn tất cả video đang lọc">✓ Chọn hết</button>
-                <button type="button" class="chip-add" onclick="xlThemVideo()" title="Chọn video TỪ MÁY (không phải video đã cào)">📁 Thêm từ máy</button>
+                <button type="button" class="chip-add" onclick="xlThemVideo()" title="Chọn file video TỪ MÁY">📁 Thêm video từ máy</button>
+                <button type="button" class="chip-add" onclick="xlChonThuMucVideos()" title="Chọn THƯ MỤC chứa video từ máy">📂 Chọn thư mục video</button>
                 <button type="button" class="chip-add" onclick="xlFilClearAll()" title="Xóa lọc">✕ Xóa lọc</button>
                 <button type="button" class="chip-add" id="xlBtnXoaChon" onclick="xlXoaDaChon()" title="Xóa các video ĐANG CHỌN khỏi app — FILE VẪN CÒN trên ổ đĩa (KHÔNG xoá file)">🗑 Xóa đã chọn</button>
               </div>
@@ -2210,24 +2873,290 @@
           if(t1)t1.classList.toggle('on',n===1); if(t2)t2.classList.toggle('on',n===2);
         }
         
-/* ===== REDDIT & THREADS SHORTS JS ===== */
-function socPlatformChange(val) {
-  const targetInp = document.getElementById("socTarget");
-  if (targetInp) {
-    if (val === "threads") {
-      targetInp.placeholder = "Ví dụ: https://www.threads.net/@user/post/xxx";
-      targetInp.value = "";
+
+/* ===== AI VIDEO STUDIO FEATURE JS ===== */
+let genPollTimer = null;
+let genScenesData = [
+  { scene_index: 1, title: 'Scene 1: Hook Intro', visual_prompt: 'Cinematic close-up of sleek wireless earbuds resting on obsidian glass with ambient neon glow', voiceover_text: 'Are you tired of low-quality audio during your workouts?', estimated_duration: '4.2s', img: 'https://picsum.photos/400/225?random=1' },
+  { scene_index: 2, title: 'Scene 2: Core Feature', visual_prompt: 'Dynamic macro shot showing active noise cancellation wave animation on product exterior', voiceover_text: 'Meet SoundPulse Pro featuring 45dB Active Noise Cancellation.', estimated_duration: '6.5s', img: 'https://picsum.photos/400/225?random=2' },
+  { scene_index: 3, title: 'Scene 3: Call To Action', visual_prompt: 'Stylized 3D render of earbud charging case opening with glowing battery status indicator', voiceover_text: 'Order today and get 30% off your first purchase!', estimated_duration: '5.8s', img: 'https://picsum.photos/400/225?random=3' }
+];
+
+function genSwitchStep(step) {
+  for (let i = 1; i <= 4; i++) {
+    const sEl = document.getElementById("genStep" + i);
+    const bEl = document.getElementById("genStepBtn" + i);
+    if (sEl) sEl.style.display = (i === step) ? "block" : "none";
+    if (bEl) {
+      if (i === step) {
+        bEl.style.background = "#6366f1";
+        bEl.style.color = "#fff";
+      } else {
+        bEl.style.background = "transparent";
+        bEl.style.color = "#94a3b8";
+      }
+    }
+  }
+  if (step === 3) {
+    genRenderStoryboard();
+  }
+}
+
+function genSelectType(type) {
+  const types = ["product_video", "viral_tiktok", "explainer", "short_film"];
+  const typeInp = document.getElementById("genVideoType");
+  if (typeInp) typeInp.value = type;
+
+  types.forEach(t => {
+    const card = document.getElementById("genCard-" + t);
+    if (card) {
+      if (t === type) {
+        card.style.border = "2px solid #6366f1";
+        card.style.background = "rgba(99,102,241,0.15)";
+      } else {
+        card.style.border = "1px solid #334155";
+        card.style.background = "#0f172a";
+      }
+    }
+  });
+}
+
+function genSelectAspect(aspect) {
+  const aspectInp = document.getElementById("genAspect");
+  const btn916 = document.getElementById("genAspect916");
+  const btn169 = document.getElementById("genAspect169");
+  if (aspectInp) aspectInp.value = aspect;
+
+  if (aspect === "16:9") {
+    if (btn916) { btn916.style.background = "#1e293b"; btn916.style.borderColor = "#475569"; btn916.style.color = "#94a3b8"; }
+    if (btn169) { btn169.style.background = "rgba(99,102,241,0.2)"; btn169.style.borderColor = "#6366f1"; btn169.style.color = "#fff"; }
+  } else {
+    if (btn916) { btn916.style.background = "rgba(99,102,241,0.2)"; btn916.style.borderColor = "#6366f1"; btn916.style.color = "#fff"; }
+    if (btn169) { btn169.style.background = "#1e293b"; btn169.style.borderColor = "#475569"; btn169.style.color = "#94a3b8"; }
+  }
+}
+
+function genLoadSampleScript() {
+  const docs = document.getElementById("genSourceDocs");
+  const script = document.getElementById("genScriptEditor");
+  if (docs) docs.value = "SoundPulse Pro Wireless Earbuds: 45dB ANC, 40-hour battery life, IPX7 waterproof, Bluetooth 5.4 fast pairing.";
+  if (script) script.value = "[Scene 1] Bạn có đang mệt mỏi vì tai nghe bị rè khi tập gym?\n[Scene 2] Trải nghiệm ngay SoundPulse Pro với chống ồn 45dB.\n[Scene 3] Đặt hàng hôm nay để nhận ưu đãi giảm 30%!";
+  vcToast("✨ Đã tải kịch bản mẫu sản phẩm!");
+}
+
+function genAnalyzeScript() {
+  const script = (document.getElementById("genScriptEditor") || {}).value || "";
+  if (!script.trim()) {
+    vcToast("⚠️ Vui lòng nhập kịch bản hoặc tài liệu nguồn!");
+    return;
+  }
+  vcToast("⚡ Đã phân tích kịch bản & tạo storyboard phân cảnh!");
+  genSwitchStep(3);
+}
+
+function genRenderStoryboard() {
+  const container = document.getElementById("genStoryboardContainer");
+  if (!container) return;
+
+  container.innerHTML = genScenesData.map((s, idx) => `
+    <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <b style="font-size:13px;color:#a5b4fc">Scene ${idx+1}: ${esc(s.title)}</b>
+        <span style="font-size:11px;font-family:monospace;padding:2px 8px;border-radius:4px;background:#1e293b;color:#10b981">Audio: ${s.estimated_duration}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center">
+        <div style="width:120px;height:68px;border-radius:6px;overflow:hidden;position:relative;background:#000">
+          <img src="${s.img}" style="width:100%;height:100%;object-fit:cover" alt="Scene frame">
+        </div>
+        <div>
+          <div style="font-size:11px;color:#94a3b8;font-weight:700">AI Visual Prompt:</div>
+          <input type="text" value="${esc(s.visual_prompt)}" style="width:100%;padding:6px;border-radius:6px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:11.5px;margin-bottom:6px">
+          <div style="font-size:11px;color:#94a3b8;font-weight:700">Lời thoại Voiceover:</div>
+          <input type="text" value="${esc(s.voiceover_text)}" style="width:100%;padding:6px;border-radius:6px;background:#1e293b;border:1px solid #475569;color:#fff;font-size:11.5px">
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function genStartRender() {
+  genSwitchStep(4);
+  const pBar = document.getElementById("genProgressBar");
+  const pPct = document.getElementById("genProgressPct");
+  const pStatus = document.getElementById("genStatusText");
+  const logEl = document.getElementById("genLog");
+  const resView = document.getElementById("genResultView");
+
+  if (pBar) pBar.style.width = "10%";
+  if (pPct) pPct.textContent = "10%";
+  if (pStatus) pStatus.textContent = "🚀 Đang khởi chạy tiến trình render video AI Studio...";
+  if (logEl) logEl.textContent = "🚀 [AI-STUDIO] Bắt đầu tổng hợp âm thanh & hình ảnh...";
+  if (resView) resView.style.display = "none";
+
+  const target = (document.getElementById("genScriptEditor") || {}).value || "AskReddit";
+  const lang = (document.getElementById("genVoice") || {}).value || "vi";
+  const commentDelay = (document.getElementById("genBuffer") || {}).value || "0.8";
+  const ttsRate = (document.getElementById("genSpeed") || {}).value || "1.15";
+
+  try {
+    const res = await post("/api/socialshorts/start", {
+      platform: "reddit",
+      target: target.trim(),
+      lang: (lang.includes("vi") ? "vi" : "en"),
+      max_comments: "3",
+      bg_type: "minecraft",
+      comment_delay: commentDelay,
+      tts_rate: ttsRate
+    });
+
+    if (res && res.ok) {
+      vcToast("🚀 Đã khởi chạy tiến trình render AI Video Studio!");
+      if (genPollTimer) clearInterval(genPollTimer);
+      genPollTimer = setInterval(genPollLog, 1000);
+      genPollLog();
     } else {
-      targetInp.placeholder = "Ví dụ: AskReddit hoặc link bài viết...";
-      targetInp.value = "AskReddit";
+      vcToast("Lỗi: " + ((res && res.msg) || "không rõ"));
+    }
+  } catch (e) {
+    vcToast("Lỗi kết nối: " + e);
+  }
+}
+
+async function genPollLog() {
+  const logEl = document.getElementById("genLog");
+  const pBar = document.getElementById("genProgressBar");
+  const pPct = document.getElementById("genProgressPct");
+  const pStatus = document.getElementById("genStatusText");
+  const resView = document.getElementById("genResultView");
+
+  try {
+    const res = await (await fetch("/api/socialshorts/log")).json();
+    if (!res || !res.ok) return;
+
+    if (res.lines && res.lines.length && logEl) {
+      logEl.textContent = res.lines.join("\n");
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    const pct = res.progress || 0;
+    if (pBar) pBar.style.width = pct + "%";
+    if (pPct) pPct.textContent = pct + "%";
+    if (pStatus) pStatus.textContent = (res.step ? ("[" + res.step + "] ") : "") + (res.msg || "Đang xử lý...");
+
+    if (!res.running) {
+      if (genPollTimer) {
+        clearInterval(genPollTimer);
+        genPollTimer = null;
+      }
+
+      if (pct >= 100) {
+        vcToast("✨ Render AI Video thành công!");
+        if (resView) resView.style.display = "grid";
+      }
+    }
+  } catch (e) {}
+}
+
+window.genSwitchStep = genSwitchStep;
+window.genSelectType = genSelectType;
+window.genSelectAspect = genSelectAspect;
+window.genLoadSampleScript = genLoadSampleScript;
+window.genAnalyzeScript = genAnalyzeScript;
+window.genRenderStoryboard = genRenderStoryboard;
+window.genStartRender = genStartRender;
+window.genPollLog = genPollLog;
+
+
+
+/* ===== REDDIT & THREADS SHORTS JS ===== */
+let socPollTimer = null;
+
+window.socSwitchMode = socSwitchMode;
+window.socPlatformChange = socPlatformChange;
+window.socGenreChange = socGenreChange;
+window.socFindHotThreads = socFindHotThreads;
+window.socSelectHotPost = socSelectHotPost;
+window.socStartRender = socStartRender;
+window.socPollLog = socPollLog;
+window.socLoadList = socLoadList;
+
+
+function socSwitchMode(mode) {
+  const platformInp = document.getElementById("socPlatform");
+  const tabReddit = document.getElementById("socTabReddit");
+  const tabThreads = document.getElementById("socTabThreads");
+  const badge = document.getElementById("socModeBadge");
+  const targetInp = document.getElementById("socTarget");
+  const targetLabel = document.getElementById("socTargetLabel");
+  const genreLabel = document.getElementById("socGenreLabel");
+  const genreSel = document.getElementById("socGenre");
+  const redditPresets = document.getElementById("socRedditPresets");
+  const threadsPresets = document.getElementById("socThreadsPresets");
+  const threadsHotPanel = document.getElementById("socThreadsHotPanel");
+
+  if (platformInp) platformInp.value = mode;
+
+  if (mode === "threads") {
+    if (tabReddit) { tabReddit.style.background = "transparent"; tabReddit.style.color = "#94a3b8"; }
+    if (tabThreads) { tabThreads.style.background = "linear-gradient(135deg, #0084FF, #A855F7)"; tabThreads.style.color = "#fff"; }
+    if (badge) { badge.textContent = "THREADS MODE"; badge.style.background = "linear-gradient(135deg, #0084FF, #A855F7)"; }
+    if (genreLabel) genreLabel.textContent = "Chủ Đề Threads (Threads Topic):";
+    if (targetLabel) targetLabel.textContent = "Account Threads (@username), Từ Khóa hoặc Link Post:";
+    if (targetInp) { targetInp.placeholder = "Ví dụ: @zuck, @mosseri hoặc link bài viết Threads..."; targetInp.value = "@zuck"; }
+    if (redditPresets) redditPresets.style.display = "none";
+    if (threadsPresets) threadsPresets.style.display = "flex";
+    if (threadsHotPanel) threadsHotPanel.style.display = "block";
+
+    if (genreSel) {
+      genreSel.innerHTML = `
+        <option value="" selected>🔥 Tất cả / Nhập @username hoặc Từ khóa</option>
+        <option value="tech">💡 Công nghệ & AI (@zuck, @mosseri, @techcrunch)</option>
+        <option value="lifestyle">🔥 Lối sống & Thảo luận (@threads, @instagram)</option>
+        <option value="business">📈 Kinh doanh & Startup (@forbes, @bloomberg)</option>
+        <option value="entertainment">🎬 Phim ảnh & Giải trí (@netflix, @marvel)</option>
+        <option value="sports">⚽ Thể thao & Tin tức (@shamscharania, @espn)</option>
+      `;
+    }
+  } else {
+    if (tabReddit) { tabReddit.style.background = "#FF4500"; tabReddit.style.color = "#fff"; }
+    if (tabThreads) { tabThreads.style.background = "transparent"; tabThreads.style.color = "#94a3b8"; }
+    if (badge) { badge.textContent = "REDDIT MODE"; badge.style.background = "#FF4500"; }
+    if (genreLabel) genreLabel.textContent = "Thể loại / Chủ đề Nội dung (Genre):";
+    if (targetLabel) targetLabel.textContent = "Tên Subreddit hoặc Đường dẫn Link Bài Viết Reddit:";
+    if (targetInp) { targetInp.placeholder = "Ví dụ: AskReddit hoặc link bài viết..."; targetInp.value = "AskReddit"; }
+    if (redditPresets) redditPresets.style.display = "flex";
+    if (threadsPresets) threadsPresets.style.display = "none";
+    if (threadsHotPanel) threadsHotPanel.style.display = "none";
+
+    if (genreSel) {
+      genreSel.innerHTML = `
+        <option value="" selected>Tự chọn / Nhập Subreddit bên dưới</option>
+        <option value="funny">😂 Hài hước & Giải trí (r/AskReddit, r/tifu)</option>
+        <option value="confession">🔥 Tâm sự & Drama (r/AITAH, r/confession)</option>
+        <option value="horror">👻 Kinh dị & Truyện đêm khuya (r/nosleep)</option>
+        <option value="quotes">💡 Triết lý & Suy ngẫm (r/Showerthoughts)</option>
+        <option value="gaming">🎮 Game & Công nghệ (r/gaming)</option>
+      `;
     }
   }
 }
 
+function socPlatformChange(val) {
+  socSwitchMode(val);
+}
+
 function socGenreChange(val) {
   const targetInp = document.getElementById("socTarget");
+  const platformInp = document.getElementById("socPlatform");
   if (!targetInp) return;
-  const genreMap = {
+  const isThreads = (platformInp && platformInp.value === "threads");
+  const genreMap = isThreads ? {
+    tech: "@zuck",
+    lifestyle: "@threads",
+    business: "@forbes",
+    entertainment: "@netflix",
+    sports: "@shamscharania"
+  } : {
     funny: "AskReddit",
     confession: "AITAH",
     horror: "nosleep",
@@ -2239,6 +3168,57 @@ function socGenreChange(val) {
   }
 }
 
+async function socFindHotThreads() {
+  const target = (document.getElementById("socTarget") || {}).value || "@zuck";
+  const days = parseInt((document.getElementById("socThreadsDays") || {}).value || "7");
+  const minLikes = parseInt((document.getElementById("socThreadsMinLikes") || {}).value || "50");
+  const listContainer = document.getElementById("socHotThreadsList");
+
+  if (!listContainer) return;
+  listContainer.style.display = "flex";
+  listContainer.innerHTML = '<div style="color:#38bdf8;font-size:12px;padding:8px">⏳ Đang quét bài viết Threads HOT từ <b>' + _tdEsc(target) + '</b> (đăng trong <= ' + days + ' ngày, >= ' + minLikes + ' tim)...</div>';
+
+  try {
+    const res = await post("/api/threads/hot_posts", { target: target, days: days, min_likes: minLikes, limit: 10 });
+    if (!res || !res.ok || !res.posts || res.posts.length === 0) {
+      listContainer.innerHTML = '<div style="color:#f87171;font-size:12px;padding:8px">❌ Không tìm thấy bài viết Threads HOT nào khớp điều kiện lọc (đã đăng <= ' + days + ' ngày, >= ' + minLikes + ' tim). Thử giảm số tim hoặc tăng số ngày.</div>';
+      return;
+    }
+
+    let html = "";
+    res.posts.forEach((p) => {
+      const likesStr = p.likes >= 1000 ? (p.likes / 1000).toFixed(1) + 'K' : p.likes;
+      html += `
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-weight:700;color:#a5b4fc;font-size:12.5px">${_tdEsc(p.author)}</span>
+            <div style="display:flex;gap:8px;font-size:11px">
+              <span style="color:#f472b6;font-weight:700">❤️ ${likesStr} tim</span>
+              <span style="color:#94a3b8">⏱️ ${p.time_text || p.age_days + 'd'}</span>
+            </div>
+          </div>
+          <div style="font-size:12px;color:#cbd5e1;line-height:1.4">${_tdEsc(p.text)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+            <a href="${p.url}" target="_blank" style="font-size:11px;color:#38bdf8;text-decoration:none">🔗 Xem bài gốc</a>
+            <button class="btn go" type="button" onclick="socSelectHotPost('${_tdEsc(p.url)}', '${_tdEsc(p.author)}')" style="padding:4px 12px;font-size:11px;background:linear-gradient(135deg, #0084FF, #A855F7)">
+              🎬 Dùng Bài Này Render
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    listContainer.innerHTML = html;
+  } catch (e) {
+    listContainer.innerHTML = '<div style="color:#f87171;font-size:12px;padding:8px">❌ Lỗi tìm bài Threads HOT: ' + e + '</div>';
+  }
+}
+
+function socSelectHotPost(url, author) {
+  const targetInp = document.getElementById("socTarget");
+  if (targetInp) targetInp.value = url;
+  vcToast("✔ Đã chọn bài viết của " + author + ". Bấm '🚀 Bắt Đầu Tạo Short Video' bên dưới để render!");
+}
+
 async function socStartRender() {
   const platform = (document.getElementById("socPlatform") || {}).value || "reddit";
   const target = (document.getElementById("socTarget") || {}).value || "AskReddit";
@@ -2248,17 +3228,24 @@ async function socStartRender() {
   const outro = (document.getElementById("socOutro") || {}).value || "";
   const genre = (document.getElementById("socGenre") || {}).value || "";
   const commentDelay = (document.getElementById("socCommentDelay") || {}).value || "1.0";
+  const ttsRate = (document.getElementById("socTtsRate") || {}).value || "1.0";
 
   const btn = document.getElementById("socBtnStart");
   const logEl = document.getElementById("socLog");
+  const pBar = document.getElementById("socProgressBar");
+  const pPct = document.getElementById("socProgressPct");
+  const pStatus = document.getElementById("socStatusText");
 
   if (!target.trim()) {
-    vcToast("⚠️ Vui lòng nhập tên Subreddit hoặc link bài viết!");
+    vcToast("⚠️ Vui lòng nhập tên Subreddit, Username hoặc Link bài viết!");
     return;
   }
 
   if (btn) btn.disabled = true;
   if (logEl) logEl.textContent = "🚀 Đang khởi chạy tiến trình cào dữ liệu và tạo Short Video...";
+  if (pBar) pBar.style.width = "5%";
+  if (pPct) pPct.textContent = "5%";
+  if (pStatus) pStatus.textContent = "🚀 Đang khởi động tiến trình...";
 
   try {
     const res = await post("/api/socialshorts/start", {
@@ -2269,22 +3256,64 @@ async function socStartRender() {
       bg_type: bgType,
       outro: outro.trim(),
       genre: genre,
-      comment_delay: commentDelay
+      comment_delay: commentDelay,
+      tts_rate: ttsRate
     });
 
     if (res && res.ok) {
-      vcToast("🚀 Đã khởi chạy tiến trình tạo Short Video Reddit/Threads!");
-      if (logEl) logEl.textContent = "▶ Đang xử lý... Theo dõi nhật ký tiến trình ở drawer bên phải.";
-      setTimeout(socLoadList, 5000);
+      vcToast("🚀 Đã khởi chạy tiến trình tạo Short Video " + (platform === 'threads' ? 'Threads' : 'Reddit') + "!");
+      if (socPollTimer) clearInterval(socPollTimer);
+      socPollTimer = setInterval(socPollLog, 1000);
+      socPollLog();
     } else {
       vcToast("Lỗi: " + ((res && res.msg) || "không rõ"));
       if (logEl) logEl.textContent = "❌ " + ((res && res.msg) || "Lỗi khởi chạy");
+      if (btn) btn.disabled = false;
     }
   } catch (e) {
     vcToast("Lỗi kết nối: " + e);
     if (logEl) logEl.textContent = "❌ Lỗi kết nối: " + e;
-  } finally {
     if (btn) btn.disabled = false;
+  }
+}
+
+async function socPollLog() {
+  const logEl = document.getElementById("socLog");
+  const pBar = document.getElementById("socProgressBar");
+  const pPct = document.getElementById("socProgressPct");
+  const pStatus = document.getElementById("socStatusText");
+  const btn = document.getElementById("socBtnStart");
+
+  try {
+    const res = await (await fetch("/api/socialshorts/log")).json();
+    if (!res || !res.ok) return;
+
+    if (res.lines && res.lines.length && logEl) {
+      logEl.textContent = res.lines.join("\n");
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    const pct = res.progress || 0;
+    if (pBar) pBar.style.width = pct + "%";
+    if (pPct) pPct.textContent = pct + "%";
+    if (pStatus) pStatus.textContent = (res.step ? ("[" + res.step + "] ") : "") + (res.msg || "Đang xử lý...");
+
+    if (!res.running) {
+      if (socPollTimer) {
+        clearInterval(socPollTimer);
+        socPollTimer = null;
+      }
+      if (btn) btn.disabled = false;
+
+      if (pct >= 100) {
+        vcToast("✨ Hoàn thành tạo Short Video thành công!");
+        socLoadList();
+      } else if (res.msg && res.msg.startsWith("❌")) {
+        vcToast("❌ Lỗi trong quá trình render: " + res.msg);
+      }
+    }
+  } catch (e) {
+    console.error("Lỗi poll log socialshorts:", e);
   }
 }
 
@@ -2295,18 +3324,109 @@ async function socLoadList() {
     const res = await (await fetch("/api/socialshorts/list")).json();
     if (res && res.ok && res.files && res.files.length) {
       grid.innerHTML = res.files.map(f =>
-        `<div class="fcard" style="padding:10px">
-          <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(f.name)}">🎬 ${esc(f.name)}</b>
-          <div class="sub" style="margin:4px 0 8px;font-size:11px">${(f.size/1024/1024).toFixed(1)} MB</div>
+        `<div class="fcard" style="padding:12px;background:#0f172a;border:1px solid #334155;border-radius:8px">
+          <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f8fafc" title="${esc(f.name)}">🎬 ${esc(f.name)}</b>
+          <div class="sub" style="margin:4px 0 8px;font-size:11px;color:#94a3b8">${(f.size/1024/1024).toFixed(1)} MB</div>
           <div style="display:flex;gap:6px">
-            <button class="btn go" style="padding:5px 9px;font-size:11px" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở thư mục</button>
+            <button class="btn go" style="padding:5px 9px;font-size:11px;background:#3b82f6" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở thư mục</button>
           </div>
         </div>`
       ).join("");
     } else {
-      grid.innerHTML = `<div class="sub" style="grid-column:1/-1">Chưa có Short Video Reddit/Threads nào...</div>`;
+      grid.innerHTML = `<div class="sub" style="grid-column:1/-1;color:#94a3b8">Chưa có Short Video Reddit/Threads nào...</div>`;
     }
   } catch (e) {}
+}
+
+
+
+async function hgListCao() {
+  const urlInp = (document.getElementById("hgUrlCao") || {}).value || "";
+  const prevEl = document.getElementById("hgPreviewCao");
+  if (!urlInp.trim()) { vcToast("⚠️ Vui lòng nhập link hoặc ID phim Hồng Quả!"); return; }
+  if (prevEl) prevEl.innerHTML = '<div class="sub">⏳ Đang lấy danh sách tập phim Hồng Quả...</div>';
+  try {
+    const res = await post("/api/honggo/list", { url: urlInp.trim() });
+    if (res && res.ok && res.items && res.items.length) {
+      prevEl.innerHTML = `
+        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:8px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <b>${esc(res.title || "Bộ phim")} (Tổng ${res.tong || res.items.length} tập)</b>
+            <button class="btn go" style="padding:6px 12px;font-size:12px" onclick="hgDownloadCao('${esc(urlInp.trim())}')">🚀 Tải Trọn Bộ Ngay</button>
+          </div>
+          <div class="sub" style="font-size:11.5px">Đã tìm thấy ${res.items.length} tập phim. Bấm nút để tiến hành tải về máy.</div>
+        </div>`;
+    } else {
+      if (prevEl) prevEl.innerHTML = `<div class="sub" style="color:var(--accent)">❌ ${((res && res.msg) || "Không tìm thấy dữ liệu tập phim")}</div>`;
+    }
+  } catch (e) {
+    if (prevEl) prevEl.innerHTML = `<div class="sub" style="color:var(--accent)">❌ Lỗi kết nối: ${e}</div>`;
+  }
+}
+async function hgDownloadCao(url) {
+  try {
+    const res = await post("/api/honggo/download", { url: url, mode: "all", count: "0", delay: "1.5" });
+    if (res && res.ok) {
+      vcToast("🚀 Đã khởi chạy tiến trình tải phim Hồng Quả!");
+    } else {
+      vcToast("Lỗi: " + ((res && res.msg) || "Không thể tải"));
+    }
+  } catch (e) { vcToast("Lỗi: " + e); }
+}
+
+
+/* ===== HỒNG QUẢ HELPERS ===== */
+async function hgCheckLinkCao() {
+  const urlInp = (document.getElementById("hgUrlCao") || {}).value || "";
+  const prevEl = document.getElementById("hgPreviewCao");
+  if (!urlInp.trim()) { 
+    vcToast("⚠️ Vui lòng nhập link hoặc ID phim Hồng Quả để kiểm tra!"); 
+    return; 
+  }
+  if (prevEl) prevEl.innerHTML = '<div class="sub" style="color:var(--purple)">🔍 Đang kiểm tra kết nối & tính hợp lệ của link Hồng Quả...</div>';
+  try {
+    const res = await post("/api/honggo/list", { url: urlInp.trim() });
+    if (res && res.ok && res.items && res.items.length) {
+      prevEl.innerHTML = `
+        <div style="background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:8px">
+          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+            ${res.thumb ? `<img src="${esc(res.thumb)}" style="width:70px;height:95px;object-fit:cover;border-radius:8px;border:1px solid var(--line)">` : ''}
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px">
+                <b style="font-size:15px;color:#fff">${esc(res.title || "Bộ phim Hồng Quả")}</b>
+                <span style="background:rgba(34,197,94,.18);color:#22c55e;border:1px solid rgba(34,197,94,.4);border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700">✓ Link hợp lệ</span>
+              </div>
+              <div class="sub" style="margin-top:6px;font-size:12.5px">Tổng số: <b>${res.tong || res.items.length} tập phim</b> | Nguồn CDN hoạt động tốt</div>
+              <div style="display:flex;gap:10px;margin-top:10px">
+                <button class="btn go" style="padding:7px 14px;font-size:12px;background:linear-gradient(135deg,#ec4899,#8b5cf6)" onclick="hgDownloadCao('${esc(urlInp.trim())}')">🚀 Bắt Đầu Tải Trọn Bộ</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      vcToast("✓ Link Hồng Quả hợp lệ! Đã lấy thành công thông tin phim.");
+    } else {
+      if (prevEl) prevEl.innerHTML = `<div class="sub" style="color:var(--accent)">❌ Link không hợp lệ hoặc không tìm thấy phim: ${((res && res.msg) || "Không rõ")}</div>`;
+      vcToast("❌ Kiểm tra thất bại: Link không hợp lệ");
+    }
+  } catch (e) {
+    if (prevEl) prevEl.innerHTML = `<div class="sub" style="color:var(--accent)">❌ Lỗi kết nối server: ${e}</div>`;
+    vcToast("❌ Lỗi kết nối: " + e);
+  }
+}
+
+async function hgListCao() {
+  return hgCheckLinkCao();
+}
+
+async function hgDownloadCao(url) {
+  try {
+    const res = await post("/api/honggo/download", { url: url, mode: "all", count: "0", delay: "1.5" });
+    if (res && res.ok) {
+      vcToast("🚀 Đã khởi chạy tiến trình tải phim Hồng Quả!");
+    } else {
+      vcToast("Lỗi: " + ((res && res.msg) || "Không thể tải"));
+    }
+  } catch (e) { vcToast("Lỗi: " + e); }
 }
 
 </script>
@@ -3447,7 +4567,8 @@ async function socLoadList() {
         <div>
           <div class="r2-panel">
             <div class="r2-ph"><span class="ic t-acc">🎞</span><span class="tt">1. Video nguồn</span>
-              <button class="r2-pick" id="r2PickBtn" style="width:auto" onclick="xlOpenPicker()">➕ Chọn video</button></div>
+              <button class="r2-pick" id="r2PickBtn" style="width:auto" onclick="xlOpenPicker()">➕ Chọn video</button>
+              <button class="r2-ghost" id="r2TmBtn" style="width:auto;margin-left:6px" onclick="xlChonThuMucVideos()" title="Chọn thư mục chứa video từ máy">📂 Chọn thư mục</button></div>
             <label class="r2-cbox tog" id="r2BoxDaKenh" title="BẬT = mỗi kênh có folder + logo + watermark RIÊNG. Thêm video vào từng kênh → render 1 lượt ra nhiều kênh (khỏi làm từng kênh một). TẮT = danh sách chung 1 folder như cũ." style="margin-bottom:9px"><div class="cl">🗂 Chế độ đa-kênh <small style="display:block;font-weight:400;color:var(--r2-ink2);font-size:11.5px">mỗi kênh folder + logo + watermark riêng</small></div><div class="r2-sw sm" id="r2DaKenh" onclick="r2DaKenhTog(this)"></div></label>
             <!-- danh sách phẳng (chế độ thường) -->
             <div id="r2FlatWrap">
@@ -3517,12 +4638,22 @@ async function socLoadList() {
               <button class="r2-ghost" onclick="document.getElementById('r2SubModal').classList.add('open')">🎨 Style phụ đề &amp; che chữ</button>
               <button class="r2-ghost" onclick="document.getElementById('r2VoiceModal').classList.add('open')">🎙 Chỉnh giọng</button>
             </div>
+            <!-- CẮT QUẢNG CÁO CHÈN GIỮA (TỰ ĐỘNG CHẠY TRƯỚC RENDER) -->
+            <div class="r2-subline" style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--r2-line2, #334155);">
+              <div class="r2-sw sm" id="r2SwCutAds" onclick="r2Tog(this)"></div>
+              <div class="txt">✂️ Tự động dò &amp; cắt quảng cáo <small>(chèn giữa video trước khi render)</small></div>
+              <select id="r2CutAdsMethod" onchange="r2SaveCfg()" style="width:auto;font-size:11.5px;padding:3px 8px;margin-left:auto;background:var(--r2-bg2, #0f172a);border:1px solid var(--r2-line2, #334155);border-radius:6px;color:var(--text);">
+                <option value="resolution" selected>🎯 Theo độ phân giải (720p vs 1080p)</option>
+                <option value="color">🎨 Theo sắc màu (Đỏ/Vàng rực)</option>
+              </select>
+            </div>
             <!-- ƯU TIÊN DÒ DẢI THỦ CÔNG (chủ dự án chốt 29/07): tool tự dò tốt với phụ đề 1 DÒNG nằm 1/3 dưới
                  màn hình — đúng phạm vi sản phẩm. Ca đặc thù (sub chạy liên tục, sub đặt trên đỉnh) thì khoanh
                  tay bằng nút ✏ trong "Style phụ đề & che chữ" → tool KHỎI phải đi tìm chỗ có sub (nhanh hơn)
                  + dải che căn khít, đẹp hơn. -->
             <div class="r2-subhint">💡 <b>Nên khoanh vùng phụ đề bằng tay</b> (nút ✏ trong <b>Style phụ đề &amp; che chữ</b>) — tool khỏi mất công dò, <b>render nhanh hơn</b> và dải che <b>căn khít, đẹp hơn</b>.<br><span>Tự động chỉ quét tốt phụ đề <b>1 dòng ở 1/3 dưới</b> màn hình. Sub chạy liên tục hoặc đặt trên đỉnh → <b>bắt buộc khoanh tay</b>.</span></div>
           </div>
+
 
           <!-- CHỈNH VIDEO -->
           <div class="r2-sec" data-r2tab="hinh">
@@ -4407,10 +5538,8 @@ async function socLoadList() {
         <div class="row" style="gap:8px;margin:4px 0 6px;flex-wrap:wrap;align-items:center">
           <select id="knPlat" class="num" style="width:auto;padding:7px 9px">
             <option value="dy">Douyin</option><option value="bili">Bilibili</option>
-            <option value="xhs">Xiaohongshu</option><option value="rednote">RedNote</option>
             <option value="yt">YouTube</option><option value="tt">TikTok</option>
-            <option value="fb">Facebook</option>
-          </select>
+            </select>
           <input id="knLink" class="num" placeholder="Dán link/ID kênh (trang cá nhân)" style="flex:1;min-width:230px;padding:7px 11px" onkeydown="if(event.key==='Enter')knThem()">
           <input id="knCount" class="num" type="number" min="5" max="100" value="30" title="Số video lấy về (metadata)" style="width:76px;padding:7px 9px">
           <button class="btn go" id="knThemBtn" onclick="knThem()">➕ Ném kênh vào</button>
@@ -9626,7 +10755,7 @@ async function socLoadList() {
 
         <div class="wf-xoa-w">
           ⚠ phần mềm đăng bài <b>CHUYỂN</b> bản render đi khi hút
-          (không chép) — bật công tắc này nghĩa là phía ViralCrawl
+          (không chép) — bật công tắc này nghĩa là phía MeowCrawl
           <b>không còn bản nào</b>: gốc đã xoá, bản render đã sang phần mềm đăng bài.
         </div>
 
@@ -9812,7 +10941,7 @@ async function socLoadList() {
         </div>
         <div class="panel" style="margin-top:16px">
           <b>📁 Thư mục lưu video</b>
-          <div class="sub" style="margin-top:6px">Đây là <b>KHO</b> của app. Chọn xong, app tự tạo <b>2 thư mục con</b> trong đó: <code>data</code> (video <b>cào về</b>) và <code>processed_videos</code> (video render, khi bạn chưa trỏ nơi khác). Để ở đây cho <b>BỀN qua mỗi lần cập nhật</b> (không bị mất). Nên chọn ổ còn nhiều dung lượng (vd <code>D:\ViralCrawl</code>) rồi <b>để yên</b>.<br>➡ Muốn chọn <b>nơi video ĐÃ RENDER đổ ra</b>: dùng ô <b>“thư mục lưu”</b> ở tab <b>🎬 Render</b> — ô đó lưu <b>nguyên</b> đường dẫn bạn chọn, không tạo thêm thư mục nào. (Ô “thư mục lưu” bạn tự chọn <b>luôn được tôn trọng</b>. Muốn mỗi ngôn ngữ một nơi thì <b>để TRỐNG</b> ô đó rồi khai <b>🌐 Trỏ riêng theo ngôn ngữ</b> ở tab Render.)</div>
+          <div class="sub" style="margin-top:6px">Đây là <b>KHO</b> của app. Chọn xong, app tự tạo <b>2 thư mục con</b> trong đó: <code>data</code> (video <b>cào về</b>) và <code>processed_videos</code> (video render, khi bạn chưa trỏ nơi khác). Để ở đây cho <b>BỀN qua mỗi lần cập nhật</b> (không bị mất). Nên chọn ổ còn nhiều dung lượng (vd <code>D:\MeowCrawl</code>) rồi <b>để yên</b>.<br>➡ Muốn chọn <b>nơi video ĐÃ RENDER đổ ra</b>: dùng ô <b>“thư mục lưu”</b> ở tab <b>🎬 Render</b> — ô đó lưu <b>nguyên</b> đường dẫn bạn chọn, không tạo thêm thư mục nào. (Ô “thư mục lưu” bạn tự chọn <b>luôn được tôn trọng</b>. Muốn mỗi ngôn ngữ một nơi thì <b>để TRỐNG</b> ô đó rồi khai <b>🌐 Trỏ riêng theo ngôn ngữ</b> ở tab Render.)</div>
           <div style="margin-top:8px;font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
             <span id="ddPath" style="font-family:monospace;background:var(--card2);border:1px solid var(--line);padding:5px 10px;border-radius:8px;word-break:break-all">…</span>
             <span id="ddFree" class="sub"></span>
@@ -10234,6 +11363,21 @@ async function socLoadList() {
      renderer (đang 787 MB) rồi hãy tính bỏ hẳn. -->
 <script src="hd_anh.js" defer></script>
 <script>
+var PLAN = {tier:"unlimited", limits:{}, usage:{}};
+var r2Clone = [];
+var GIA = GIA || {};
+var fMode = fMode || "tai";
+var _lsAll = _lsAll || [];
+var APP_LANGS = APP_LANGS || [];
+var kenhRender = kenhRender || [];
+var xlVideoThem = xlVideoThem || [];
+var CAPCUT_ON = CAPCUT_ON || false;
+var _r2Prof = _r2Prof || "";
+var fPage = fPage || 1;
+var filRender = filRender || new Set();
+var _lsSel = _lsSel || new Set();
+var xlSel = xlSel || new Set();
+var xlAllVids = xlAllVids || [];
 const API = "";
 /* 🐞 BẮT LỖI GIAO DIỆN — đặt Ở ĐẦU khối script, TRƯỚC mọi thứ khác, để bắt được cả lỗi lúc nạp.
    🔴 VÌ SAO (12/09/2026): trước đây file này KHÔNG có `window.onerror`, KHÔNG có `unhandledrejection`,
@@ -10532,15 +11676,15 @@ document.querySelectorAll("#authSeg button").forEach(b=>b.onclick=()=>{
   document.getElementById("authSub").textContent = reg?"Tạo tài khoản mới":"Đăng nhập để tiếp tục";
   document.getElementById("authMsg").textContent = "";
 });
-function authMsg(t){document.getElementById("authMsg").textContent=t||"";}
+function authMsg(t){ const el=document.getElementById("authMsg"); if(el) el.textContent=t||""; }
 async function authSubmit(){
-  const username=document.getElementById("authUser").value.trim();
-  const password=document.getElementById("authPass").value;
+  const uEl=document.getElementById("authUser"), pEl=document.getElementById("authPass");
+  const username=uEl?uEl.value.trim():"", password=pEl?pEl.value:"";
   if(!username||!password){authMsg("Nhập đủ tên đăng nhập và mật khẩu.");return;}
   if(authMode==="register"){
     if(username.length<3){authMsg("Tên đăng nhập tối thiểu 3 ký tự.");return;}
-    if(!/^[A-Za-z0-9_]+$/.test(username)){authMsg("Tên đăng nhập chỉ gồm chữ không dấu, số và dấu _ (không dấu cách, không dấu tiếng Việt).");return;}
-    const p2=document.getElementById("authPass2").value;
+    if(!/^[A-Za-z0-9_]+$/.test(username)){authMsg("Tên đăng nhập chỉ gồm chữ không dấu, số và dấu _.");return;}
+    const p2El=document.getElementById("authPass2"); const p2=p2El?p2El.value:"";
     if(password!==p2){authMsg("Mật khẩu nhập lại không khớp.");return;}
     if(password.length<6){authMsg("Mật khẩu tối thiểu 6 ký tự.");return;}
   }
@@ -10554,43 +11698,31 @@ async function authSubmit(){
   finishAuth(r.username);
 }
 function finishAuth(username){
-  document.getElementById("authGate").style.display="none";
-  document.getElementById("meName").textContent = username;
-  // Bỏ hẳn nút Đăng xuất (user yêu cầu) — ẩn ở MỌI chế độ (EXE lẫn browser dev).
-  document.getElementById("logoutBtn").style.display = "none";
-  document.getElementById("authPass").value=""; document.getElementById("authPass2").value="";
-  if(typeof goiLoad==="function") goiLoad();   // nạp gói + áp gating sau khi vào tool
+  const ag=document.getElementById("authGate"); if(ag) ag.style.display="none";
+  const mn=document.getElementById("meName"); if(mn) mn.textContent = username || "User";
+  const lb=document.getElementById("logoutBtn"); if(lb) lb.style.display = "none";
+  const ap=document.getElementById("authPass"); if(ap) ap.value="";
+  const ap2=document.getElementById("authPass2"); if(ap2) ap2.value="";
+  if(typeof goiLoad==="function") goiLoad();
 }
 async function dangXuat(){
   try{ await fetch("/api/auth/logout",{method:"POST"}); }catch(e){}
   authToken=""; localStorage.removeItem("token");
-  location.reload();
+  finishAuth("User");
 }
-// Khởi động: app Electron (đã xác thực license) -> vào THẲNG, không đăng nhập lần 2.
-// Web standalone -> kiểm tra phiên cũ, nếu chưa có thì giữ cổng đăng nhập.
+// Bỏ hẳn cổng đăng nhập / đăng ký: tự động vào thẳng giao diện ứng dụng
 (async()=>{
   try{
-    // Nonce do app Electron nhúng vào URL (#k=...) — gửi lại để server xác thực renderer thật.
     const k = new URLSearchParams((location.hash||"").replace(/^#/,"")).get("k") || "";
     const b = await (await _fetch("/api/auth/bootstrap"+(k?("?k="+encodeURIComponent(k)):""))).json();
-    if(b && b.nonce) window.__csrf = b.nonce;          // CSRF token cho POST (embedded + standalone)
-    else if(k) window.__csrf = k;                       // fallback embedded: nonce từ hash #k=
-    if(b && b.ok && b.embedded){
-      IS_EMBEDDED = true;
-      authToken = b.token; localStorage.setItem("token", authToken);
-      finishAuth(b.username); return;
-    }
+    if(b && b.nonce) window.__csrf = b.nonce;
   }catch(e){}
-  if(!authToken){ return; }  // standalone chưa có token -> giữ cổng đăng nhập
-  try{
-    const r = await (await fetch("/api/auth/me")).json();
-    if(r.ok){ finishAuth(r.username); }
-    else { authToken=""; localStorage.removeItem("token"); }
-  }catch(e){}
+  finishAuth("User");
 })();
 // Enter để submit
 ["authUser","authPass","authPass2"].forEach(id=>{
-  document.getElementById(id).addEventListener("keydown",e=>{ if(e.key==="Enter") authSubmit(); });
+  const _el = document.getElementById(id);
+  if(_el) _el.addEventListener("keydown",e=>{ if(e.key==="Enter") authSubmit(); });
 });
 
 // ====== KHÁCH HÀNG ======
@@ -10742,7 +11874,7 @@ let lgPlats=[], lgStatus={};
 // "Đang mở / chưa rõ" (vàng !) vì Gemini KHÔNG có cookie auth tên cố định để dò — trông như lỗi trong khi
 // bản free vốn chạy tốt không cần đăng nhập. Đăng nhập 2 cái này đã dời sang tab CÀI ĐẶT (aiDangNhap()).
 // Lọc ở FRONTEND, KHÔNG bỏ khỏi backend: /api/open_login + mo_dang_nhap vẫn cần nhận 2 mã này.
-const LG_AN=["gemini","deepseek"];
+const LG_AN=["gemini","deepseek","ks","fb","ig","xhs","rednote","tw"];
 function renderLcards(d){
   lgPlats=(d.plats||lgPlats||[]).filter(p=>p&&!LG_AN.includes(p.ma));
   if(d.trang_thai) lgStatus=d.trang_thai;
@@ -10881,7 +12013,8 @@ async function guardLogin(plat){
 // ---- theme sáng/tối
 function applyTheme(t){
   document.body.classList.toggle("light", t==="light");
-  document.getElementById("themeBtn").textContent = t==="light" ? "☀️" : "🌙";
+  const btn = document.getElementById("themeBtn");
+  if(btn) btn.textContent = t==="light" ? "☀️" : "🌙";
 }
 function toggleTheme(){
   const t = document.body.classList.contains("light") ? "dark" : "light";
@@ -10898,38 +12031,50 @@ fillSel("thoiGian",{"Không giới hạn":0,"Trong 1 ngày":1,"Trong 1 tuần":7
 fillSel("sapXepKenh",{"Mới nhất":"newest","Nhiều like nhất":"most_liked"},"Mới nhất");
 
 // ---- nav
-document.querySelectorAll("#nav a").forEach(a=>a.onclick=()=>{
-  // FREE (trial còn): tab khoá -> trang nâng cấp gói. EXPIRED (hết 7 ngày): CHO MỞ để XEM nội dung (quảng cáo/FOMO)
-  // -> mọi thao tác vẫn bị chặn bởi body.app-expired (CSS) + server-side. Tab vẫn giữ 🔒 làm dấu hiệu premium.
-  if(a.classList.contains("locked") && !document.body.classList.contains("app-expired")){ goNangCap(); return; }
-  try{ wfCfgPanelHome(); }catch(e){}   // trả panel cấu hình render về tab Render trước khi đổi tab (nếu đang mượn)
-  document.querySelectorAll("video,audio").forEach(m=>{ try{ m.pause(); }catch(e){} });  // DỪNG video/nhạc đang phát khi rời tab (khỏi nghe tiếng nền)
-  document.querySelectorAll("#nav a").forEach(x=>x.classList.remove("active"));a.classList.add("active");
+function toggleNavMenu() {
+  const n = document.getElementById("nav");
+  if(n) n.classList.toggle("open");
+}
+
+function handleNavClick(a, e) {
+  if (e) {
+    if (e.preventDefault) e.preventDefault();
+    if (e.stopPropagation) e.stopPropagation();
+  }
+  const targetAnchor = (a && a.dataset && a.dataset.v) ? a : (e && e.target ? e.target.closest("a[data-v]") : null);
+  const navContainer = document.getElementById("nav");
+  if(navContainer) navContainer.classList.remove("open");
+  
+  if(!targetAnchor || !targetAnchor.dataset || !targetAnchor.dataset.v) return;
+
+  if(targetAnchor.classList.contains("locked") && !document.body.classList.contains("app-expired")){ goNangCap(); return; }
+  try{ wfCfgPanelHome(); }catch(err){}
+  document.querySelectorAll("video,audio").forEach(m=>{ try{ m.pause(); }catch(err){} });
+  document.querySelectorAll("#nav a").forEach(x=>x.classList.remove("active"));
+  targetAnchor.classList.add("active");
   document.querySelectorAll(".content section").forEach(s=>s.classList.add("hidden"));
-  document.getElementById("v-"+(a.dataset.v==="darender"?"files":a.dataset.v)).classList.remove("hidden");   // tab Đã render dùng CHUNG section File đã tải
-  const _ct=document.querySelector(".content"); if(_ct)_ct.scrollTop=0;   // về ĐẦU trang khi đổi tab (tránh tưởng thiếu video)
-  if(a.dataset.v==="files"){ fMode="tai"; fApplyMode(); loadFiles(); }
-  if(a.dataset.v==="darender"){ fMode="render"; fApplyMode(); loadFiles(); }
-  if(a.dataset.v==="lichsu") lsLoad();
-  if(a.dataset.v==="bam") bamLoad();
-  if(a.dataset.v==="videomoi") vmLoad();
-  if(a.dataset.v==="kenhnguon") knLoad();
-  // 🔴 23/08/2026 — `wfSKTat()` TRƯỚC ĐÂY KHÔNG AI GỌI: bộ poll sức khoẻ (15s) chạy vĩnh viễn
-  //    kể cả khi khách rời tab. Hôm nay tôi treo THÊM bộ poll bàn giao (60s, `os.listdir` mỗi
-  //    kênh đích) vào cùng cặp bật/tắt đó ⇒ ở 500 kênh là 500 lượt đọc thư mục/phút, chạy mãi.
-  //    Nay RỜI tab là tắt cả hai; vào lại thì `wfInit()` bật lại.
-  if(a.dataset.v!=="quytrinh"){ try{ wfSKTat(); }catch(e){} try{ tlAn(); }catch(e){} }
-  if(a.dataset.v==="quytrinh") wfInit();
-  if(a.dataset.v==="xuly"){ xlLoadVideos(); xlUpd(); qLoad(); xlLoadGiong(); xlLangInit(); xlGpuLoad(); caidatLoad(); xlBrandLoad(); xlRestoreCfg(); mayGoiY(); pcRender(); xlDubInit(); }
-  if(a.dataset.v==="render2"){ try{ r2Init(); }catch(e){ console.error("r2Init",e); } }
-  if(a.dataset.v==="dangbai") dbLoad();
-  if(a.dataset.v==="ttsdoclap"){ try{ ttsDlEngineChange(); }catch(e){} }   // nạp giọng (2 dropdown Nam/Nữ) ngay khi mở tab, không chờ đổi engine
-  if(a.dataset.v==="huongdan") hdInit();
-  if(a.dataset.v==="caidat"){ caidatLoad(); ddLoad(); cacheLoad(); capcutLoad(); aiKeyDs(); glossaryLoad(); aiEngineVe(); }
-  if(a.dataset.v==="banggia") bgRender();
-  if(a.dataset.v==="goi") goiMoTab();
-  wizSync(a.dataset.v);   // đồng bộ header wizard 5 bước theo tab hiện tại
-});
+  const targetSecId = "v-" + (targetAnchor.dataset.v === "darender" ? "files" : targetAnchor.dataset.v);
+  const targetSec = document.getElementById(targetSecId);
+  if(targetSec) targetSec.classList.remove("hidden");
+  const _ct = document.querySelector(".content"); if(_ct)_ct.scrollTop = 0;
+  if(targetAnchor.dataset.v==="files"){ fMode="tai"; fApplyMode(); loadFiles(); }
+  if(targetAnchor.dataset.v==="darender"){ fMode="render"; fApplyMode(); loadFiles(); }
+  if(targetAnchor.dataset.v==="lichsu") lsLoad();
+  if(targetAnchor.dataset.v==="bam") bamLoad();
+  if(targetAnchor.dataset.v==="videomoi") vmLoad();
+  if(targetAnchor.dataset.v==="kenhnguon") knLoad();
+  if(targetAnchor.dataset.v!=="quytrinh"){ try{ wfSKTat(); }catch(err){} try{ tlAn(); }catch(err){} }
+  if(targetAnchor.dataset.v==="quytrinh") wfInit();
+  if(targetAnchor.dataset.v==="xuly"){ xlLoadVideos(); xlUpd(); qLoad(); xlLoadGiong(); xlLangInit(); xlGpuLoad(); caidatLoad(); xlBrandLoad(); xlRestoreCfg(); mayGoiY(); pcRender(); xlDubInit(); }
+  if(targetAnchor.dataset.v==="render2"){ try{ r2Init(); }catch(err){ console.error("r2Init",err); } }
+  if(targetAnchor.dataset.v==="dangbai") dbLoad();
+  if(targetAnchor.dataset.v==="ttsdoclap"){ try{ ttsDlEngineChange(); }catch(err){} }
+  if(targetAnchor.dataset.v==="huongdan") hdInit();
+  if(targetAnchor.dataset.v==="caidat"){ caidatLoad(); ddLoad(); cacheLoad(); capcutLoad(); aiKeyDs(); glossaryLoad(); aiEngineVe(); }
+  if(targetAnchor.dataset.v==="banggia") bgRender();
+  if(targetAnchor.dataset.v==="goi") goiMoTab();
+  wizSync(targetAnchor.dataset.v);
+}
 
 // ---- Header wizard 5 bước: click điều hướng + tự highlight theo tab
 function wizGo(step){
@@ -10983,8 +12128,8 @@ document.addEventListener("keydown",e=>{
 });
 
 // ===== GÓI & GIỚI HẠN (pro / unlimited — ĐÃ BỎ GÓI FREE) =====
-let PLAN = null;
-const GIA = {
+if (typeof PLAN === 'undefined' || !PLAN) { var PLAN = {tier:"unlimited", limits:{}, usage:{}}; }
+GIA = {
   pro:       {ten:"PRO",       goc:800,  thang:{1:399,6:199,12:149}, hot:true},
   unlimited: {ten:"UNLIMITED", goc:1200, thang:{1:699,6:499,12:299}, best:true},
 };
@@ -11242,10 +12387,10 @@ function dongPayModal(){
 }
 
 // ===== Né bản quyền (xử lý video theo lựa chọn) =====
-let xlAllVids=[], xlSel=new Set();
+xlAllVids = xlAllVids || []; xlSel = xlSel || new Set();
 let xlFilRender="chua", xlRenderedBase=new Set();   // picker Render: tab Chưa/Đã render + set base GỐC đã có bản render xong
 function xlTrangThai(f){ return xlRenderedBase.has(_xlBase(f.p)) ? "co" : "chua"; }   // gốc đã có output _xuly/_phude/_longtieng?
-let xlVideoThem=[];   // video CỦA USER tự thêm (ngoài data cào) — giữ qua 🔄 Làm mới
+xlVideoThem = xlVideoThem || [];   // video CỦA USER tự thêm (ngoài data cào) — giữ qua 🔄 Làm mới
 async function xlThemVideo(){
   let r=null; try{ r=await post("/api/them_video",{}); }catch(e){}
   if(!r||!r.ok){ vcToast((r&&r.msg)||"Không mở được hộp thoại chọn video."); return; }
@@ -11259,6 +12404,26 @@ async function xlThemVideo(){
   if(_kAdd){ them.forEach(v=>_kAdd.videos.add(v.p)); xlRenderFacets(); xlRenderGrid(); if(typeof renderKenhPanel==="function")renderKenhPanel(); }
   else{ them.forEach(v=>xlSel.add(v.p)); xlRenderFacets(); xlRenderGrid(); xlSyncSel(); }
   if(them.length) vcToast("Đã thêm "+them.length+" video của bạn — đã tự chọn, bấm 🚀 RENDER NGAY để xử lý.");
+}
+async function xlChonThuMucVideos(){
+  if(typeof chonThuMuc !== "function"){ vcToast("Không mở được hộp chọn thư mục."); return; }
+  chonThuMuc("", async function(folderPath){
+    if(!folderPath) return;
+    let r = null;
+    try { r = await post("/api/quet_thu_muc", { path: folderPath }); } catch(e) {}
+    if(!r || !r.ok || !r.videos || !r.videos.length){
+      vcToast("Không tìm thấy video nào trong thư mục: " + folderPath);
+      return;
+    }
+    const co=new Set(xlVideoThem.map(v=>v.p));
+    const them=r.videos.filter(v=>!co.has(v.p));
+    xlVideoThem = them.concat(xlVideoThem);
+    xlAllVids = xlVideoThem.concat(xlAllVids.filter(f=>!xlVideoThem.some(v=>v.p===f.p)));
+    const _kAdd=(typeof kenhActiveAdd!=="undefined" && kenhActiveAdd!=null && typeof kenhRender!=="undefined")?kenhRender.find(x=>x.id===kenhActiveAdd):null;
+    if(_kAdd){ them.forEach(v=>_kAdd.videos.add(v.p)); xlRenderFacets(); xlRenderGrid(); if(typeof renderKenhPanel==="function")renderKenhPanel(); }
+    else{ them.forEach(v=>xlSel.add(v.p)); xlRenderFacets(); xlRenderGrid(); xlSyncSel(); }
+    vcToast("✔ Đã thêm " + them.length + " video từ thư mục: " + folderPath);
+  });
 }
 async function xlLoadVideos(){
   try{
@@ -11508,7 +12673,7 @@ function xlRenderGrid(){
 }
 /* 🔴 11/09/2026 — MỘT CỬA cho lazy-load video, và nó phải biết NHẢ, không chỉ biết NẠP.
 
-   CA THẬT (đo trên máy chủ dự án): tiến trình `ViralCrawl.exe --type=renderer` đạt **21.621 MB
+   CA THẬT (đo trên máy chủ dự án): tiến trình `MeowCrawl.exe --type=renderer` đạt **21.621 MB
    commit** (working set 5.702 MB) trên máy 15,6 GB ⇒ RAM chạm **99%**, commit toàn máy **47,1 GB**,
    pagefile đỉnh 8,38 GB, đọc đĩa đỉnh **309 MB/s** ⇒ Task Manager báo Disk 100% và máy đơ.
    ⚠ Đĩa 100% ở đây là HẬU QUẢ của hết RAM, không phải bệnh riêng: `web_app.py` bị co working set
@@ -11818,7 +12983,7 @@ const EDGE_KO_VOICES=[["ko-KR-SunHiNeural","Nữ — SunHi"],["ko-KR-InJoonNeura
 // edge = danh sách giọng edge-tts (online) cho ngôn ngữ đó.
 // UI ĐƠN GIẢN (ElevenLabs-style): người dùng chỉ chọn Ngôn ngữ → Nam/Nữ (ẩn locale + tên voice). nam/nu = giọng
 // mapping nội bộ (Edge). en thêm nam_uk/nu_uk (US/UK). vi GIỮ NGUYÊN picker cũ.
-const APP_LANGS={
+APP_LANGS={
  "af":{ten:"Afrikaans",nam:"af-ZA-WillemNeural",nu:"af-ZA-AdriNeural",edge:[["af-ZA-AdriNeural","Nữ"],["af-ZA-WillemNeural","Nam"]]},
  "sq":{ten:"Albania",nam:"sq-AL-IlirNeural",nu:"sq-AL-AnilaNeural",edge:[["sq-AL-AnilaNeural","Nữ"],["sq-AL-IlirNeural","Nam"]]},
  "am":{ten:"Amharic",nam:"am-ET-AmehaNeural",nu:"am-ET-MekdesNeural",edge:[["am-ET-MekdesNeural","Nữ"],["am-ET-AmehaNeural","Nam"]]},
@@ -11917,7 +13082,7 @@ function _flagCC(k){
   if(k==="gl") return "es-ga";      // Galician → Galicia
   if(k==="cy") return "gb-wls";     // Welsh → Wales
   const c=APP_LANGS[k]||{};
-  const loc=(c.edge&&c.edge[0]&&c.edge[0][0])||c.nam||"";
+  const loc=(c?.edge?.[0]?.[0])||c?.nam||"";
   const p=String(loc).split("-");
   return (p[1]||k).toLowerCase();
 }
@@ -13229,7 +14394,7 @@ async function cacheClear(){
 // ===== Giọng CapCut (Cài đặt → công tắc ẨN) =====
 // MẶC ĐỊNH TẮT. Tắt = mọi dropdown giọng y hệt trước, KHÔNG đường render nào đổi hành vi.
 // Bảng giọng lấy TỪ BACKEND (/api/capcut/giong) — không chép 124 giọng vào JS (1 nguồn sự thật là capcut_tts.GIONG).
-let CAPCUT_ON=false, CAPCUT_GIONG={};
+CAPCUT_ON=CAPCUT_ON||false; var CAPCUT_GIONG={};
 async function capcutLoad(){
   try{
     const r=await (await fetch("/api/capcut/giong")).json();
@@ -14162,7 +15327,7 @@ function uniq(a){return [...new Set(a)];}
 function dmy(iso){const p=(iso||"").split("-");return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:iso;}
 
 // 6 nền tảng dùng chung cho các bộ lọc
-const NEN_TANG_DS=[["dy","Douyin"],["bili","Bilibili"],["bilitv","Bilibili quốc tế"],["xhs","Xiaohongshu (nội địa)"],["rednote","RedNote (quốc tế)"],["wb","Weibo"],["yt","YouTube"],["tt","TikTok"],["fb","Facebook"],["ig","Instagram"]];
+const NEN_TANG_DS=[["dy","Douyin"],["bili","Bilibili"],["hg","Honggo"],["wb","Weibo"],["yt","YouTube"],["tt","TikTok"]];
 function nenTangTuLink(link){
   link=(link||"").toLowerCase();
   if(link.includes("douyin.com")||link.includes("iesdouyin"))return "dy";
@@ -14183,8 +15348,8 @@ function ntChip(ma){return ma?`<img src="logos/${ma}.png" alt="" onerror="this.s
 // ===== BỘ LỌC LIÊN KẾT (faceted) — 5 nhóm: nền tảng, nguồn, ngày, kênh, từ khóa =====
 // Mỗi nhóm hiển thị lựa chọn + số đếm tính trên các file khớp TẤT CẢ nhóm khác.
 let kenhAvatar={}, enMap={};
-let filNen=new Set(), filNguon=new Set(), filDate=new Set(), filKenh=new Set(), filKw=new Set(), filRender=new Set();
-let fMode="tai";   // "tai" = tab File đã tải (chỉ video GỐC tải về) · "render" = tab Đã render (chỉ output _xuly/_phude/_longtieng)
+let filNen=new Set(), filNguon=new Set(), filDate=new Set(), filKenh=new Set(), filKw=new Set(); filRender = filRender || new Set();
+fMode=fMode||"tai";   // "tai" = tab File đã tải (chỉ video GỐC tải về) · "render" = tab Đã render (chỉ output _xuly/_phude/_longtieng)
 const filSet={date:filDate, kenh:filKenh, kw:filKw};
 function fileNguon(f){return _daRenderF(f)?"rerender":"goc";}   // _xuly/_phude/_longtieng cạnh gốc (data/) vẫn tính "Đã rerender" theo TÊN, không chỉ theo thư mục processed_videos
 // --- Trạng thái render: video gốc ĐÃ render (có bản _xuly/_phude/_longtieng cạnh nó) hay CHƯA ---
@@ -14692,7 +15857,7 @@ async function outDirDel(i){
   loadFiles();
 }
 // ===== LỊCH SỬ CÀO: gom jsonl → lọc/tìm + đánh dấu đã-tải (làm mờ) + tải lại =====
-let _lsItems=[], _lsAll=[], _lsT=null, _lsSel=new Set();
+let _lsItems=[], _lsT=null; _lsSel = _lsSel || new Set(); _lsAll = _lsAll || [];
 function lsDebounce(){ clearTimeout(_lsT); _lsT=setTimeout(lsLoad,400); }
 async function lsLoad(){
   const nt=(document.getElementById("lsNt")||{}).value||"";
@@ -14964,7 +16129,7 @@ function renderSidebar(){
 }
 function renderFacets(){ renderSidebar(); applyFilters(); }
 // ===== File đã tải — redesign (lọc + tìm + sắp xếp + phân trang + sidebar thống kê) =====
-let fQuery="", fPage=1, fView="grid", fFiltered=[], fChips=[], fDisk={};
+let fQuery="", fView="grid", fFiltered=[], fChips=[], fDisk={}; fPage = fPage || 1;
 let fStars=new Set();
 let fPer=20;   // số card mỗi trang — USER chọn ở dropdown #fPerSel (10/20/50/100)
 function fComputePer(){
@@ -18779,9 +19944,11 @@ function _tqToast(title,body){
 setInterval(()=>{ try{ if(document.hidden) return; if(document.getElementById("tqList")) tqLoad(); }catch(e){} }, 2500);
 try{ tqLoad(); }catch(e){}
 function clearLog(){post("/api/clear_log",{});document.getElementById("log").innerHTML="";}
-function openFolder(){
-  // Mở thư mục khớp bộ lọc đang xem: 1 nền tảng -> thư mục nền tảng đó;
-  // chỉ "đã rerender" -> processed_videos; còn lại -> gốc của tất cả nền tảng.
+function openFolder(p){
+  if(typeof p === "string" && p){
+    post("/api/open_folder", { folder: p });
+    return;
+  }
   const nt=[...filNen], ng=[...filNguon];
   const body={};
   if(ng.length===1 && ng[0]==="rerender") body.nguon="rerender";
@@ -19198,8 +20365,8 @@ function wfTomTatAll(status){
     box.classList.remove("xau");
          if(thieu.length) s+=" <span style=\"color:var(--warn)\">⚠ Bỏ qua: "+esc(thieu.join(", "))+" (thiếu đầu vào).</span>";
          const _d=wfDichDen();
-         // ⚠ CHỈ nói thứ ViralCrawl BIẾT: nó ghi file vào thư mục. LoHa có hút hay không phụ thuộc
-         // `video_source_folder` của nhóm trang bên LoHa — ViralCrawl không đọc được cột đó.
+         // ⚠ CHỈ nói thứ MeowCrawl BIẾT: nó ghi file vào thư mục. LoHa có hút hay không phụ thuộc
+         // `video_source_folder` của nhóm trang bên LoHa — MeowCrawl không đọc được cột đó.
          // Ghi "LoHa sẽ đăng" là hứa thay hệ thống khác; chưa khai thư mục thì file nằm im vĩnh viễn.
          if(_d) s+=" <span class=\"wf-tt-den\">📁 Video ra: "+_d+"</span>"
                  +" <span class=\"wf-tt-loha\">Phần mềm đăng bài hút từ thư mục này mỗi 5 phút — nếu đã khai trong nhóm trang</span>"; }
@@ -19895,7 +21062,7 @@ function wfLohaMo(){
   d.innerHTML = `<div class="wz-md" role="dialog" aria-label="Kiểm tra nơi nhận video">
     <div class="wz-md-h"><span class="ch">📤</span>
       <div><b>Kiểm tra nơi nhận video</b>
-        <span class="wz-xt" style="margin:0;display:block">Nơi ViralCrawl đặt video xong, phần mềm đăng bài đến lấy</span></div>
+        <span class="wz-xt" style="margin:0;display:block">Nơi MeowCrawl đặt video xong, phần mềm đăng bài đến lấy</span></div>
       <button class="wz-x" onclick="wfLohaDong()" title="Đóng">✕</button></div>
     <div class="wz-md-b">
       <div class="wz-xt" style="margin:0 0 10px">
@@ -19940,7 +21107,7 @@ async function wfLohaChay(){
       <span>${dat ? "✓" : "✕"}</span><span>${t}</span></div>`;
   let h = `<div class="lh-ds">
       ${v(r.ton_tai, "Thư mục có tồn tại")}
-      ${v(r.ghi_duoc, "ViralCrawl ghi được video vào đây")}
+      ${v(r.ghi_duoc, "MeowCrawl ghi được video vào đây")}
       ${v(r.co_cau_truc, "Bên trong có thư mục nhóm của phần mềm đăng bài")}
     </div>`;
 
@@ -19961,7 +21128,7 @@ async function wfLohaChay(){
   try{ h += wfLohaGanVe(r.nhom || []); }catch(e){}
 
   // 🔴 GIỚI HẠN — luôn hiện, kể cả khi ba dấu ✓ đều xanh.
-  h += `<div class="lh-gh">Ba dấu ✓ ở trên là những gì ViralCrawl <b>kiểm được</b>.
+  h += `<div class="lh-gh">Ba dấu ✓ ở trên là những gì MeowCrawl <b>kiểm được</b>.
       Còn việc phần mềm đăng bài có <b>đang canh</b> đúng thư mục này hay không thì chỉ phần mềm đăng bài biết — hãy đối
       chiếu với ô <b>thư mục nhận video</b> trong phần mềm đăng bài.
       Nếu sau khi chạy mà Page nào cũng báo <b>🟠 phần mềm đăng bài chưa lấy</b> thì gần như chắc là chọn nhầm chỗ.</div>`;
@@ -21527,7 +22694,7 @@ function _wizMan1(){
   const _anTao = (typeof _wizCheDo === "undefined" || _wizCheDo === "tao")
                    ? ' style="display:none"' : "";
   return `<div>
-    ${ds.length ? `` : `<p class="wz-p">Mỗi <b>kênh</b> là một chỗ để đăng: ViralCrawl để video vào
+    ${ds.length ? `` : `<p class="wz-p">Mỗi <b>kênh</b> là một chỗ để đăng: MeowCrawl để video vào
       <b>một thư mục</b>, phần mềm đăng bài đến lấy ở đó rồi đăng. Chưa cần đăng nhập gì ở bước này.</p>`}
 
     <div style="padding:0">
@@ -23289,7 +24456,7 @@ function _wizBang(){
       Nút <b>Tạm dừng</b> và <b>Xoá</b> chỉ tác động lên kênh <b>đang tick</b>.
       Bấm tên kênh để xem chi tiết.</div>
     <div class="wz-hop-2" id="wizDsPg"></div>
-    <div class="lh-gh" style="margin-top:12px">ViralCrawl chỉ <b>đặt file vào thư mục</b>. Việc
+    <div class="lh-gh" style="margin-top:12px">MeowCrawl chỉ <b>đặt file vào thư mục</b>. Việc
       phần mềm đăng bài có đang canh đúng thư mục đó hay không thì chỉ phần mềm đăng bài biết — dấu hiệu thật là
       nhãn cạnh <b>📤 nơi giao</b> trên từng thẻ: file nằm lì quá lâu thì hiện <b>chưa lấy</b>.</div>
     ${_wizCuoi(0, ds.length ? `` :
@@ -23904,7 +25071,7 @@ function wfNhipTinh(){
   if(!soKD){ el.textContent=""; return; }
   /* 🔴 25/08/2026 — BỎ "⇒ N bài/lượt". Chủ dự án: *"bản chất là bên LoHaPage tự quyết"*.
      Một video rơi vào thư mục giao ra MẤY BÀI là do LoHa: `__group_…` chia vòng tròn cho các Page
-     trong nhóm, `__all_…` đăng cho mọi Page. ViralCrawl không biết nhóm đó có mấy Page (và số đó
+     trong nhóm, `__all_…` đăng cho mọi Page. MeowCrawl không biết nhóm đó có mấy Page (và số đó
      đổi bất cứ lúc nào bên LoHa) ⇒ mọi con số "bài/lượt" ở đây đều là ĐOÁN. Chỉ nói thứ mình
      BIẾT CHẮC: giao ra bao nhiêu VIDEO. */
   el.innerHTML = `→ ${soKD} kênh đích × ${n} video = <b>${soKD*n}</b> video/lượt`;
@@ -25873,7 +27040,7 @@ function _wfDauVe1(trai, phai){
     }else if(s.chuaKhai){
       /* 🔴 28/08 — "Đã đấu đủ" KHÔNG có nghĩa là xong việc. Ca thật (bài `di_thu_them_ve_sau`
          T2/T3): khách tạo thêm trang bên LoHa (tiếng mới, hoặc trang thứ hai cùng tiếng) —
-         ViralCrawl THẤY nó, nhưng vì trang mới chưa khai tiếng nên dải vẫn nói "Đã đấu đủ" và
+         MeowCrawl THẤY nó, nhưng vì trang mới chưa khai tiếng nên dải vẫn nói "Đã đấu đủ" và
          trang đó nằm không. Khách vừa bỏ công tạo trang mà bên này im re. */
       muc = "vang";
       tit = "Còn " + s.chuaKhai + " nơi nhận chưa khai tiếng — đang bỏ không";
@@ -27096,7 +28263,7 @@ async function wfGiaoVe(){
                    onclick='wfGiaoChep(${esc(aj(k.path))})'>Sao chép</button></div>`).join("")}
         ${ket.length>5?`<div class="sub" style="font-size:11px">… và ${ket.length-5} kênh nữa</div>`:``}</div>
       <div class="sub" style="font-size:11px;margin-top:5px">
-        ViralCrawl chỉ thấy được tới bước GIAO. Nếu phần mềm đăng bài đã lấy file đi mà vẫn chưa có bài thì
+        MeowCrawl chỉ thấy được tới bước GIAO. Nếu phần mềm đăng bài đã lấy file đi mà vẫn chưa có bài thì
         xem cấu hình đăng bên phần mềm đăng bài.</div>
     </div>`;
   }
@@ -28211,7 +29378,7 @@ const _R2CFG_KEY="vc_r2cfg";
 // nhau. Đổi hồ sơ = lưu hồ sơ đang mở → đổi khoá → nạp lại.
 // Lần đầu vào hồ sơ mới thì CHÉP từ hồ sơ kia làm điểm xuất phát — bắt khách cấu hình lại từ đầu
 // một panel 45 tuỳ chọn là hành hạ, mà mặc định trống cũng không phải ý "độc lập".
-let _r2Prof="";
+_r2Prof = _r2Prof || "";
 function _r2LS(k){ return _r2Prof ? (k+"__"+_r2Prof) : k; }
 /* 🔴 26/08 nhịp 27 — NÓI RÕ PANEL ĐANG THUỘC HỒ SƠ NÀO. Chủ dự án: *"trùng nhiều cái khiến tôi
    loạn"*. `#r2CfgCol` là MỘT node DOM bị DI CHUYỂN qua lại giữa tab Render và Automation ⇒ khách
@@ -29492,7 +30659,7 @@ async function r2SrtGan(p,file){
 })();
 
 /* ========== CHẾ ĐỘ ĐA-KÊNH (mỗi kênh: folder + logo + watermark riêng) ========== */
-let kenhRender=[];          // [{id, ten, path(LƯU), nguon(NGUỒN), link, logo, wm, videos:Set<path>}]
+kenhRender = kenhRender || [];          // [{id, ten, path(LƯU), nguon(NGUỒN), link, logo, wm, videos:Set<path>}]
 /* NHỊP TOÀN CỤC do tab Tự động hoá đặt (`dc_lo`). >0 = ĐÈ `k.lo` của mọi kênh — luật này do
    `_wf_video_da_kenh` chốt, tab Render nay đi theo cho hai đường khỏi nói khác nhau. */
 let _kDcLo=0;
@@ -31801,7 +32968,7 @@ function r2PcSave(){ document.getElementById("r2PcModal").classList.remove("open
 function r2PcBadgeUpd(){ const b=document.getElementById("r2PcBadge"); if(b) b.textContent=_r2PcSel.size? ("• "+_r2PcSel.size):""; }
 
 /* ---------- Dùng giọng của tôi (clone OmniVoice) — tái dùng /api/upload_ref + /api/giong_list?clone_only=1 ---------- */
-let r2Clone=[];   // [[path, tên]] giọng khách đã tải — LƯU PATH TÁCH RIÊNG (không nhồi vào chuỗi vì path Windows có ':')
+r2Clone = r2Clone || [];   // [[path, tên]] giọng khách đã tải — LƯU PATH TÁCH RIÊNG (không nhồi vào chuỗi vì path Windows có ':')
 let _r2VoiceUpFor={lang:"vi", g:"nu"};   // dropdown đang chờ giọng clone vừa tải (đặt lại value sau upload)
 // GIỚI mỗi giọng clone (path -> "nam"|"nu"): gán lúc TẢI hoặc SUY từ slot đang chọn → clone chỉ hiện ĐÚNG slot (hết "nhảy sang Nữ").
 let r2CloneGender={}; try{ r2CloneGender=JSON.parse(localStorage.getItem("vc_r2_clonegender")||"{}")||{}; }catch(e){ r2CloneGender={}; }
@@ -33684,6 +34851,9 @@ function r2BuildOpts(boQuaVungChe){
     // dịch/lồng tiếng
     phude: subOn,
     long_tieng: dubOn,
+    cut_ads: on("r2SwCutAds"),
+    cut_ads_method: val("r2CutAdsMethod") || "resolution",
+
     // CHẾ ĐỘ BÁN THỦ CÔNG (26/08/2026): dừng SAU KHI DỊCH để khách duyệt phụ đề + chọn giọng.
     // Tái dùng NGUYÊN cơ chế "dịch thủ công" đã có (trạng thái hàng đợi `cho_srt`), chỉ thêm
     // `pha_dung` để phân biệt DỪNG-SAU-ASR (cũ) với DỪNG-SAU-DỊCH (mới). Thiếu khoá ⇒ backend
@@ -34712,30 +35882,30 @@ document.addEventListener("click", function(){ const a=document.getElementById("
      `CHE_DONG` mà `CLAUDE.md` đặt ngay đầu file.
      =========================================================================================== -->
 <style>
-  #mdlBar{position:fixed;left:0;right:0;bottom:0;z-index:880;display:none;align-items:center;gap:10px;
-    padding:7px 14px;background:#0e1524;border-top:1px solid #22304a;font-size:12.5px;color:#c7d2e4;
-    box-shadow:0 -4px 18px rgba(0,0,0,.35)}
-  #mdlBar .cham{width:9px;height:9px;border-radius:50%;flex:none;background:#475569}
-  #mdlBar .cham.chay{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.18)}
-  #mdlBar .cham.ket{background:#f87171;box-shadow:0 0 0 3px rgba(248,113,113,.18)}
-  #mdlBar .cau{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #mdlBar .ketno{color:#fca5a5;font-weight:650;flex:none}
-  #mdlBar button{background:#1b2740;color:#cbd5e1;border:1px solid #2b3b57;border-radius:7px;
-    padding:4px 10px;font-size:12px;cursor:pointer;flex:none}
-  #mdlBar button:hover{background:#243354}
+  #mdlBar{position:fixed;left:0;right:0;bottom:0;z-index:880;display:none;align-items:center;gap:12px;
+    padding:8px 16px;background:var(--bg-deep, #070708);border-top:1px solid var(--border-strong, #35353a);
+    box-shadow:0 -4px 18px rgba(0,0,0,.5);font-family:var(--font-mono, 'JetBrains Mono', monospace);font-size:12px;color:var(--text, #ece9e4)}
+  #mdlBar .cham{width:8px;height:8px;border-radius:50%;flex:none;background:var(--muted-dim, #625f5a);transition:background 0.2s ease}
+  #mdlBar .cham.chay{background:var(--accent, #c96f3f);box-shadow:0 0 8px var(--accent)}
+  #mdlBar .cham.ket{background:#e06c75;box-shadow:0 0 8px rgba(224,108,117,.4)}
+  #mdlBar .cau{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text, #ece9e4)}
+  #mdlBar .ketno{color:#e06c75;font-weight:600;flex:none}
+  #mdlBar button{background:var(--surface-raised, #17171a);color:var(--text, #ece9e4);border:1px solid var(--border-strong, #35353a);border-radius:4px;
+    padding:4px 10px;font-size:11px;font-family:inherit;cursor:pointer;flex:none;transition:border-color 0.15s, color 0.15s}
+  #mdlBar button:hover{border-color:var(--accent, #c96f3f);color:var(--accent, #c96f3f)}
   #mdlPanel{position:fixed;left:0;right:0;bottom:36px;z-index:879;display:none;max-height:62vh;
-    overflow-y:auto;background:#0b111d;border-top:1px solid #22304a;padding:14px 16px;
-    box-shadow:0 -10px 30px rgba(0,0,0,.5)}
-  #mdlPanel h4{margin:0 0 9px;font-size:13px;color:#e2e8f0}
-  #mdlPanel .vg{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;
-    border:1px solid #22304a;background:#0e1524;margin-bottom:6px}
-  #mdlPanel .vg .t{font-weight:650;color:#e2e8f0;font-size:12.5px;flex:0 0 205px}
-  #mdlPanel .vg .l{flex:1;min-width:0;color:#94a3b8;font-size:12px;overflow:hidden;
+    overflow-y:auto;background:var(--bg-deep, #070708);border-top:1px solid var(--border-strong, #35353a);padding:14px 16px;
+    box-shadow:0 -10px 30px rgba(0,0,0,.6)}
+  #mdlPanel h4{margin:0 0 10px;font-size:14px;font-family:var(--font-display, 'Newsreader', serif);color:var(--text-strong, #ffffff)}
+  #mdlPanel .vg{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:4px;
+    border:1px solid var(--border, #232326);background:var(--surface, #111113);margin-bottom:6px}
+  #mdlPanel .vg .t{font-weight:600;color:var(--text-strong, #ffffff);font-size:12px;flex:0 0 205px;font-family:var(--font-mono, 'JetBrains Mono', monospace)}
+  #mdlPanel .vg .l{flex:1;min-width:0;color:var(--muted, #8b877f);font-size:12px;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
-  #mdlPanel .vg .k{flex:none;color:#64748b;font-size:11.5px}
-  #mdlPanel .ketds{margin-top:11px;padding:10px 12px;border-radius:9px;border:1px solid #4c1d24;
-    background:#1a1113}
-  #mdlPanel .ketds .d{font-size:12.5px;color:#fca5a5;margin-bottom:3px}
+  #mdlPanel .vg .k{flex:none;color:var(--muted-dim, #625f5a);font-size:11px;font-family:var(--font-mono, 'JetBrains Mono', monospace)}
+  #mdlPanel .ketds{margin-top:11px;padding:10px 12px;border-radius:4px;border:1px solid var(--border-strong, #35353a);
+    background:var(--surface, #111113)}
+  #mdlPanel .ketds .d{font-size:12px;color:#e06c75;margin-bottom:3px}
   body.mdl-co{padding-bottom:38px}
 </style>
 <div id="mdlPanel"></div>
@@ -34780,7 +35950,7 @@ async function mdlNap(){
   cham.className = "cham" + (lam.length ? " chay" : ((r.ket||[]).length ? " ket" : ""));
   document.getElementById("mdlCau").textContent = lam.length
     ? (lam.map(v => v.nhan + ": " + v.ly_do).join("  ·  "))
-    : (song.length ? ("Đang chờ — " + song.map(v => v.nhan).join(", ") + " bật, chưa tới giờ")
+    : (song.length ? "Hệ thống sẵn sàng"
                    : "Không có vòng nào đang chạy");
   const kn = document.getElementById("mdlKet");
   kn.textContent = (r.ket || []).length ? ("⚠ " + r.ket.length + " kênh chưa chạy được") : "";
@@ -34964,10 +36134,241 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 });
 
+/* ===== TAB CẮT QUẢNG CÁO (v-catqc) ===== */
+let adMedia = null;
+let adRanges = [];
+
+function adFmtTime(s) {
+  if (!isFinite(s) || s < 0) return '00:00:00.000';
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const x = s % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + x.toFixed(3).padStart(6, '0');
+}
+
+function adParseTime(str, fps) {
+  if (!str) return NaN;
+  str = String(str).trim().replace(',', '.');
+  if (/^\d+(\.\d+)?$/.test(str)) return parseFloat(str);
+  const p = str.split(':');
+  if (p.some(x => x === '' || isNaN(x))) return NaN;
+  if (p.length === 4) return (+p[0]) * 3600 + (+p[1]) * 60 + (+p[2]) + (+p[3]) / (fps || 25);
+  if (p.length === 3) return (+p[0]) * 3600 + (+p[1]) * 60 + parseFloat(p[2]);
+  if (p.length === 2) return (+p[0]) * 60 + parseFloat(p[1]);
+  return NaN;
+}
+
+function adOpenVideo() {
+  const vidPath = document.getElementById('adVidPath').value.trim();
+  if (!vidPath) return vcToast('Vui lòng nhập đường dẫn file video!', 1);
+  const player = document.getElementById('adPlayer');
+  player.src = '/video?p=' + encodeURIComponent(vidPath) + '&v=' + Date.now();
+  player.onloadedmetadata = function() {
+    adMedia = { path: vidPath, duration: player.duration || 0, fps: 25 };
+    document.getElementById('adInfo').textContent = `Thời lượng: ${adFmtTime(player.duration)} (${(player.duration||0).toFixed(1)}s)`;
+    adDrawTimeline();
+    vcToast('Đã tải video');
+  };
+  player.onerror = function() {
+    vcToast('Không thể mở video! Kiểm tra lại đường dẫn file.', 1);
+  };
+}
+
+function adRenderTable() {
+  const tbody = document.getElementById('adTableBody');
+  if (!adRanges || !adRanges.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="muted" style="padding:12px;text-align:center;">Chưa có đoạn quảng cáo nào. Bấm nút dò tự động hoặc dán danh sách mốc thời gian.</td></tr>`;
+    adDrawTimeline();
+    return;
+  }
+  tbody.innerHTML = adRanges.map((r, i) => {
+    const len = r[1] - r[0];
+    const invalid = r[1] <= r[0];
+    return `<tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:6px;" class="muted">${i + 1}</td>
+      <td style="padding:6px;"><input type="text" value="${adFmtTime(r[0])}" class="num" style="width:130px;padding:4px 6px;font-size:12px;" onchange="adSetTime(${i}, 0, this.value)"> <button class="btn ghost" style="padding:3px 6px;font-size:11px;" onclick="adNowTime(${i}, 0)" title="Lấy mốc đang xem">⏺</button></td>
+      <td style="padding:6px;"><input type="text" value="${adFmtTime(r[1])}" class="num" style="width:130px;padding:4px 6px;font-size:12px;" onchange="adSetTime(${i}, 1, this.value)"> <button class="btn ghost" style="padding:3px 6px;font-size:11px;" onclick="adNowTime(${i}, 1)" title="Lấy mốc đang xem">⏺</button></td>
+      <td style="padding:6px;font-size:12px;" class="${invalid ? 'log__line--err' : 'muted'}">${invalid ? 'Lỗi: cuối ≤ đầu' : len.toFixed(1) + 's'}</td>
+      <td style="padding:6px;">
+        <button class="btn ghost" style="padding:3px 8px;font-size:11px;" onclick="adSeekTime(${i}, 0)">▶ Đầu</button>
+        <button class="btn ghost" style="padding:3px 8px;font-size:11px;" onclick="adSeekTime(${i}, 1)">▶ Cuối</button>
+        <button class="btn ghost" style="padding:3px 8px;font-size:11px;color:var(--err);" onclick="adDelSegment(${i})">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+  adDrawTimeline();
+}
+
+function adAddSegment() {
+  const p = document.getElementById('adPlayer');
+  const t = (p && p.currentTime) ? p.currentTime : 0;
+  adRanges.push([t, t + 25]);
+  adRenderTable();
+}
+
+function adDelSegment(i) {
+  adRanges.splice(i, 1);
+  adRenderTable();
+}
+
+function adSetTime(i, idx, val) {
+  const fps = parseFloat(document.getElementById('adTcFps').value) || 25;
+  const parsed = adParseTime(val, fps);
+  if (isNaN(parsed)) {
+    vcToast('Thời gian không hợp lệ!', 1);
+    adRenderTable();
+    return;
+  }
+  adRanges[i][idx] = parsed;
+  adRenderTable();
+}
+
+function adNowTime(i, idx) {
+  const p = document.getElementById('adPlayer');
+  if (p && !isNaN(p.currentTime)) {
+    adRanges[i][idx] = p.currentTime;
+    adRenderTable();
+  }
+}
+
+function adSeekTime(i, idx) {
+  const p = document.getElementById('adPlayer');
+  if (p && adRanges[i]) {
+    document.getElementById('adSkipCheck').checked = false;
+    p.currentTime = Math.max(0, adRanges[i][idx] - (idx ? 1 : 3));
+    p.play();
+  }
+}
+
+function adImportPaste() {
+  const fps = parseFloat(document.getElementById('adTcFps').value) || 25;
+  const raw = document.getElementById('adPasteArea').value;
+  if (!raw.trim()) return vcToast('Chưa dán danh sách mốc thời gian!', 1);
+  let count = 0, errs = 0;
+  raw.split('\n').forEach(line => {
+    const m = line.match(/([\d:.,]+)\s*(?:-|–|—|->|→|\s)\s*([\d:.,]+)/);
+    if (!m) return;
+    const a = adParseTime(m[1], fps);
+    const b = adParseTime(m[2], fps);
+    if (isNaN(a) || isNaN(b) || b <= a) { errs++; return; }
+    adRanges.push([a, b]);
+    count++;
+  });
+  adRanges.sort((x, y) => x[0] - y[0]);
+  adRenderTable();
+  vcToast(`Đã nhập ${count} đoạn quảng cáo` + (errs ? `, bỏ qua ${errs} dòng lỗi` : ''));
+}
+
+function adDrawTimeline() {
+  const tl = document.getElementById('adTl');
+  if (!tl) return;
+  tl.querySelectorAll('i').forEach(el => el.remove());
+  const player = document.getElementById('adPlayer');
+  const dur = (adMedia && adMedia.duration) || (player && player.duration) || 0;
+  if (!dur) return;
+  adRanges.forEach(([a, b]) => {
+    const i = document.createElement('i');
+    i.style.position = 'absolute';
+    i.style.top = '0';
+    i.style.bottom = '0';
+    i.style.background = 'rgba(239, 68, 68, 0.7)';
+    i.style.left = (a / dur * 100) + '%';
+    i.style.width = Math.max(0.3, (b - a) / dur * 100) + '%';
+    tl.appendChild(i);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const player = document.getElementById('adPlayer');
+  const tl = document.getElementById('adTl');
+  if (tl) {
+    tl.onclick = function(e) {
+      const dur = (adMedia && adMedia.duration) || (player && player.duration) || 0;
+      if (!dur || !player) return;
+      const rect = tl.getBoundingClientRect();
+      player.currentTime = (e.clientX - rect.left) / rect.width * dur;
+    };
+  }
+  if (player) {
+    player.ontimeupdate = function() {
+      const dur = player.duration || 0;
+      const cur = player.currentTime || 0;
+      const head = document.getElementById('adTlHead');
+      if (head && dur) head.style.left = (cur / dur * 100) + '%';
+      const nowTxt = document.getElementById('adNowTime');
+      if (nowTxt) nowTxt.textContent = 'Đang xem: ' + adFmtTime(cur);
+      const skipCheck = document.getElementById('adSkipCheck');
+      if (skipCheck && skipCheck.checked && adRanges && adRanges.length) {
+        for (const [a, b] of adRanges) {
+          if (cur >= a && cur < b - 0.05) {
+            player.currentTime = b;
+            break;
+          }
+        }
+      }
+    };
+  }
+});
+
+async function adDetect(method) {
+  const path = document.getElementById('adVidPath').value.trim();
+  if (!path) return vcToast('Vui lòng mở hoặc nhập đường dẫn file video!', 1);
+  vcToast(`Đang tự động dò quảng cáo (${method === 'color' ? 'Màu sắc' : 'Độ phân giải'})...`);
+  try {
+    const res = await fetch('/api/ads/detect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video: path, method })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.msg || 'HTTP error');
+    if (data.ranges && data.ranges.length) {
+      adRanges = data.ranges;
+      adRenderTable();
+      vcToast(`Đã phát hiện ${data.ranges.length} đoạn quảng cáo!`);
+    } else {
+      vcToast('Không tìm thấy đoạn quảng cáo nào theo thuật toán chọn.', 1);
+    }
+  } catch (err) {
+    vcToast('Lỗi dò quảng cáo: ' + err.message, 1);
+  }
+}
+
+async function adRunCut() {
+  const path = document.getElementById('adVidPath').value.trim();
+  if (!path) return vcToast('Vui lòng mở hoặc nhập đường dẫn file video!', 1);
+  const valid = adRanges.filter(r => r[1] > r[0]);
+  if (!valid.length) return vcToast('Chưa có đoạn quảng cáo hợp lệ nào để cắt!', 1);
+  const srtPath = document.getElementById('adSrtPath').value.trim();
+  const quality = parseInt(document.getElementById('adQuality').value) || 23;
+  const statusBox = document.getElementById('adStatusBox');
+  const resOut = document.getElementById('adResultOut');
+  statusBox.style.display = 'block';
+  statusBox.textContent = '[CẮT QUẢNG CÁO] Đang khởi chạy tiến trình cắt...';
+  resOut.textContent = '';
+  vcToast('Đang cắt video & dời mốc SRT...');
+  try {
+    const res = await fetch('/api/ads/cut', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ video: path, ranges: valid, srt: srtPath, quality })
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.msg || 'HTTP error');
+    statusBox.textContent += '\n[CẮT QUẢNG CÁO] Hoàn tất!';
+    resOut.innerHTML = `✅ <b>Cắt video thành công!</b><br>📹 File Video: <code>${data.output}</code>` + (data.srt ? `<br>📝 File Subtitle: <code>${data.srt}</code>` : '');
+    vcToast('Hoàn tất cắt quảng cáo video!');
+  } catch (err) {
+    statusBox.textContent += '\n[LỖI] ' + err.message;
+    vcToast('Lỗi cắt video: ' + err.message, 1);
+  }
+}
+
 /* Poll 8 giây: đủ nhanh để thấy đổi trạng thái, đủ chậm để không quấy máy đang render.
    `document.hidden` -> bỏ lượt: cửa sổ ẩn thì không ai đọc, đừng đốt CPU của render. */
 setInterval(function(){ if(!document.hidden) mdlNap(); }, 8000);
 setTimeout(mdlNap, 2500);
 </script>
+
 </body>
 </html>
