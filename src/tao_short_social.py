@@ -27,35 +27,35 @@ def log(msg):
             pass
 
 def _tim_ffmpeg():
-    paths = [
-        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg-win-x86_64-v7.1.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffmpeg.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffmpeg.exe",
-    ]
-    for p in paths:
-        if os.path.exists(p):
-            return p
     import shutil
     w = shutil.which("ffmpeg")
     if w:
         return w
-    return "ffmpeg"
-
-def _tim_ffprobe():
     paths = [
-        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffprobe.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffprobe.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffprobe.exe",
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffmpeg\8.0\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\AppData\Local\CapCut\Apps\9.5.0.4050\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffmpeg.exe",
     ]
     for p in paths:
         if os.path.exists(p):
             return p
+    return "ffmpeg"
+
+def _tim_ffprobe():
     import shutil
     w = shutil.which("ffprobe")
     if w:
         return w
-    return None
+    paths = [
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffprobe\8.0\ffprobe.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffprobe.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffprobe.exe",
+    ]
+    for p in paths:
+        if os.path.exists(p):
+            return p
+    return "ffprobe"
 
 def generate_silence(duration_sec, out_mp3):
     ffmpeg = _tim_ffmpeg()
@@ -499,7 +499,9 @@ def composite_social_short(bg_video, segments, out_mp4):
 
     log(f"▶ Render Short Video: Tổng thời lượng = {total_audio_dur:.1f}s (Encoder: {encoder})")
 
-    temp_dir = os.path.dirname(out_mp4)
+    temp_dir = os.path.dirname(out_mp4) or "."
+    if temp_dir != ".":
+        os.makedirs(temp_dir, exist_ok=True)
     concat_list_file = os.path.join(temp_dir, f"audio_concat_{int(time.time())}.txt")
     combined_audio = os.path.join(temp_dir, f"combined_audio_{int(time.time())}.mp3")
 
@@ -520,7 +522,7 @@ def composite_social_short(bg_video, segments, out_mp4):
 
     inputs = ["-i", bg_video]
     for i, seg in enumerate(segments):
-        inputs.extend(["-i", seg["image_path"]])
+        inputs.extend(["-loop", "1", "-i", seg["image_path"]])
         img_idx = i + 1
         seg_dur = seg["duration"]
         end_t = curr_t + seg_dur
@@ -563,7 +565,7 @@ def composite_social_short(bg_video, segments, out_mp4):
         log(f"✓ Hoàn tất Render Short Video -> {out_mp4}")
         return out_mp4
     else:
-        log(f"❌ Lỗi render FFmpeg (code {res.returncode}): {res.stderr[:300]}")
+        log(f"❌ Lỗi render FFmpeg (code {res.returncode}): {res.stderr[-1000:]}")
         raise Exception(f"FFmpeg render code {res.returncode}")
 
 # ==========================================

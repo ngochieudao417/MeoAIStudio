@@ -16,10 +16,14 @@ def log(msg):
             pass
 
 def _tim_ffmpeg():
+    import shutil
+    w = shutil.which("ffmpeg")
+    if w:
+        return w
     paths = [
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffmpeg.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffmpeg.exe",
-        "ffmpeg"
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffmpeg\8.0\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\AppData\Local\CapCut\Apps\9.5.0.4050\ffmpeg.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg.exe",
     ]
     for p in paths:
         if os.path.exists(p):
@@ -27,10 +31,13 @@ def _tim_ffmpeg():
     return "ffmpeg"
 
 def _tim_ffprobe():
+    import shutil
+    w = shutil.which("ffprobe")
+    if w:
+        return w
     paths = [
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\bin\ffprobe.exe",
-        r"C:\Users\Ngoc Hieu\Desktop\YT stuff\vncr_extracted\app_contents\resources\vendor\ffmpeg\ffprobe.exe",
-        "ffprobe"
+        r"C:\Users\Ngoc Hieu\AppData\Roaming\SnapAny\tools\ffprobe\8.0\ffprobe.exe",
+        r"C:\Users\Ngoc Hieu\Desktop\Career_path\vtool\.venv\Lib\site-packages\imageio_ffmpeg\binaries\ffprobe.exe",
     ]
     for p in paths:
         if os.path.exists(p):
@@ -145,7 +152,9 @@ def render_ne_ban_quuyen(input_path, output_path, opts=None):
     log(f"   · Bộ lọc audio: {af}")
     log(f"   · Encoder: {encoder} ({enc_desc})")
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    out_dir = os.path.dirname(output_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
 
     preset_val = "p4" if encoder == "h264_nvenc" else ("veryfast" if encoder in ("h264_qsv", "h264_amf") else "fast")
 
