@@ -328,6 +328,118 @@ def fetch_threads_data(threads_url, max_comments=2):
         "comments": comments[:max_comments]
     }
 
+def fetch_hot_threads_posts(target_input="@zuck", max_days=7, min_likes=50, limit=12):
+    """
+    Fetches recent HOT Threads posts by username, keyword search or URL.
+    Filters posts by age (max_days) and likes (min_likes), sorted by likes descending.
+    """
+    from playwright.sync_api import sync_playwright
+    import re
+
+    if target_input.startswith("http"):
+        target_url = target_input
+    elif target_input.startswith("@"):
+        target_url = f"https://www.threads.net/{target_input}"
+    elif not target_input:
+        target_url = "https://www.threads.net/@zuck"
+    else:
+        target_url = f"https://www.threads.net/search?q={target_input}"
+
+    log(f"🔥 Đang tìm bài viết Threads HOT từ: {target_url} (Tối đa {max_days} ngày, >={min_likes} tim)")
+    raw_items = []
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            page = context.new_page()
+            page.goto(target_url, wait_until="domcontentloaded", timeout=25000)
+            page.wait_for_timeout(2500)
+
+            for _ in range(4):
+                page.mouse.wheel(0, 1500)
+                page.wait_for_timeout(1000)
+
+            js_extract = """
+            () => {
+                const items = [];
+                const containers = document.querySelectorAll('div[data-pressable-container="true"]');
+                containers.forEach(c => {
+                    const link = c.querySelector('a[href*="/post/"]');
+                    if(!link) return;
+                    const url = link.href;
+                    const fullText = c.innerText.trim();
+                    items.push({ url, fullText });
+                });
+                return items;
+            }
+            """
+            raw_items = page.evaluate(js_extract)
+            browser.close()
+    except Exception as ex:
+        log(f"Notice Playwright hot Threads search: {ex}")
+
+    posts = []
+    seen_urls = set()
+    for item in raw_items:
+        url = item.get("url")
+        if not url or url in seen_urls:
+            continue
+        seen_urls.add(url)
+
+        lines = [l.strip() for l in item.get("fullText", "").split("\n") if l.strip()]
+        if not lines:
+            continue
+
+        author = lines[0] if (lines[0].startswith("@") or len(lines[0]) < 30) else (target_input if target_input.startswith("@") else "@threads")
+        time_text = ""
+        age_days = 0.5
+        likes = 0
+        content_lines = []
+
+        for line in lines:
+            m_time = re.match(r"^(\d+)\s*([dhwmo]|days?|hours?|weeks?)$", line, re.I)
+            if m_time:
+                num = int(m_time.group(1))
+                unit = m_time.group(2).lower()
+                if "h" in unit or "m" in unit:
+                    age_days = round(num / 24.0, 2)
+                elif "d" in unit:
+                    age_days = num
+                elif "w" in unit:
+                    age_days = num * 7
+                elif "mo" in unit:
+                    age_days = num * 30
+                time_text = line
+                continue
+
+            s_clean = line.upper().replace(",", "").replace(" ", "")
+            m_lk = re.match(r"^([\d\.]+)([KM])?$", s_clean)
+            if m_lk and s_clean != time_text.upper():
+                val = float(m_lk.group(1))
+                mult = 1000 if m_lk.group(2) == "K" else (1000000 if m_lk.group(2) == "M" else 1)
+                calc_likes = int(val * mult)
+                if calc_likes > likes and calc_likes < 10000000:
+                    likes = calc_likes
+                continue
+
+            if len(line) > 15 and not line.startswith("@") and line != author:
+                content_lines.append(line)
+
+        post_text = " ".join(content_lines[:3]) if content_lines else item.get("fullText", "")[:180]
+
+        if age_days <= max_days and likes >= min_likes:
+            posts.append({
+                "url": url,
+                "author": author,
+                "text": post_text,
+                "likes": likes,
+                "age_days": age_days,
+                "time_text": time_text or f"{age_days}d"
+            })
+
+    posts.sort(key=lambda x: (x["likes"], -x["age_days"]), reverse=True)
+    return posts[:limit]
+
 # ==========================================
 # 2. TTS AUDIO GENERATOR (EDGE-TTS)
 # ==========================================

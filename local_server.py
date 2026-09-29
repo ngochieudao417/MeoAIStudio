@@ -581,6 +581,27 @@ def _patched_do_POST(self):
                 return
         except Exception as e:
             pass
+    elif self.path == "/api/threads/hot_posts":
+        try:
+            length = int(self.headers.get('Content-Length', 0))
+            body = {}
+            if length > 0:
+                raw = self.rfile.read(length)
+                try:
+                    body = json.loads(raw.decode('utf-8'))
+                except Exception:
+                    pass
+            target = body.get("target") or "@zuck"
+            days = int(body.get("days") or 7)
+            min_likes = int(body.get("min_likes") or 0)
+            limit = int(body.get("limit") or 12)
+
+            import tao_short_social
+            posts = tao_short_social.fetch_hot_threads_posts(target_input=target, max_days=days, min_likes=min_likes, limit=limit)
+            self._send(200, {"ok": True, "posts": posts, "total": len(posts)})
+        except Exception as e:
+            self._send(500, {"ok": False, "msg": f"Lỗi tìm bài Threads HOT: {str(e)}"})
+        return
 
     return _orig_do_POST(self)
 
