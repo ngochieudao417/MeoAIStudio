@@ -65,13 +65,14 @@ def generate_silence(duration_sec, out_mp3):
 
 def check_gpu_encoder():
     ffmpeg = _tim_ffmpeg()
-    try:
-        cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1", "-c:v", "h264_nvenc", "-f", "null", "-"]
-        res = subprocess.run(cmd, capture_output=True, text=True)
-        if res.returncode == 0:
-            return "h264_nvenc"
-    except Exception:
-        pass
+    for enc in ["h264_nvenc", "h264_qsv", "h264_amf"]:
+        try:
+            cmd = [ffmpeg, "-y", "-f", "lavfi", "-i", "color=c=black:s=64x64:d=0.1", "-c:v", enc, "-f", "null", "-"]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.returncode == 0:
+                return enc
+        except Exception:
+            pass
     return "libx264"
 
 def get_audio_duration(audio_path):
@@ -543,7 +544,7 @@ def composite_social_short(bg_video, segments, out_mp4):
         "-map", prev_stream,
         "-map", f"{combined_audio_idx}:a",
         "-c:v", encoder,
-        "-preset", "p4" if encoder == "h264_nvenc" else "fast",
+        "-preset", "p4" if encoder == "h264_nvenc" else ("veryfast" if encoder in ("h264_qsv", "h264_amf") else "fast"),
         "-c:a", "aac",
         "-b:a", "192k",
         "-t", f"{total_audio_dur:.2f}",
