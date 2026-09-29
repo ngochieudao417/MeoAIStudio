@@ -602,6 +602,65 @@ def _patched_do_POST(self):
         except Exception as e:
             self._send(500, {"ok": False, "msg": f"Lỗi tìm bài Threads HOT: {str(e)}"})
         return
+    elif self.path == "/api/ads/detect":
+        try:
+            length = int(self.headers.get('Content-Length', 0))
+            body = {}
+            if length > 0:
+                raw = self.rfile.read(length)
+                try:
+                    body = json.loads(raw.decode('utf-8'))
+                except Exception:
+                    pass
+            video = body.get("video", "")
+            method = body.get("method", "resolution")
+            step = float(body.get("step", 2.0))
+            import ads
+            if method == "color":
+                ranges = ads.detect_ads(video, step=step)
+            else:
+                ranges = ads.detect_ads_by_resolution(video, step=step)
+            self._send(200, {"ok": True, "ranges": [[a, b] for a, b in ranges]})
+        except Exception as e:
+            self._send(500, {"ok": False, "msg": f"Lỗi dò quảng cáo: {str(e)}"})
+        return
+    elif self.path == "/api/ads/cut":
+        try:
+            length = int(self.headers.get('Content-Length', 0))
+            body = {}
+            if length > 0:
+                raw = self.rfile.read(length)
+                try:
+                    body = json.loads(raw.decode('utf-8'))
+                except Exception:
+                    pass
+            video = body.get("video", "")
+            raw_ranges = body.get("ranges", [])
+            srt_path = body.get("srt", "")
+            quality = int(body.get("quality", 23))
+            ranges = [(float(a), float(b)) for a, b in raw_ranges if float(b) > float(a)]
+            if not ranges:
+                self._send(400, {"ok": False, "msg": "Chưa có đoạn quảng cáo nào hợp lệ"})
+                return
+
+            import ads
+            from pathlib import Path
+            out_path = body.get("out") or str(Path(video).with_suffix("")) + ".cut.mp4"
+            ads.cut_ads(video, ranges, out_path, quality=quality)
+
+            srt_out = ""
+            if srt_path and os.path.exists(srt_path):
+                sp = Path(srt_path)
+                dst_srt = body.get("srt_out") or str(sp.with_name(sp.stem + ".cut.srt"))
+                cues = ads.parse_srt(sp)
+                remapped = ads.remap_srt(cues, ranges)
+                ads.write_srt(remapped, dst_srt)
+                srt_out = str(dst_srt)
+
+            self._send(200, {"ok": True, "output": out_path, "srt": srt_out})
+        except Exception as e:
+            self._send(500, {"ok": False, "msg": f"Lỗi cắt quảng cáo: {str(e)}"})
+        return
 
     return _orig_do_POST(self)
 
