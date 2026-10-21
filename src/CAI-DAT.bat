@@ -16,7 +16,7 @@ echo.
 :: => may GPU bi cai CPU truoc roi de GPU: chinh la NHIP LAT sinh ra loi 'onnxruntime hong nua voi'.
 :: Nay hai extra loai tru nhau (xem [tool.uv] conflicts trong pyproject) nen PHAI chon dung mot.
 echo [2/4] Cai Python 3.11 + thu vien cho MediaCrawler (co the mat vai phut)...
-cd MediaCrawler
+cd Meowcrawler
 :: LUOI 2 (10/08/2026): `where nvidia-smi` truot KHONG co nghia la may khong co card — driver chua cai /
 :: hong / ban OEM khong kem CLI deu lam no truot. Hoi them Windows qua Win32_VideoController.
 :: Doan `cpu` cho may CO card la hong NANG va KHONG tu khoi (onnxruntime ban CPU nam lai trong venv);

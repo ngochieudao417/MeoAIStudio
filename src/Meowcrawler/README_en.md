@@ -97,7 +97,7 @@ The project depends on Node.js, please download and install from the official we
 
 ```shell
 # Enter project directory
-cd MediaCrawler
+cd Meowcrawler
 
 # Use uv sync command to ensure consistency of python version and related dependency packages
 uv sync
@@ -172,7 +172,7 @@ After successful startup, visit `http://localhost:8080` to open the WebUI interf
 
 ```shell
 # Enter project root directory
-cd MediaCrawler
+cd Meowcrawler
 
 # Create virtual environment
 # My python version is: 3.9.6, the libraries in requirements.txt are based on this version
@@ -230,7 +230,7 @@ MediaCrawler supports multiple data storage methods, including CSV, JSON, JSONL,
 [🚀 MediaCrawlerPro Major Release 🚀! More features, better architectural design!](https://github.com/MediaCrawlerPro)
 
 ### 💬 Discussion Groups
-- **WeChat Discussion Group**: [Click to join](https://nanmicoder.github.io/MediaCrawler/%E5%BE%AE%E4%BF%A1%E4%BA%A4%E6%B5%81%E7%BE%A4.html)
+- **WeChat Discussion Group**: [Click to join](https://nanmicoder.github.io/Meowcrawler/%E5%BE%AE%E4%BF%A1%E4%BA%A4%E6%B5%81%E7%BE%A4.html)
 - **Bilibili Account**: [Follow me](https://space.bilibili.com/434377496), sharing AI and crawler technology knowledge
 
 
@@ -254,7 +254,7 @@ Become a sponsor and showcase your product here, getting massive exposure daily!
 ---
 
 ### 📚 Other
-- **FAQ**: [MediaCrawler Complete Documentation](https://nanmicoder.github.io/MediaCrawler/)
+- **FAQ**: [MediaCrawler Complete Documentation](https://nanmicoder.github.io/Meowcrawler/)
 - **Crawler Beginner Tutorial**: [CrawlerTutorial Free Tutorial](https://github.com/NanmiCoder/CrawlerTutorial)
 - **News Crawler Open Source Project**: [NewsCrawlerCollection](https://github.com/NanmiCoder/NewsCrawlerCollection)
 

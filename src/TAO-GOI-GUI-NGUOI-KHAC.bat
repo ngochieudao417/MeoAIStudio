@@ -27,7 +27,7 @@ if exist "%OUTDIR%" rd /s /q "%OUTDIR%"
 if exist "%OUTZIP%" del /q "%OUTZIP%"
 mkdir "%OUTDIR%"
 
-:: /XF CHAY-WEB.bat = launcher OWNER-only (VC_TIER=unlimited + VC_EMBEDDED=1 + nonce RONG).
+:: /XF CHAY-WEB.bat = launcher cu, khong dua vao goi cap nhat.
 :: 07/08/2026: da DO THAT - goi phat hanh 05/08 CO chua file nay. .gitignore chan duoc git, KHONG chan
 :: robocopy (no copy tu O DIA). Day la chan o DUONG SHIP; xem them buoc go chu dong trong VA-CODE-MOI-VAO-APP.bat.
 robocopy "%~dp0desktop\app-src" "%OUTDIR%\app-src" /E /XF CHAY-WEB.bat /NFL /NDL /NJH /NJS >nul

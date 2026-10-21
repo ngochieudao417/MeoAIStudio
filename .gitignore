@@ -25,21 +25,21 @@
 /src/theo_doi_config.json
 /src/trang_config.json
 /src/xu_ly_config.json
-/src/MediaCrawler/gom_dang_bai/trang_config.json
-/src/MediaCrawler/kenh_nguon/kenh_nguon.json
-/src/MediaCrawler/browser_data/
+/src/Meowcrawler/gom_dang_bai/trang_config.json
+/src/Meowcrawler/kenh_nguon/kenh_nguon.json
+/src/Meowcrawler/browser_data/
 
 # Generated, downloaded, and personal media
-/src/MediaCrawler/_cache_artifact/
-/src/MediaCrawler/data/
-/MediaCrawler/data/
+/src/Meowcrawler/_cache_artifact/
+/src/Meowcrawler/data/
+/Meowcrawler/data/
 /src/processed_videos/
 /src/_preview/
 /src/translation_memory/
 /src/user_bgmusic/
 /src/user_intro_outro/
 /src/user_logos/
-/ViralCrawl_GPU_Package/
+/Meowcrawler_GPU_Package/
 /scratch/
 test_out.mp4
 *.log

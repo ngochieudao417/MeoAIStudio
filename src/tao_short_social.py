@@ -689,7 +689,7 @@ def make_social_short_video(input_target, platform="reddit", lang="en", max_comm
     Main orchestrator pipeline to create a Reddit/Threads Short video.
     """
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    work_dir = os.path.join(base_dir, "MediaCrawler", "data", "social_shorts")
+    work_dir = os.path.join(base_dir, "Meowcrawler", "data", "social_shorts")
     temp_dir = os.path.join(work_dir, "temp")
     out_dir = os.path.join(work_dir, "videos")
     bg_dir = os.path.join(work_dir, "bg_gameplay")

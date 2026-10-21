@@ -219,7 +219,7 @@ def main():
     }
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    out_dir = args.output_dir or os.path.join(base_dir, "MediaCrawler", "data", "ne_ban_quuyen", "videos")
+    out_dir = args.output_dir or os.path.join(base_dir, "Meowcrawler", "data", "ne_ban_quuyen", "videos")
     os.makedirs(out_dir, exist_ok=True)
 
     if os.path.isfile(args.input):

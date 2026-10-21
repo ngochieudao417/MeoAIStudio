@@ -30,7 +30,7 @@ Tool dựa trên mã nguồn mở [MediaCrawler](https://github.com/NanmiCoder/M
 5. **Lần đầu chạy mỗi nền tảng**: trình duyệt sẽ mở trang đăng nhập → dùng **app tương ứng trên điện thoại quét mã QR**. Các lần sau tự đăng nhập (đã lưu phiên riêng từng nền tảng).
 6. Tiến trình hiện trực tiếp trong khung **Nhật ký chạy**. Xong bấm **📂 Mở thư mục video**.
 
-> Phiên bản dòng lệnh cũ vẫn còn ở file `cao_video.py` (chạy bằng `MediaCrawler\.venv\Scripts\python.exe cao_video.py`) nếu bạn thích dùng menu chữ.
+> Phiên bản dòng lệnh cũ vẫn còn ở file `cao_video.py` (chạy bằng `Meowcrawler\.venv\Scripts\python.exe cao_video.py`) nếu bạn thích dùng menu chữ.
 
 ## Tải video HOT theo chủ đề
 
@@ -70,7 +70,7 @@ Tool kiểm tra các kênh theo chu kỳ, kênh nào có video mới thì tải 
 3. Bấm **✅ BẬT theo dõi** → Windows tự kiểm tra định kỳ
 4. **🧪 Kiểm tra ngay** để chạy thử liền; **⛔ TẮT** để dừng
 
-> Không phải tức thời — Douyin không gửi thông báo, nên tool phải kiểm tra định kỳ. Kiểm tra càng dày càng nhanh nhưng **dễ bị hạn chế tài khoản**. Cần đăng nhập sẵn + máy bật. Nhật ký: `MediaCrawler\data\theo_doi.log`.
+> Không phải tức thời — Douyin không gửi thông báo, nên tool phải kiểm tra định kỳ. Kiểm tra càng dày càng nhanh nhưng **dễ bị hạn chế tài khoản**. Cần đăng nhập sẵn + máy bật. Nhật ký: `Meowcrawler\data\theo_doi.log`.
 
 ## Chạy tự động mỗi ngày (tab "Hẹn giờ tự động")
 
@@ -83,7 +83,7 @@ Tool kiểm tra các kênh theo chu kỳ, kênh nào có video mới thì tải 
 **Quan trọng:**
 - Tác vụ tự động chạy ở chế độ **ẩn (headless)** nên cần đã đăng nhập sẵn. **Lần đầu và khi phiên hết hạn**, phải mở tab "Cào ngay" chạy 1 lần + **quét QR** để lưu đăng nhập.
 - Máy phải **đang bật và đã đăng nhập Windows** vào giờ hẹn.
-- Nhật ký các lần chạy tự động: `MediaCrawler\data\tu_dong.log`
+- Nhật ký các lần chạy tự động: `Meowcrawler\data\tu_dong.log`
 - Cấu hình tác vụ lưu ở: `lich_config.json`
 
 ## Nút 🌐 Đăng nhập trình duyệt
@@ -98,7 +98,7 @@ Cách dùng: chọn nền tảng → bấm **🌐 Đăng nhập trình duyệt**
 
 **Douyin** — chia thư mục theo cách cào, tên file theo tiêu đề video:
 ```
-MediaCrawler\data\douyin\videos\
+Meowcrawler\data\douyin\videos\
   ├─ tu-khoa\<từ khóa>\<tiêu đề>_<id>.mp4      ← cào theo từ khóa
   ├─ kenh\<tên kênh>\<tiêu đề>_<id>.mp4         ← cào theo kênh
   └─ link\<tiêu đề>_<id>.mp4                     ← cào theo link
@@ -106,9 +106,9 @@ MediaCrawler\data\douyin\videos\
 
 Các nền tảng khác:
 ```
-Bilibili:     MediaCrawler\data\bili\videos\<id>\
-Xiaohongshu:  MediaCrawler\data\xhs\videos\  (ảnh: data\xhs\images\)
-Weibo:        MediaCrawler\data\weibo\images\
+Bilibili:     Meowcrawler\data\bili\videos\<id>\
+Xiaohongshu:  Meowcrawler\data\xhs\videos\  (ảnh: data\xhs\images\)
+Weibo:        Meowcrawler\data\weibo\images\
 ```
 
 Thông tin bài viết (tiêu đề, tác giả, lượt thích...) lưu dạng JSONL trong thư mục `jsonl` cùng cấp.
@@ -120,5 +120,5 @@ Thông tin bài viết (tiêu đề, tác giả, lượt thích...) lưu dạng 
 - **Đăng nhập cứ báo thất bại**: sau khi quét QR, nền tảng có thể bắt xác minh thêm (trượt captcha / số điện thoại) trên trình duyệt — làm theo rồi chạy lại.
 - **Xong nhưng 0 tệp**: thường do từ khóa không ra kết quả, hoặc phiên đăng nhập hết hạn (quét QR lại).
 - **Không nên cào quá nhiều / quá nhanh** (dễ bị khóa tài khoản). Tool mặc định nghỉ ~2 giây giữa các lượt, mỗi lần chỉ nên cào vài chục video.
-- Muốn chỉnh sâu hơn (proxy, số giây nghỉ, headless...): sửa file `MediaCrawler\config\base_config.py`.
+- Muốn chỉnh sâu hơn (proxy, số giây nghỉ, headless...): sửa file `Meowcrawler\config\base_config.py`.
 - Media cào về thuộc bản quyền của tác giả gốc — chỉ dùng để học tập, không đăng tải lại vì mục đích thương mại.

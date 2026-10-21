@@ -16,14 +16,14 @@ Video → FFmpeg (tách audio) → faster-whisper (ASR + timestamp)
 | Ghép/ép tiếng | FFmpeg | — |
 
 ## Cài đặt
-**Core (cơ bản)** đã nằm trong `MediaCrawler/pyproject.toml` → bản cài app **tự có** sau first-run setup (`uv sync`). Chạy lẻ thì:
+**Core (cơ bản)** đã nằm trong `Meowcrawler/pyproject.toml` → bản cài app **tự có** sau first-run setup (`uv sync`). Chạy lẻ thì:
 ```powershell
-MediaCrawler\.venv\Scripts\python.exe -m pip install -r long_tieng\requirements.txt
+Meowcrawler\.venv\Scripts\python.exe -m pip install -r long_tieng\requirements.txt
 ```
 **Nâng cao (Demucs/NLLB/viXTTS ~5GB):** bấm nút **"⬇ Cài bản nâng cao"** trong tab Lồng tiếng,
 hoặc chạy 1 lệnh:
 ```powershell
-MediaCrawler\.venv\Scripts\python.exe long_tieng\cai_nangcao.py
+Meowcrawler\.venv\Scripts\python.exe long_tieng\cai_nangcao.py
 ```
 > Lần chạy đầu, faster-whisper tự tải model (`small` ~0.5GB, `large-v3` ~3GB) về cache.
 > Cần **internet** cho: tải model (1 lần), Google Dịch, edge-tts.

@@ -63,7 +63,9 @@ try:
 except Exception as e:
     print(f"[MEOWCRAWL STUDIO] Notice patching yt_dlp: {e}")
 
-# 4. Set Environment Variables BEFORE importing web_app (Enforce CPU Mode - No NVIDIA GPU)
+# 4. Configure the local app before importing the compiled backend.
+# The compiled backend still reads these legacy tier variables; the personal app
+# exposes no subscription or payment flow.
 os.environ["VC_TIER"] = "unlimited"
 os.environ["VC_TIER_FAILOPEN"] = "1"
 os.environ["PYTHONUNBUFFERED"] = "1"
@@ -74,22 +76,15 @@ src_dir = os.path.join(current_dir, "src")
 if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
 
-mc_dir = os.path.join(src_dir, "MediaCrawler")
+mc_dir = os.path.join(src_dir, "Meowcrawler")
 if mc_dir not in sys.path:
     sys.path.insert(0, mc_dir)
 
-print("[MEOWCRAWL STUDIO] Starting server in Unlocked Mode (Tier: unlimited)...")
+print("[MEOWCRAWL STUDIO] Starting personal server...")
 print(f"[MEOWCRAWL STUDIO] Working Source Directory: {src_dir}")
 
-# 5. Import web_app & patch tier functions
+# 5. Import the app. src/web_app.py configures its personal runtime.
 import web_app
-
-web_app.TIER = "unlimited"
-web_app._signed_tier = "unlimited"
-web_app._tier_kind = lambda *a, **k: "unlimited"
-web_app._refresh_tier = lambda *a, **k: "unlimited"
-if hasattr(web_app, "_tier_tu_token_ky"):
-    web_app._tier_tu_token_ky = lambda *a, **k: "unlimited"
 
 # Allow all local API calls (bypass DNS rebinding / CSRF 403 guard locally)
 if hasattr(web_app, "Handler"):
@@ -349,7 +344,7 @@ def _patched_do_POST(self):
             
             if not input_path:
                 # Default to uploads dir if not specified
-                input_path = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "uploads")
+                input_path = os.path.join(src_dir, "Meowcrawler", "data", "ne_ban_quuyen", "uploads")
 
             python_venv = os.path.join(current_dir, ".venv", "Scripts", "python.exe")
             if not os.path.exists(python_venv):
@@ -388,7 +383,7 @@ def _patched_do_POST(self):
 
     elif self.path == "/api/nebanguoyen/list":
         try:
-            out_dir = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "videos")
+            out_dir = os.path.join(src_dir, "Meowcrawler", "data", "ne_ban_quuyen", "videos")
             files = []
             if os.path.exists(out_dir):
                 for f in os.listdir(out_dir):
@@ -409,7 +404,7 @@ def _patched_do_POST(self):
     elif self.path.startswith("/api/upload_video"):
         try:
             content_length = int(self.headers.get("Content-Length", 0))
-            up_dir = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "uploads")
+            up_dir = os.path.join(src_dir, "Meowcrawler", "data", "ne_ban_quuyen", "uploads")
             os.makedirs(up_dir, exist_ok=True)
             
             content_type = self.headers.get("Content-Type", "")
@@ -545,7 +540,7 @@ def _patched_do_POST(self):
 
     elif self.path == "/api/socialshorts/list":
         try:
-            out_dir = os.path.join(src_dir, "MediaCrawler", "data", "social_shorts", "videos")
+            out_dir = os.path.join(src_dir, "Meowcrawler", "data", "social_shorts", "videos")
             files = []
             if os.path.exists(out_dir):
                 for f in os.listdir(out_dir):
@@ -713,7 +708,7 @@ def _patched_do_GET(self):
         return
     elif self.path == "/api/nebanguoyen/list":
         try:
-            out_dir = os.path.join(src_dir, "MediaCrawler", "data", "ne_ban_quuyen", "videos")
+            out_dir = os.path.join(src_dir, "Meowcrawler", "data", "ne_ban_quuyen", "videos")
             files = []
             if os.path.exists(out_dir):
                 for f in os.listdir(out_dir):
@@ -732,7 +727,7 @@ def _patched_do_GET(self):
         return
     elif self.path == "/api/socialshorts/list":
         try:
-            out_dir = os.path.join(src_dir, "MediaCrawler", "data", "social_shorts", "videos")
+            out_dir = os.path.join(src_dir, "Meowcrawler", "data", "social_shorts", "videos")
             files = []
             if os.path.exists(out_dir):
                 for f in os.listdir(out_dir):

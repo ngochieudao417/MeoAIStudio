@@ -4,7 +4,7 @@ chcp 65001 >nul
 cd /d "%~dp0"
 
 echo ============================================================
-echo   KHOI CHAY LOCAL STUDIO APP (UNLOCKED MODE)
+echo   KHOI CHAY LOCAL STUDIO APP
 echo ============================================================
 echo.
 
