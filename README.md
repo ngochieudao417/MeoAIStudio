@@ -1,6 +1,7 @@
 # Mèo AI Studio (Local Studio)
 
-Ứng dụng chạy cục bộ trên Windows để thu thập nội dung từ các nền tảng được hỗ trợ, xử lý video và tạo nội dung bằng AI. Giao diện web được phục vụ tại `http://127.0.0.1:8770/`; dữ liệu tải về và cấu hình tài khoản được lưu trên máy người dùng.
+Ứng dụng chạy cục bộ trên Windows để thu thập nội dung từ các nền tảng được hỗ trợ, xử lý video và tạo nội dung bằng AI. Giao diện web được phục vụ local; dữ liệu tải về và cấu hình tài khoản được lưu trên máy người dùng.
+
 
 > **Trạng thái:** dự án đang phát triển. Repo chứa mã ứng dụng và công cụ đóng gói, nhưng chưa có quy trình cài đặt môi trường gốc hoàn chỉnh cho một máy mới chỉ từ bản clone.
 
@@ -25,7 +26,7 @@ Có thể chạy server trực tiếp bằng `.venv\Scripts\python.exe local_ser
 
 ### Thiết lập trên máy mới
 
-`.venv/`, dữ liệu trình duyệt và các tệp cấu hình cá nhân không được đưa lên Git. Vì repo hiện **chưa có manifest/lockfile đầy đủ cho môi trường Python ở gốc**, bản clone mới chưa thể chạy chỉ bằng `CHAY-APP.bat`. Hãy dùng bộ cài do nhóm phát hành hoặc thiết lập môi trường cùng người phụ trách dự án. Script `src/CAI-DAT.bat` cài môi trường cho `src/MediaCrawler`; nó không tạo `.venv/` ở gốc mà `CHAY-APP.bat` yêu cầu.
+`.venv/`, dữ liệu trình duyệt và các tệp cấu hình cá nhân không được đưa lên Git. Vì repo hiện **chưa có manifest/lockfile đầy đủ cho môi trường Python ở gốc**, bản clone mới chưa thể chạy chỉ bằng `CHAY-APP.bat`. Hãy dùng bộ cài do nhóm phát hành hoặc thiết lập môi trường cùng người phụ trách dự án. Script `src/CAI-DAT.bat` cài môi trường cho `src/Meowcrawler`; nó không tạo `.venv/` ở gốc mà `CHAY-APP.bat` yêu cầu.
 
 ## Cấu hình và dữ liệu riêng tư
 
@@ -35,8 +36,8 @@ Các thư mục dữ liệu thường gặp:
 
 | Đường dẫn | Nội dung |
 | --- | --- |
-| `src/MediaCrawler/browser_data/` | Hồ sơ trình duyệt và trạng thái đăng nhập |
-| `src/MediaCrawler/data/`, `MediaCrawler/data/` | Nội dung đã thu thập và tệp tạm |
+| `src/Meowcrawler/browser_data/` | Hồ sơ trình duyệt và trạng thái đăng nhập |
+| `src/Meowcrawler/data/`, `Meowcrawler/data/` | Nội dung đã thu thập và tệp tạm |
 | `src/processed_videos/` | Video xuất ra từ ứng dụng |
 | `release/` | Bộ cài được tạo trên máy đóng gói |
 
@@ -48,10 +49,9 @@ Một số tệp nhạy cảm từng được đưa vào lịch sử Git trướ
 | --- | --- |
 | `local_server.py`, `CHAY-APP.bat` | Điểm khởi chạy server và ứng dụng trên máy dev |
 | `src/` | Module xử lý, tài nguyên và giao diện `src/web/` |
-| `src/MediaCrawler/` | Mã crawler tích hợp và cấu hình phụ thuộc của nó |
+| `src/Meowcrawler/` | Mã crawler tích hợp và cấu hình phụ thuộc của nó |
 | `packaging/` | Script tạo bộ cài Windows offline |
 | `HD-SU-DUNG.md`, `src/HUONG-DAN.md` | Hướng dẫn thao tác |
-| `RA_SOAT_DUNG_LUONG.md` | Ghi chú dung lượng và thành phần của bản cài đã tạo |
 
 `packaging/build_installer.py` hiện lấy một số thành phần từ môi trường máy đóng gói (Python 3.11, Chromium của Playwright và FFmpeg tại các đường dẫn được script quy định). Chạy script này trên máy mới cần kiểm tra và chuẩn bị đủ các đầu vào trước.
 
@@ -64,4 +64,4 @@ Một số tệp nhạy cảm từng được đưa vào lịch sử Git trướ
 
 ## Giấy phép và phạm vi sử dụng
 
-Phần MediaCrawler tích hợp có [giấy phép riêng](src/MediaCrawler/LICENSE), giới hạn việc dùng vào học tập/nghiên cứu phi thương mại nếu chưa có sự đồng ý bằng văn bản của chủ sở hữu. Repo này chưa có giấy phép chung cho toàn bộ mã ứng dụng. Cần giải quyết quyền sử dụng các thành phần liên quan trước khi phân phối hoặc sử dụng cho mục đích thương mại.
+Phần MediaCrawler tích hợp có [giấy phép riêng](src/Meowcrawler/LICENSE), giới hạn việc dùng vào học tập/nghiên cứu phi thương mại nếu chưa có sự đồng ý bằng văn bản của chủ sở hữu. Repo này chưa có giấy phép chung cho toàn bộ mã ứng dụng. Cần giải quyết quyền sử dụng các thành phần liên quan trước khi phân phối hoặc sử dụng cho mục đích thương mại.

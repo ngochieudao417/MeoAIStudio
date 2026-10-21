@@ -44,7 +44,7 @@ if exist "%CACHE2%" (
   echo   da xoa khoa o %CACHE2%
 )
 rem Xoa luon SingletonLock cua profile Gemini (Chrome cu giu khoa -> Chrome moi mo loi)
-for %%D in ("%APPDATA%\viralcrawl-desktop\MediaCrawler\browser_data" "%TEMP%\vc_gemini_profile_worker") do (
+for %%D in ("%APPDATA%\viralcrawl-desktop\Meowcrawler\browser_data" "%TEMP%\vc_gemini_profile_worker") do (
   if exist "%%~D" del /s /q "%%~D\*SingletonLock" 2>nul
 )
 

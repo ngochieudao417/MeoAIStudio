@@ -37,9 +37,9 @@ from typing import Optional
 # phải sửa PATH trước, sửa sau vô tác dụng vì runtime object đã cache is_available()=False).
 def _them_node_bundle_path():
     _here = os.path.dirname(os.path.abspath(__file__))
-    # help.py = .../MediaCrawler/media_platform/douyin/help.py → node bundle ở:
-    #  - khách: <app>/resources/app-src/MediaCrawler/media_platform/douyin → lên 4 cấp = resources/, +vendor/node
-    #  - dev:   <repo>/MediaCrawler/media_platform/douyin → lên 3 cấp = <repo>/, +desktop/vendor/node
+    # help.py = .../Meowcrawler/media_platform/douyin/help.py → node bundle ở:
+    #  - khách: <app>/resources/app-src/Meowcrawler/media_platform/douyin → lên 4 cấp = resources/, +vendor/node
+    #  - dev:   <repo>/Meowcrawler/media_platform/douyin → lên 3 cấp = <repo>/, +desktop/vendor/node
     _r4 = os.path.normpath(os.path.join(_here, "..", "..", "..", ".."))   # khách: resources/ ; dev: viralcrawl/ (thừa)
     _r3 = os.path.normpath(os.path.join(_here, "..", "..", ".."))         # khách: app-src/ ; dev: toolcaovideo/
     _cands = [
@@ -79,7 +79,7 @@ except Exception:
 # 🐛 KIẾN TRÚC RỦI RO (audit 21/07, chưa áp cho ĐÚNG dòng này): main.py import MỌI crawler ở TOP-LEVEL —
 # dòng compile() này TRƯỚC ĐÂY không bọc try/except (chỉ đoạn vá encoding UTF-8 phía trên có bọc) VÀ dùng
 # path TƯƠNG ĐỐI 'libs/douyin.js' phụ thuộc CWD lúc import. File thiếu/hỏng (cài lỗi, AV xoá nhầm), Node
-# bị chặn giữa chừng, hay CWD khác MediaCrawler/ (đổi cách gọi trong tương lai) → exception bay ra TOP-LEVEL
+# bị chặn giữa chừng, hay CWD khác Meowcrawler/ (đổi cách gọi trong tương lai) → exception bay ra TOP-LEVEL
 # → sập main.py → khách cào BILIBILI/WEIBO/XHS... cũng '0 video / mã thoát 1' dù không đụng Douyin.
 # Cùng lớp bug đã gặp thật với execjs (Node thiếu) và xhshow (XHS) — nay khoá luôn 2 điểm hở còn lại của
 # CHÍNH dòng execjs.compile(douyin.js): path tuyệt đối (không phụ thuộc CWD) + try/except (lỗi thì báo RÕ

@@ -389,70 +389,8 @@
   /* Main Canvas Container */
   .main { flex: 1; overflow-y: auto; padding: var(--space-4); background: var(--bg); }
   .content { flex: 1; overflow-y: auto; }
-  /* ===== Gói & Bảng giá ===== */
-  .nav a.locked{opacity:.5}
-  .nav a.locked::after{content:"🔒";margin-left:auto;font-size:12px}
-  .goi-lock{opacity:.45;pointer-events:none;filter:grayscale(.45)}
-  /* P05: badge 🔒 phủ card thứ 4+ (free/expired). pointer-events:auto để click -> bảng giá dù card goi-lock */
-  .lock-badge{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
-    background:rgba(4,7,14,.5);color:#fff;font-weight:800;font-size:13px;cursor:pointer;pointer-events:auto;z-index:6;border-radius:12px;padding:6px;filter:grayscale(0)}
-  /* P06: expired -> disable MỌI nút/input thao tác toàn app (TRỪ tab Gói/Bảng Giá + nút nâng cấp/kiểm-tra-cập-nhật + badge khóa) */
-  body.app-expired .content section:not(#v-goi):not(#v-banggia) button:not(.bn-up):not(.bn-x):not([data-keep-expired]),
-  body.app-expired .content section:not(#v-goi):not(#v-banggia) input,
-  body.app-expired .content section:not(#v-goi):not(#v-banggia) textarea,
-  body.app-expired .content section:not(#v-goi):not(#v-banggia) select{
-    pointer-events:none!important;opacity:.5;filter:grayscale(.3)}
-  body.app-expired .content section:not(#v-goi):not(#v-banggia) .lock-badge{pointer-events:auto!important;opacity:1;filter:none}
-  #goiBanner.nhayUp{animation:nhayUp 1.3s ease-in-out infinite}
-  @keyframes nhayUp{0%,100%{transform:scale(1)}50%{transform:scale(1.05);box-shadow:0 0 20px 3px rgba(255,45,85,.55)}}
   @keyframes vcspin{to{transform:rotate(360deg)}}
   .vcspin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--purple);border-radius:50%;animation:vcspin .7s linear infinite;flex:none}
-  .btn-naicap{animation:nhayUp 1.3s ease-in-out infinite;background:linear-gradient(90deg,#ff2d55,#ff6b3d);color:#fff;border:0;border-radius:12px;padding:12px 24px;font-weight:800;cursor:pointer;font-size:15px}
-  #goiBanner{display:none;align-items:center;gap:12px;padding:10px 20px;background:linear-gradient(90deg,rgba(255,45,85,.2),rgba(255,107,61,.08));border-bottom:1px solid rgba(255,45,85,.45);font-size:14px}
-  #goiBanner .bn-up{background:linear-gradient(90deg,#ff2d55,#ff6b3d);color:#fff;border:0;border-radius:9px;padding:7px 16px;font-weight:700;cursor:pointer;white-space:nowrap}
-  #goiBanner .bn-x{margin-left:auto;cursor:pointer;opacity:.7;font-size:18px;background:none;border:0;color:inherit}
-  .bg-grid{display:grid;grid-template-columns:1fr 1.09fr;gap:28px;max-width:940px;margin:18px auto 0;align-items:center}
-  .bg-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:24px 22px;position:relative;display:flex;flex-direction:column}
-  .bg-card.hot{border-color:#7c5cff;box-shadow:0 8px 30px rgba(124,92,255,.18)}
-  .bg-ten{font-size:19px;font-weight:900;letter-spacing:2.5px;background:linear-gradient(90deg,#f5c518,#ffa500,#ffd700,#f5c518);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
-  .bg-gia{font-size:36px;font-weight:900;margin-top:12px;line-height:1}
-  .bg-gia small{font-size:15px;font-weight:700;opacity:.8}
-  .bg-compare{display:block;font-size:17px;font-weight:700;color:var(--muted);text-decoration:line-through;opacity:.75;margin-bottom:6px;line-height:1.3}
-  .bg-tong{font-size:12px;color:var(--muted);margin-top:5px;opacity:.85}
-  .bg-card ul{list-style:none;padding:0;margin:16px 0;display:flex;flex-direction:column;gap:8px;font-size:13px;flex:1}
-  .bg-card li{display:flex;gap:8px;align-items:flex-start;line-height:1.4}
-  .bg-card li::before{content:"✓";color:#3ddc84;font-weight:800}
-  .bg-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#7c5cff;color:#fff;font-size:11px;font-weight:800;padding:3px 13px;border-radius:20px;white-space:nowrap}
-  .bg-cur{position:absolute;top:-11px;right:14px;background:#3ddc84;color:#04210f;font-size:11px;font-weight:800;padding:3px 11px;border-radius:20px}
-  .bg-giam{display:inline-block;vertical-align:middle;margin-left:8px;background:rgba(239,68,68,.18);color:#f87171;font-size:12px;font-weight:800;padding:2px 9px;border-radius:20px}
-  .bg-per{display:inline-flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px}
-  .bg-per button{border:0;background:none;color:var(--muted);padding:8px 16px;border-radius:9px;cursor:pointer;font-weight:700;font-size:13px}
-  .bg-per button.on{background:linear-gradient(90deg,#7c5cff,#a47bff);color:#fff}
-  /* Tính năng Pro KHÓA — gạch ngang + mờ + hover gợi ý nâng gói */
-  .bg-card li.bg-lock{opacity:.5;cursor:help}
-  .bg-card li.bg-lock::before{content:"🔒";color:#f5c518}
-  .bg-card li.bg-lock span{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.4)}
-  .bg-card li.bg-lock:hover{opacity:.85}
-  .bg-val{color:#f5c518;font-weight:800}
-  /* Gói UNLIMITED — viền crom vàng + card 3D nổi bật */
-  .bg-card.best{border:2px solid transparent;z-index:2;transform:scale(1.05);
-    background:linear-gradient(var(--card),var(--card)) padding-box,linear-gradient(135deg,#fff3b0,#f5c518,#a9781a,#ffe066,#f5c518) border-box;
-    box-shadow:0 16px 46px rgba(245,197,24,.28),0 2px 0 rgba(255,255,255,.06) inset;transition:transform .28s cubic-bezier(.2,.7,.3,1),box-shadow .28s}
-  .bg-card.best:hover{transform:scale(1.07) translateY(-6px);box-shadow:0 28px 64px rgba(245,197,24,.44)}
-  .bg-card.best .bg-ten{font-size:21px}
-  .bg-card.best .bg-gia{font-size:40px}
-  .bg-badge.best{background:linear-gradient(90deg,#c8901a,#ffe066,#f5c518);color:#3a2b00;box-shadow:0 4px 14px rgba(245,197,24,.5);font-size:11.5px}
-  .btn-naicap.gold{background:linear-gradient(90deg,#c8901a,#f5c518,#ffd700,#c8901a);color:#3a2b00}
-  .goi-row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
-  .goi-bar{height:9px;background:rgba(0,0,0,.28);border-radius:6px;overflow:hidden;margin-top:6px}
-  .goi-bar i{display:block;height:100%;background:linear-gradient(90deg,#00d4ff,#3ddc84)}
-  .goi-bar i.warn{background:linear-gradient(90deg,#ff6b3d,#ff2d55)}
-  .side .pro{flex-shrink:0;margin-top:12px;background:linear-gradient(135deg,#1c2742,#141d33);border:1px solid var(--line);
-        border-radius:14px;padding:14px}
-  .side .pro b{display:block;font-size:13px;margin-bottom:4px}
-  .side .pro p{font-size:11px;color:var(--muted);margin-bottom:10px}
-  .side .pro button{width:100%;border:0;border-radius:10px;padding:9px;background:linear-gradient(90deg,#7c5cff,#a47bff);
-        color:#fff;font-weight:700;cursor:pointer}
 
   /* Main */
   .main{flex:1;display:flex;flex-direction:column;min-width:0}
@@ -1002,7 +940,7 @@
   <header class="studio-header">
     <div class="brand" style="display:flex;align-items:center;gap:6px">
       <b style="font-size:18px;background:linear-gradient(135deg, #6366f1, #a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800">AI Studio</b>
-      <span class="eyebrow" style="font-size:10px;padding:2px 6px;border:1px solid #6366f1;border-radius:var(--radius);color:#a855f7;font-weight:700">PRO GENERATOR</span>
+      <span class="eyebrow" style="font-size:10px;padding:2px 6px;border:1px solid #6366f1;border-radius:var(--radius);color:#a855f7;font-weight:700">PERSONAL STUDIO</span>
     </div>
 
     <nav class="nav" id="nav">
@@ -1036,12 +974,6 @@
   </header>
 
   <main class="main content page--wide" id="main">
-    <div id="goiBanner" style="display:none">
-      <span style="font-size:18px">⚠️</span>
-      <span id="goiBannerMsg" style="flex:1"></span>
-      <button class="bn-up" onclick="goNangCap()">Nâng Cấp Gói</button>
-      <button class="bn-x" title="Đóng" onclick="document.getElementById('goiBanner').style.display='none'">×</button>
-    </div>
     <div id="gprogWrap" style="display:none;padding:8px 0 0">
       <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px">
         <span id="gprogLabel">Đang xử lý...</span><span id="gprogPct">0%</span>
@@ -1861,7 +1793,7 @@
             <b style="font-size:14px">📂 Danh Sách Video Đã Render Né Bản Quyền</b>
             <div style="display:flex;gap:8px">
               <button class="chip-add" onclick="nbqLoadList()">🔄 Làm mới</button>
-              <button class="chip-add" onclick="openFolder('MediaCrawler/data/ne_ban_quuyen/videos')">📂 Mở Thư Mục Kết Quả</button>
+              <button class="chip-add" onclick="openFolder('Meowcrawler/data/ne_ban_quuyen/videos')">📂 Mở Thư Mục Kết Quả</button>
             </div>
           </div>
           <div id="nbqOutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
@@ -2062,7 +1994,7 @@
       <b style="font-size:14px;color:#f8fafc">🎬 Danh Sách Short Video Đã Render</b>
       <div style="display:flex;gap:8px">
         <button class="chip-add" type="button" onclick="socLoadList()" style="background:#334155;color:#fff">🔄 Làm mới</button>
-        <button class="chip-add" type="button" onclick="openFolder('MediaCrawler/data/social_shorts/videos')" style="background:#334155;color:#fff">📁 Mở Thư Mục Kết Quả</button>
+        <button class="chip-add" type="button" onclick="openFolder('Meowcrawler/data/social_shorts/videos')" style="background:#334155;color:#fff">📁 Mở Thư Mục Kết Quả</button>
       </div>
     </div>
     <div id="socOutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px">
@@ -2323,7 +2255,7 @@
         </div>
 
         <div style="display:flex;gap:10px;margin-top:20px">
-          <button class="btn go" onclick="openFolder('MediaCrawler/data/social_shorts/videos')" style="flex:1;padding:10px;font-size:13px;background:#6366f1">
+          <button class="btn go" onclick="openFolder('Meowcrawler/data/social_shorts/videos')" style="flex:1;padding:10px;font-size:13px;background:#6366f1">
             📁 Mở Thư Mục Video
           </button>
           <button class="btn go" onclick="genSwitchStep(1)" style="flex:1;padding:10px;font-size:13px;background:#334155">
@@ -3328,7 +3260,7 @@ async function socLoadList() {
           <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f8fafc" title="${esc(f.name)}">🎬 ${esc(f.name)}</b>
           <div class="sub" style="margin:4px 0 8px;font-size:11px;color:#94a3b8">${(f.size/1024/1024).toFixed(1)} MB</div>
           <div style="display:flex;gap:6px">
-            <button class="btn go" style="padding:5px 9px;font-size:11px;background:#3b82f6" onclick="openFolder('MediaCrawler/data/social_shorts/videos')">📁 Mở thư mục</button>
+            <button class="btn go" style="padding:5px 9px;font-size:11px;background:#3b82f6" onclick="openFolder('Meowcrawler/data/social_shorts/videos')">📁 Mở thư mục</button>
           </div>
         </div>`
       ).join("");
@@ -10975,11 +10907,6 @@ async function hgDownloadCao(url) {
             <span id="dichTenMsg" class="sub"></span>
           </div>
         </div>
-        <!-- 🔒 GIỌNG CAPCUT — GỠ CÔNG TẮC Ở ĐÂY (12/08/2026, chủ dự án: "disable giọng capcut với gói pro",
-             "xóa cả phần giọng thử nghiệm bên tab cài đặt"). Trước đây là 1 panel + checkbox `capcutOn` bật/tắt
-             tay. Nay quyền do GÓI quyết định: chỉ UNLIMITED có, và TỰ bật — nên công tắc vừa thừa vừa gây hiểu
-             nhầm (gói PRO bật lên mà chẳng thấy giọng nào). Gate thật nằm ở backend `_lim("giong_capcut")`,
-             KHÔNG ở đây: ẩn UI chỉ là lớp ngoài, `/api/capcut/giong` mới là chỗ chặn. -->
         <!-- 🩺 SỬA MÔI TRƯỜNG — ĐẶT Ở TAB CÀI ĐẶT (08/08/2026, chủ dự án: "sao không thấy nút tăng tốc gpu
              nhỉ" khi đang đứng ở đây). Panel GPU nằm trong tab RENDER (`section#v-xuly`) nên tìm ở Cài đặt
              không ra — mà Cài đặt MỚI là nơi người ta tìm khi cần sửa. Đặt bản thứ hai ở đây, dùng CHUNG
@@ -11101,27 +11028,7 @@ async function hgDownloadCao(url) {
       </section>
 
       <!-- ===== TRỢ LÝ AI ===== -->
-      <section id="v-banggia" class="hidden">
-        <h1 class="page">💎 Bảng Giá</h1>
-        <div class="sub">Chọn gói phù hợp — dài hạn càng rẻ/tháng. Liên hệ admin để nâng cấp — Zalo <b>039.969.2275</b>.</div>
-        <div class="bg-per" id="bgPer">
-          <button data-m="1">1 tháng</button><button data-m="6">6 tháng</button><button data-m="12" class="on">1 năm</button>
-        </div>
-        <div class="bg-grid" id="bgGrid"></div>
-      </section>
-      <section id="v-goi" class="hidden">
-        <h1 class="page">🎫 Gói của tôi</h1>
-        <div class="sub" id="goiSub">Đang tải…</div>
-        <div id="goiUsage"></div>
-        <div class="goi-row" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-          <div style="flex:1;min-width:200px">
-            <b>Nâng cấp gói</b>
-            <p style="margin:4px 0 0;font-size:13px;color:var(--muted)">Liên hệ admin để nâng cấp — Zalo <b style="color:var(--text)">039.969.2275</b>. Sau khi admin nâng, bấm <b>Làm mới gói</b>.</p>
-          </div>
-          <button class="btn-naicap" onclick="goXemBangGia()">Nâng Cấp Gói</button>
-          <button class="btn ghost" onclick="lamMoiGoi(this)" style="padding:11px 18px">⟳ Làm mới gói</button>
-        </div>
-      </section>
+
     </div>
   </div>
 </div>
@@ -11363,9 +11270,7 @@ async function hgDownloadCao(url) {
      renderer (đang 787 MB) rồi hãy tính bỏ hẳn. -->
 <script src="hd_anh.js" defer></script>
 <script>
-var PLAN = {tier:"unlimited", limits:{}, usage:{}};
 var r2Clone = [];
-var GIA = GIA || {};
 var fMode = fMode || "tai";
 var _lsAll = _lsAll || [];
 var APP_LANGS = APP_LANGS || [];
@@ -11618,7 +11523,7 @@ let platform="dy", mode="search", keywords=["mukbang","food","asmr"], savedKenh=
 
 // ====== XÁC THỰC: token + tự gắn header X-Token vào mọi request ======
 let authToken = localStorage.getItem("token") || "";
-let IS_EMBEDDED = false;   // app Electron đã xác thực license -> không có "đăng xuất" cục bộ
+let IS_EMBEDDED = false;
 const _fetch = window.fetch.bind(window);
 let _csrfFailShown=false;
 async function _renewCsrf(){   // lấy lại CSRF nonce: server restart đổi nonce → token cũ trong trang bị 403
@@ -11703,7 +11608,6 @@ function finishAuth(username){
   const lb=document.getElementById("logoutBtn"); if(lb) lb.style.display = "none";
   const ap=document.getElementById("authPass"); if(ap) ap.value="";
   const ap2=document.getElementById("authPass2"); if(ap2) ap2.value="";
-  if(typeof goiLoad==="function") goiLoad();
 }
 async function dangXuat(){
   try{ await fetch("/api/auth/logout",{method:"POST"}); }catch(e){}
@@ -12047,7 +11951,6 @@ function handleNavClick(a, e) {
   
   if(!targetAnchor || !targetAnchor.dataset || !targetAnchor.dataset.v) return;
 
-  if(targetAnchor.classList.contains("locked") && !document.body.classList.contains("app-expired")){ goNangCap(); return; }
   try{ wfCfgPanelHome(); }catch(err){}
   document.querySelectorAll("video,audio").forEach(m=>{ try{ m.pause(); }catch(err){} });
   document.querySelectorAll("#nav a").forEach(x=>x.classList.remove("active"));
@@ -12071,8 +11974,6 @@ function handleNavClick(a, e) {
   if(targetAnchor.dataset.v==="ttsdoclap"){ try{ ttsDlEngineChange(); }catch(err){} }
   if(targetAnchor.dataset.v==="huongdan") hdInit();
   if(targetAnchor.dataset.v==="caidat"){ caidatLoad(); ddLoad(); cacheLoad(); capcutLoad(); aiKeyDs(); glossaryLoad(); aiEngineVe(); }
-  if(targetAnchor.dataset.v==="banggia") bgRender();
-  if(targetAnchor.dataset.v==="goi") goiMoTab();
   wizSync(targetAnchor.dataset.v);
 }
 
@@ -12127,264 +12028,7 @@ document.addEventListener("keydown",e=>{
   });
 });
 
-// ===== GÓI & GIỚI HẠN (pro / unlimited — ĐÃ BỎ GÓI FREE) =====
-if (typeof PLAN === 'undefined' || !PLAN) { var PLAN = {tier:"unlimited", limits:{}, usage:{}}; }
-GIA = {
-  pro:       {ten:"PRO",       goc:800,  thang:{1:399,6:199,12:149}, hot:true},
-  unlimited: {ten:"UNLIMITED", goc:1200, thang:{1:699,6:499,12:299}, best:true},
-};
-// 1 danh sách CHUNG so sánh 2 gói cho DỄ NHÌN. pro/unl: 1=có (✓) · 0=KHÔNG có (gạch ngang) · "chuỗi"=có kèm hạn mức.
-// khoa:1 = tính năng Pro bị khoá → hover hiện gợi ý nâng Unlimited. ⚠ ĐỒNG BỘ với landing.js (FEATS).
-const FEATS = [
-  {t:"Cào video mọi nền tảng (Douyin/TikTok/YT/FB/RedNote/Bilibili)", pro:"Không giới hạn", unl:"Không giới hạn"},
-  {t:"Che phụ đề gốc · Render né bản quyền thông minh",               pro:1, unl:1},
-  {t:"Lồng tiếng AI — model mới nhất",                                pro:"120 phút/ngày", unl:"Không giới hạn"},
-  {t:"Dịch & lồng tiếng 2 giọng nam–nữ trong cùng 1 video",          pro:1, unl:1},
-  {t:"Render song song 1 video ra NHIỀU ngôn ngữ",                    pro:1, unl:1},
-  {t:"Tạo Voice Text-to-Speech (TTS)",                                pro:"120 phút", unl:"Không giới hạn"},
-  {t:"Clone giọng AI thông minh",                                     pro:"3 giọng",       unl:"Không giới hạn"},
-  {t:"Theo dõi kênh — tự bắt video mới",                              pro:"3 kênh",        unl:"Không giới hạn"},
-  {t:"Băm nhỏ · Watermark editor CapCut · Automation đăng bài",       pro:1, unl:1},
-  {t:"Kết hợp LoHa Page — đăng bài Fanpage tự động",                  pro:1, unl:1},
-  {t:"Giọng CapCut & ElevenLabs cao cấp",                             pro:0, unl:1, khoa:1},
-  {t:"Support 1-1 cá nhân hoá",                                       pro:1, unl:1},
-  {t:"Ưu tiên cập nhật tính năng mới sớm nhất",                       pro:0, unl:1},
-];
-async function goiLoad(){
-  // BẢO VỆ "đôi lúc không gõ được": /api/goi lỗi/timeout/CSRF-403 KHÔNG được hạ về free rồi KHÓA input.
-  // Backend (web_app.py, VC_TIER ký Ed25519) đã chặn quota độc lập -> UI mở tạm KHÔNG cho khách lách gì,
-  // nhưng nếu hạ free ở đây thì khách trả phí bị khóa nhầm cho tới khi bấm "Làm mới gói". Giữ PLAN cũ nếu có;
-  // chưa có PLAN nào -> tạm coi "unlimited" (mở khóa UI) tới khi lấy được gói THẬT, rồi thử lại nền.
-  let _r=null;
-  try{ _r = await (await fetch("/api/goi")).json(); }catch(e){}
-  if(_r && _r.tier){ PLAN = _r; }
-  else if(!PLAN || !PLAN.tier){
-    PLAN = {tier:"unlimited", limits:{}, usage:{}, _tam:true};   // fallback MỞ (không khóa) khi chưa lấy được gói
-    setTimeout(()=>{ if(PLAN && PLAN._tam) goiLoad(); }, 4000);   // thử lại lấy gói thật sau 4s
-  }
-  applyGating();
-  capNhatBadgeGoi();
-}
-// Cập nhật badge gói ở sidebar (.side .pro / proBoxTen). TÁCH RIÊNG để lamMoiGoi ("Làm mới gói") cũng gọi được
-// sau khi kích hoạt/nâng cấp — BUG khách báo: trước đây CHỈ goiLoad set badge; lamMoiGoi set PLAN=unlimited +
-// banner "UNLIMITED" nhưng KHÔNG refresh badge → sidebar vẫn "CHƯA KÍCH HOẠT" dù đã mua gói.
-function capNhatBadgeGoi(){
-  const ten=(GIA[PLAN.tier]||{ten:"CHƯA KÍCH HOẠT"}).ten;
-  const pb=document.getElementById("proBoxTen"), ps=document.getElementById("proBoxSub"), box=document.querySelector(".side .pro");
-  if(pb) pb.textContent="🎫 Gói: "+ten;
-  if(ps) ps.textContent = PLAN.tier==="unlimited" ? "Bạn đang dùng gói cao nhất 🎉" : "Mở khoá đầy đủ tính năng, không giới hạn.";
-  if(box) box.style.display = PLAN.tier==="unlimited" ? "none" : "";
-}
-function applyGating(){
-  const L=(PLAN&&PLAN.limits)||{};
-  const lock=(v,on)=>{ const a=document.querySelector('#nav a[data-v="'+v+'"]'); if(a) a.classList.toggle("locked",!!on); };
-  const hideNav=(v,on)=>{ const a=document.querySelector('#nav a[data-v="'+v+'"]'); if(a) a.style.display = on ? "none" : ""; };
-  // LohaPage = TOOL RIÊNG (mua CẢ 2 tool mới dùng được): cờ PLAN.lohapage do license server KÝ. Chưa có ->
-  // ẨN "Kênh nguồn" + KHOÁ "Đăng bài" (click -> nâng cấp). Server bật cờ từ dashboard -> lần "Làm mới gói"
-  // sau tự mở khoá (không cần build lại app).
-  const loha = !!(PLAN && PLAN.lohapage);
-  hideNav("kenhnguon", true);   // ẨN HẲN menu "Kênh nguồn" (user yêu cầu) — backend/phần mềm đăng bài giữ nguyên, chỉ giấu cổng vào UI
-  hideNav("dangbai", false);    // HIỆN menu "Đăng Bài Tự Động"
-  lock("dangbai", !loha);       // khoá nếu chưa có LohaPage (click -> nâng cấp), y như cũ
-  // P06: tier "expired" (hết 7 ngày dùng thử) -> khóa TOÀN app view-only. Áp global trước, thoát sớm.
-  const expired = !!(PLAN && PLAN.tier==="expired");
-  applyExpiredLock(expired);
-  if(expired){ return; }   // đã khóa hết + banner; không chạy tiếp free-lock
-  // P04: khóa view-only các tab pro (free/expired: bam/workflow/theodoi=false).
-  // SỬA BUG: tab "Theo dõi kênh" thật là data-v="videomoi" (gộp trong tab Video mới), KHÔNG phải "theodoi".
-  lock("videomoi", L.theodoi===false);   // Theo dõi: Free không có
-  lock("bam", L.bam===false);            // Băm nhỏ: Free không có
-  lock("quytrinh", L.workflow===false);  // Quy trình: Free không có
-  // pro/unlimited: bam/workflow/theodoi=true -> lock(...,false) tự gỡ locked -> UI Y NGUYÊN.
-}
-// P04 — Trợ lý AI: free/expired được XEM tab nhưng input+nút Gửi disabled + banner nhấp nháy -> bảng giá.
-// Idempotent (goiMoTab/lamMoiGoi gọi lại nhiều lần): dùng display none/block + getElementById, không tạo trùng.
-function applyListLock(container, cardSel, n){
-  if(!container) return;
-  if(n===undefined || n===null) n=3;
-  const free = !!(PLAN && (PLAN.tier==="free" || PLAN.tier==="expired"));
-  const cards = container.querySelectorAll(cardSel);
-  cards.forEach((c,i)=>{
-    const lock = free && i>=n;
-    c.classList.toggle("goi-lock", lock);
-    let b=c.querySelector(".lock-badge");
-    if(lock && !b){
-      b=document.createElement("div"); b.className="lock-badge";
-      b.textContent="🔒 Nâng cấp để xem"; b.onclick=goXemBangGia;
-      c.style.position="relative"; c.appendChild(b);
-    } else if(!lock && b){ b.remove(); }
-  });
-}
-// P06 — Expired (hết 7 ngày dùng thử): khóa TOÀN app view-only. body.app-expired (CSS disable nút/input thao tác,
-// TRỪ tab Gói/Bảng Giá + nút nâng cấp). Nav khóa hết trừ goi/banggia. Banner nhấp nháy thường trực.
-// Khi thoát expired (nâng cấp) -> gỡ SẠCH class + nav-lock (các tab không do P04 quản) để không kẹt khóa.
-function applyExpiredLock(on){
-  document.body.classList.toggle("app-expired", !!on);
-  document.querySelectorAll('#nav a').forEach(a=>{
-    const keep = a.dataset.v==="goi" || a.dataset.v==="banggia";
-    if(keep) return;
-    if(on){ a.classList.add("locked"); }
-    else if(a.dataset.v!=="videomoi" && a.dataset.v!=="bam" && a.dataset.v!=="quytrinh" && a.dataset.v!=="ai"){
-      // các tab KHÔNG do P04 quản (cao/files/xuly/...) -> gỡ locked ở đây; tab P04 để applyGating tự toggle.
-      a.classList.remove("locked");
-    }
-  });
-  if(on) showExpiredBanner();
-  else { const bn=document.getElementById("goiBanner"); if(bn && bn.dataset.expired==="1"){ bn.classList.remove("nhayUp"); bn.style.display="none"; delete bn.dataset.expired; } }
-}
-function showExpiredBanner(){
-  const b=document.getElementById("goiBanner"); if(!b) return;
-  const m=document.getElementById("goiBannerMsg"); if(m) m.textContent="Active Phần Mềm Trong Bảng Giá Để Sử Dụng";
-  b.style.display="flex"; b.classList.add("nhayUp"); b.dataset.expired="1";
-  if(_bnTimer) clearTimeout(_bnTimer);   // persistent: KHÔNG auto-hide
-}
-function goNangCap(){ const a=document.querySelector('#nav a[data-v="goi"]'); if(a){ a.classList.remove("locked"); a.click(); } }
-function goXemBangGia(){ const a=document.querySelector('#nav a[data-v="banggia"]'); if(a) a.click(); }
-const RANK_GOI = {expired:0, pro:1, unlimited:2};   // ĐÃ BỎ FREE: chưa mua = expired
-const fmtVnd = (k)=> (k*1000).toLocaleString("vi-VN")+"đ";   // 199 -> "199.000đ"
-function bgRender(){
-  const grid=document.getElementById("bgGrid"); if(!grid) return;
-  const per=+(document.querySelector("#bgPer button.on")?.dataset.m||12);
-  const cur=PLAN?PLAN.tier:"expired";
-  grid.innerHTML=["pro","unlimited"].map(k=>{
-    const g=GIA[k], gt=g.thang[per], tong=gt*per, goc=g.goc||0, tk=(k==="pro")?"pro":"unl";
-    const giamVsGoc=(goc>0&&gt<goc)?Math.round((1-gt/goc)*100):0;
-    const giamPerMonth=(per>1&&g.thang[1]>0)?Math.round((1-gt/g.thang[1])*100):0;
-    const giamHTML=giamVsGoc>0?' <span class="bg-giam">−'+giamVsGoc+'%</span>':"";
-    const compareHTML=(goc>0)?'<span class="bg-compare">Giá gốc: '+fmtVnd(goc)+'/tháng</span>':"";
-    const badge=g.best?'<div class="bg-badge best">👑 Được Nhiều Người Chọn Nhất</div>':(g.hot?'<div class="bg-badge">⭐ Phổ biến</div>':"");
-    const curB=(k===cur)?'<div class="bg-cur">Đang dùng</div>':"";
-    const gia=compareHTML+'<div class="bg-gia">'+fmtVnd(gt)+'<small>/tháng</small>'+giamHTML+'</div>'+'<div class="bg-tong">Tổng '+fmtVnd(tong)+' / '+per+' tháng'+(giamPerMonth>0?' · tiết kiệm '+giamPerMonth+'% so với mua lẻ':'')+'</div>';
-    // Danh sách CHUNG: tính năng Pro không có -> gạch ngang + mờ; giọng CapCut/ElevenLabs -> khoá + hover gợi ý nâng.
-    const feats=FEATS.map(f=>{
-      const v=f[tk];
-      if(v===0||v===undefined){
-        const tip=f.khoa?' title="🔒 Nâng gói UNLIMITED để dùng giọng CapCut &amp; ElevenLabs"':'';
-        return '<li class="bg-lock"'+tip+'><span>'+f.t+'</span></li>';
-      }
-      const val=(typeof v==="string")?' <b class="bg-val">'+v+'</b>':'';
-      return '<li>'+f.t+val+'</li>';
-    }).join("");
-    const nhanMua=(k===cur)?("Gia hạn "+g.ten):("Mua "+g.ten);
-    const btn='<button class="btn-naicap'+(g.best?' gold':'')+'" style="width:100%" onclick="muaGoi(\''+k+'_'+per+'\')">'+nhanMua+'</button>';
-    return '<div class="bg-card'+(g.best?' best':(g.hot?' hot':''))+'">'+badge+curB+'<div class="bg-ten">'+g.ten+'</div>'+gia+'<ul>'+feats+'</ul>'+btn+'</div>';
-  }).join("");
-}
-function goiRender(){
-  if(!PLAN){ goiLoad().then(goiRender); return; }
-  const L=PLAN.limits||{}, U=PLAN.usage||{};
-  document.getElementById("goiSub").innerHTML="Gói hiện tại: <b style='color:var(--text)'>"+(GIA[PLAN.tier]||{ten:"CHƯA KÍCH HOẠT"}).ten+"</b>";
-  const bar=(da,gh,nhan,dv)=>{
-    if(gh===null||gh===undefined) return '<div class="goi-row"><div style="display:flex;justify-content:space-between"><b>'+nhan+'</b><span style="color:#3ddc84">Không giới hạn</span></div></div>';
-    const pct=gh>0?Math.min(100,Math.round(da/gh*100)):100, w=pct>=100?"warn":"";
-    return '<div class="goi-row"><div style="display:flex;justify-content:space-between"><b>'+nhan+'</b><span style="color:var(--muted)">'+da+' / '+gh+' '+(dv||"")+'</span></div><div class="goi-bar"><i class="'+w+'" style="width:'+pct+'%"></i></div></div>';
-  };
-  document.getElementById("goiUsage").innerHTML=
-    bar(U.cao||0,L.cao_ngay,"Cào video hôm nay","video")+
-    bar(U.dub||0,L.dub_ngay,"Lồng tiếng hôm nay","video")+
-    bar(U.dub_phut||0,L.dub_phut_ngay,"TỔNG phút lồng tiếng hôm nay","phút")+
-    bar(U.clone||0,L.clone_tong,"Clone giọng (tổng)","lượt")+
-    bar(U.theodoi||0,L.theodoi_max,"Kênh đang theo dõi","kênh");
-}
-// Mở tab "Gói của tôi": TỰ đồng bộ gói với máy chủ (không cần bấm nút) -> admin nâng gói xong, user chỉ cần
-// vào tab là thấy gói mới. Throttle 15s để không gọi server liên tục khi chuyển qua lại.
-let _goiSyncLuc = 0;
-async function goiMoTab(){
-  goiRender();                                   // vẽ ngay theo PLAN hiện có
-  if(Date.now() - _goiSyncLuc < 15000) return;   // vừa đồng bộ -> bỏ qua
-  _goiSyncLuc = Date.now();
-  const truoc = PLAN && PLAN.tier;
-  try{
-    const r = await (await fetch("/api/goi/refresh",{method:"POST"})).json();
-    if(r && r.tier){ PLAN=r; applyGating(); goiRender();
-      if(truoc && r.tier!==truoc) showLimitBanner("🎉 Gói đã được cập nhật: "+(r.tier||"chưa kích hoạt").toUpperCase()); }
-  }catch(e){}
-}
-async function lamMoiGoi(btn){
-  if(btn){ btn.disabled=true; btn.textContent="⟳ Đang làm mới…"; }
-  let r=null; const truoc = PLAN && PLAN.tier;
-  try{ r=await (await fetch("/api/goi/refresh",{method:"POST"})).json(); if(r&&r.tier) PLAN=r; }catch(e){}
-  _goiSyncLuc=Date.now(); applyGating(); capNhatBadgeGoi(); goiRender();
-  if(btn){ btn.disabled=false; btn.textContent="⟳ Làm mới gói"; }
-  // Feedback rõ ràng: đã đồng bộ server hay chưa (tránh user tưởng admin nâng rồi mà app im lìm)
-  if(!r) showLimitBanner("Không làm mới được. Thử lại sau giây lát.");
-  else if(r.source!=="online") showLimitBanner("⚠ Chưa kết nối được máy chủ (kiểm tra mạng). Đang hiển thị theo dữ liệu đã lưu — bấm Làm mới lại khi có mạng.");
-  else if(truoc && r.tier!==truoc) showLimitBanner("🎉 Gói đã được cập nhật: "+(r.tier||"chưa kích hoạt").toUpperCase());
-  else showLimitBanner("✓ Đã đồng bộ với máy chủ — gói hiện tại: "+(r.tier||"chưa kích hoạt").toUpperCase());
-}
-let _bnTimer=null;
-function showLimitBanner(msg){
-  const b=document.getElementById("goiBanner"); if(!b) return;
-  document.getElementById("goiBannerMsg").textContent=msg||"Đã đạt giới hạn của gói hiện tại.";
-  b.style.display="flex";
-  if(_bnTimer) clearTimeout(_bnTimer);
-  _bnTimer=setTimeout(()=>{ b.style.display="none"; }, 12000);
-}
-document.querySelectorAll("#bgPer button").forEach(x=>x.onclick=()=>{
-  document.querySelectorAll("#bgPer button").forEach(y=>y.classList.remove("on")); x.classList.add("on"); bgRender();
-});
-
-// ===== Thanh toán SePay (mua thẳng gói -> QR -> auto kích hoạt). Proxy /api/payment/* (session ở lic_cache) =====
-let _payPoll=null, _payDem=null, _payOid=null, _payTick=0, _payState="qr";
-function payShowView(v){ _payState=v;   // v: 'qr' | 'ok' | 'warn' -> hiện đúng 1 view trong modal
-  const q=document.getElementById("payQrView"), o=document.getElementById("payOkView"), w=document.getElementById("payWarnView");
-  if(q) q.style.display = v==="qr" ? "" : "none";
-  if(o) o.style.display = v==="ok" ? "" : "none";
-  if(w) w.style.display = v==="warn" ? "" : "none";
-}
-async function muaGoi(planKey){
-  try{
-    const r=await (await fetch("/api/payment/create-order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({plan_key:planKey})})).json();
-    if(!r||!r.ok){ showLimitBanner((r&&r.msg)||"Không tạo được đơn thanh toán. Thử lại."); return; }
-    _payOid=r.order_id;
-    document.getElementById("payQR").src=r.qr_url;
-    document.getElementById("payAmount").textContent=(r.amount||0).toLocaleString("vi-VN")+" đ";
-    document.getElementById("payMa").textContent=r.ma_ck||"";
-    document.getElementById("payBank").textContent=((r.bank||"")+" · "+(r.stk||"")+" · "+(r.ten||"")).trim();
-    document.getElementById("payTrangThai").textContent="";
-    payShowView("qr");
-    document.getElementById("payModal").style.display="flex";
-    payDemNguoc(r.expires_in||900);
-    payStartPoll();
-  }catch(e){ showLimitBanner("Lỗi kết nối khi tạo đơn. Kiểm tra mạng."); }
-}
-function payStartPoll(){ if(_payPoll) clearInterval(_payPoll); _payTick=0; _payPoll=setInterval(payCheck,3500); }
-async function payCheck(){
-  if(!_payOid) return;
-  _payTick++;
-  try{
-    const r=await (await fetch("/api/payment/status",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:_payOid})})).json();
-    if(r&&r.status==="paid"){ payDone(); return; }
-    if(_payTick%8===0){   // ~28s: đối soát SePay API (bù webhook miss). Rate-limit server 12 lần/5ph -> giữ nhịp này
-      const r2=await (await fetch("/api/payment/reconcile",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:_payOid})})).json();
-      if(r2&&r2.status==="paid"){ payDone(); return; }
-    }
-  }catch(e){}
-}
-function payDone(){   // hiện popup Thanh Toán Thành Công + làm mới trạng thái gói
-  if(_payPoll){clearInterval(_payPoll);_payPoll=null;}
-  if(_payDem){clearInterval(_payDem);_payDem=null;}
-  try{ if(typeof lamMoiGoi==="function") lamMoiGoi(); }catch(e){}
-  payShowView("ok");
-}
-function payX(){   // X góc trên: đang ở QR -> cảnh báo chưa thanh toán; ở warn/ok -> đóng thật
-  if(_payState==="qr"){ payShowView("warn"); return; }
-  dongPayModal();
-}
-function payBackToQR(){ payShowView("qr"); }   // "Tiếp tục thanh toán" -> quay lại QR (poll vẫn chạy nền)
-function payDemNguoc(sec){
-  if(_payDem) clearInterval(_payDem);
-  let left=sec; const el=document.getElementById("payDem");
-  const tick=()=>{ if(left<=0){ clearInterval(_payDem); _payDem=null; if(el) el.textContent="0:00"; return; }
-    const m=Math.floor(left/60), s=left%60; if(el) el.textContent=m+":"+(s<10?"0":"")+s; left--; };
-  tick(); _payDem=setInterval(tick,1000);
-}
-function dongPayModal(){
-  if(_payPoll){clearInterval(_payPoll);_payPoll=null;}
-  if(_payDem){clearInterval(_payDem);_payDem=null;}
-  const m=document.getElementById("payModal"); if(m) m.style.display="none";
-  _payOid=null; payShowView("qr");
-}
+function showLimitBanner(msg){ vcToast(msg || "Request failed."); }
 
 // ===== Né bản quyền (xử lý video theo lựa chọn) =====
 xlAllVids = xlAllVids || []; xlSel = xlSel || new Set();
@@ -12668,7 +12312,6 @@ function xlRenderGrid(){
     if(xlVidIO) xlVidIO.observe(e.querySelector("video"));
     box.appendChild(e);
   });
-  applyListLock(box, ".rdr-vc", 3);   // P05: free/expired -> chỉ 3 video render đầu thao tác, còn lại mờ + 🔒
   xlUpdCount();
 }
 /* 🔴 11/09/2026 — MỘT CỬA cho lazy-load video, và nó phải biết NHẢ, không chỉ biết NẠP.
@@ -16026,7 +15669,7 @@ async function lsTaiChon(){
   if(!r){ vcToast("Lỗi gửi tải."); return; }
   if(r.ok===false){ if(!r.limit) vcToast(r.msg||"Lỗi"); return; }
   _lsSel.clear();
-  if(r.cat_bot>0) vcToast("⚠ Gói FREE sắp đủ giới hạn ngày — chỉ tải "+r.n+"/"+ids.length+" bài. Nâng cấp để tải hết.");
+  if(r.cat_bot>0) vcToast("Đã thêm "+r.n+"/"+ids.length+" bài. Xem nhật ký để biết lý do bài còn lại chưa được xử lý.");
   lsAfterDownload((r.n)||ids.length);
 }
 // Theo dõi tải NỀN: hiện trạng thái RÕ ở khung lsStatus, poll /api/log tới khi crawl DỪNG rồi TỰ refresh
@@ -19572,7 +19215,7 @@ function _validLinks(input, plat, mode){
   /* 🔴 12/09/2026 — LINK TRANG TÌM KIẾM DÁN VÀO "THEO LINK".
      Ảnh log khách 12/09 có URL `douyin.com/jingxuan/search/<từ khoá>?...&modal_id=7594042277123656966`.
      ⚠ ĐO TRƯỚC KHI CHẶN — và số đo BÁC BỎ phán đoán đầu tiên của tôi: chạy CHÍNH
-       `MediaCrawler/media_platform/douyin/help.parse_video_info_from_url` trên đúng URL đó ⇒ ra
+       `Meowcrawler/media_platform/douyin/help.parse_video_info_from_url` trên đúng URL đó ⇒ ra
        `aweme_id=7594042277123656966, url_type=modal`. Tức URL search **CÓ `modal_id` thì CHẠY ĐÚNG**
        (khách bấm vào video trong kết quả tìm kiếm nên địa chỉ mang sẵn mã bài). KHÔNG được chặn nó.
      Ca THẬT SỰ hỏng là URL search **KHÔNG có** mã bài nào: cùng hàm đó ném
@@ -19726,7 +19369,6 @@ function xemRender(){
       <div class="sub" style="padding:0 8px 6px;margin:0;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">❤ ${esc(it.like||'')}${it.view?' · ▶ '+esc(it.view):''} · ${esc(it.nick||'')}</div>
     </label>`).join("");
   g.scrollTop=_st;   // khôi phục vị trí cuộn (khỏi nhảy về đầu khi poll render thêm video)
-  applyListLock(g, ":scope > label", 3);   // P05: free/expired -> chỉ 3 kết quả cào đầu xem/chọn, còn lại mờ + 🔒
   dichLuoiTieuDe();
 }
 function xemChonHet(v){
@@ -19765,13 +19407,13 @@ async function xemCao(){
     const _m=_loi || r.msg || "Không cào được.";
     const el=document.getElementById("xemMsg");
     if(el){ el.textContent="⚠ "+_m; el.style.color="#fbbf24"; }
-    if(!(r&&r.limit) && !_loi) vcToast(_m);   // limit -> banner Nâng cấp tự hiện
+    if(!_loi) vcToast(_m);
     return;                                   // GIỮ modal mở để khách chọn/thử lại — nhưng nay họ thấy VÌ SAO
   }
   xemDong();
   const n=(r&&r.n)||ids.length;
   let msg="Đã bắt đầu cào "+n+" video đã chọn. Xem tiến trình ở Nhật ký; video về tab 'File đã tải'.";
-  if(r&&r.cat_bot>0) msg="⚠ Gói FREE sắp đủ giới hạn ngày — chỉ cào "+n+"/"+ids.length+" video (số còn lại trong quota). Nâng cấp để cào hết.\n\n"+msg;
+  if(r&&r.cat_bot>0) msg="Đã thêm "+n+"/"+ids.length+" video. Xem nhật ký để biết lý do video còn lại chưa được xử lý.\n\n"+msg;
   vcToast(msg);
 }
 
@@ -19830,12 +19472,7 @@ async function startCrawl(){
         await post("/api/crawl",Object.assign({},_opts,{force:true}));
       }
     }
-    // ok:false (hết quota gói FREE / gói hết hạn / bị chặn) → PHẢI báo cho user. Trước đây chỉ xử lý busy →
-    // {ok:false,limit/expired,msg} bị NUỐT IM. Banner đỏ CÓ tự hiện (fetch hook) NHƯNG ở TRÊN CÙNG + tự tắt 12s →
-    // user bấm "Cào hết" nhìn nút/log ở GIỮA màn DỄ BỎ LỠ → tưởng "bấm không có gì". Đây là hành động CHỦ ĐỘNG
-    // (bấm rồi không thấy tải) nên alert NGAY kể cả limit để không thể bỏ lỡ lý do. (Verify UI: hết 3 quota FREE →
-    // trước chỉ banner dễ lỡ; giờ alert rõ giữa màn.)
-    else if(_r&&_r.ok===false){ vcToast(_r.msg||"Không cào được — thử lại hoặc kiểm tra gói/đăng nhập."); }
+    else if(_r&&_r.ok===false){ vcToast(_r.msg||"Không cào được — thử lại hoặc kiểm tra đăng nhập."); }
   } finally { _restore(); }   // cào chạy nền → trả nút về bình thường, tiến trình xem ở khung log
 }
 function stopCrawl(){post("/api/stop",{});}
@@ -20021,7 +19658,7 @@ function capNhatProgress(lines, running){
   /* 🔴 19/08/2026 — CHỐNG "TƯỞNG BỊ TREO" (chủ dự án yêu cầu). Trước đây thanh này CHỈ nhích khi một video
      tải XONG: cào 5 video nặng = 5 lần nhích, mỗi lần cách nhau vài phút đứng im. Nay thêm 2 thứ:
        (a) % CON của video đang tải — đọc dòng `📥 Đang tải video: N%` (yt-dlp in sẵn từ trước; nhánh
-           MediaCrawler nay cũng in, xem MediaCrawler/tools/tien_do_tai.py) → thanh bò liên tục;
+           MediaCrawler nay cũng in, xem Meowcrawler/tools/tien_do_tai.py) → thanh bò liên tục;
        (b) ĐỒNG HỒ luôn chạy — poll() chạy mỗi 1,5s BẤT KỂ có log mới hay không, nên số giây vẫn nhảy kể cả
            lúc nền tảng im hoàn toàn. Đây mới là thứ trấn an: có thứ gì đó ĐANG ĐỔI trên màn hình. */
   let subPct=-1;
@@ -25536,7 +25173,7 @@ async function wfKpTheoDoi(){
   try{ r=await post("/api/kham_pha_theo_doi",{secs:[..._kpChon]}); }catch(e){ r=null; }
   if(!(r&&r.ok)){ try{ vcToast("Không thêm được."); }catch(e){} return; }
   // 🔴 KHÔNG khoá ô tick ở kênh thứ N+1: khách đang CHỌN, chưa cam kết gì — khoá giữa chừng là
-  //    khó chịu và họ không hiểu vì sao. Kiểm quota ở đây, lúc BẤM, rồi nói rõ phần CÒN LẠI.
+   //    khó chịu và họ không hiểu vì sao. Kiểm số lượng ở đây, lúc BẤM, rồi nói rõ phần CÒN LẠI.
   if(r.can_xac_nhan){
     const con=r.con_lai|0;
     const ten=(r.se_vao||[]).map(x=>"• "+x).join("\n");
@@ -25544,9 +25181,8 @@ async function wfKpTheoDoi(){
       ? ("Bạn đã theo dõi "+r.dang_co+"/"+r.tran+" kênh nguồn.\n"+
          "Lần này bạn chọn "+r.chon+" kênh, nhưng chỉ còn "+con+" lượt theo dõi.\n\n"+
          "Sẽ thêm đúng "+con+" kênh sau đây:\n"+ten+"\n\n"+
-         "Đây là giới hạn của gói "+String(r.tier||"").toUpperCase()+", không phải lỗi.")
-      : ("Bạn đã dùng hết "+r.dang_co+"/"+r.tran+" lượt theo dõi của gói "+
-         String(r.tier||"").toUpperCase()+".\nNâng cấp gói để theo dõi thêm kênh nguồn.");
+         "Ứng dụng chỉ thêm số kênh còn lại trong lượt này.")
+       : ("Bạn đã theo dõi "+r.dang_co+"/"+r.tran+" kênh. Hãy xem lại danh sách đang theo dõi.");
     if(con<=0){ try{ vcToast(dau); }catch(e){} return; }
     const ok=(typeof vcHoi==="function") ? await vcHoi(dau) : confirm(dau);
     if(!ok) return;
@@ -30080,8 +29716,8 @@ function r2VoiceOpts(lang, gender){
   // Backend đã chặn edge cho 15 ngôn ngữ CapCut phủ (cổng đầu `long_tieng_edge` → lùi sang CapCut),
   // nhưng DROPDOWN vẫn liệt kê chúng ⇒ khách chọn "US — Andrew" rồi nhận về giọng CapCut, KHÔNG
   // một dòng báo nào. Mời khách chọn thứ mà backend sẽ âm thầm thay còn TỆ HƠN là không mời.
-  // CHỈ ẩn khi CapCut BẬT (gói UNLIMITED) VÀ ngôn ngữ đó thật sự có giọng CapCut — gói PRO không có
-  // CapCut thì edge vẫn phải hiện, nếu không ô giọng RỖNG.
+  // CHỈ ẩn khi CapCut BẬT VÀ ngôn ngữ đó thật sự có giọng CapCut.
+  // Nếu CapCut không có thì edge vẫn phải hiện, nếu không ô giọng RỖNG.
   const _capcutPhu = (typeof CAPCUT_ON!=="undefined" && CAPCUT_ON
                       && CAPCUT_GIONG && (CAPCUT_GIONG[lang]||[]).length > 0);
   // TẤT CẢ giọng edge của ngôn ngữ, CHIA theo nhãn giới ("Nam"/"Nữ") trong APP_LANGS.edge
@@ -30198,7 +29834,7 @@ function r2VoiceOpts(lang, gender){
   // TIÊN trong mảng = mặc định thật khi khách CHƯA tự chọn (dropdown không set `selected` thì browser tự
   // hiện option đầu, và giá trị ĐỌC LÚC RENDER cũng lấy từ DOM chứ không phải state rỗng — xem
   // `r2LangVoices._v0`/dòng ~11094). Chỉ đổi thứ tự khi CapCut THỰC SỰ có mặt trong danh sách (khách đã bật
-  // công tắc CapCut ở Cài đặt + đủ gói UNLIMITED — nếu không, mảng không có phần tử "capcut:" nào nên không
+  // nếu không, mảng không có phần tử "capcut:" nào nên không
   // đổi gì, giữ nguyên mặc định offline/edge cũ). Tiếng Việt: 2 giọng CỤ THỂ khách chỉ định (Cô Gái Hoạt
   // Ngôn / Thanh Niên Tự Tin — BV074/BV075). Ngôn ngữ khác: giọng CapCut ĐẦU TIÊN có sẵn cho giới đó.
   const _capUuTien = (lang==="vi")
@@ -31622,7 +31258,7 @@ async function _tdDoNguon(k, nickname){
       .find(p=>p && /\/kenh\//i.test(p) && p.toLowerCase().includes(String(nickname).toLowerCase()));
     if(hit){
       // 🔴 VÁ 10/08/2026: TRƯỚC ĐÂY lưu thẳng path TƯƠNG ĐỐI cắt từ `f.p`. Server `_whitelist_out` lại neo
-      // path tương đối vào CHA-CỦA-DATA_DIR ⇒ ra `…\MediaCrawler\MediaCrawler\data\…` = không tồn tại ⇒
+      // path tương đối vào CHA-CỦA-DATA_DIR ⇒ ra `…\Meowcrawler\Meowcrawler\data\…` = không tồn tại ⇒
       // mở lại app là nguồn trỏ vào hư không (trong phiên vẫn chạy nên rất khó thấy).
       // Nay nhờ SERVER quy đổi sang dạng tuyệt đối chuẩn — cùng dạng `kenhChonNguon` (nút 📥) đang lưu.
       const thu=hit.split("\\").join("/").split("/").slice(0,-1).join("/");
@@ -35835,38 +35471,6 @@ document.addEventListener("click", function(){ const a=document.getElementById("
 })();
 </script>
 
-<!-- Modal thanh toán SePay (mua thẳng gói -> QR -> auto kích hoạt) -->
-<div id="payModal" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.62);align-items:center;justify-content:center">
-  <div style="position:relative;background:var(--card,#161b26);border:1px solid var(--line,#2a3140);border-radius:16px;padding:22px;max-width:360px;width:92%;text-align:center;color:var(--text,#eef)">
-    <span onclick="payX()" title="Đóng" style="position:absolute;top:8px;right:14px;font-size:24px;line-height:1;cursor:pointer;color:var(--muted,#93a);opacity:.75">×</span>
-    <!-- VIEW 1: QR thanh toán -->
-    <div id="payQrView">
-      <div style="font-size:17px;font-weight:700;margin-bottom:2px">Quét QR để thanh toán</div>
-      <div style="font-size:12px;color:var(--muted,#93a);opacity:.8;margin-bottom:12px">Kích Hoạt Gói Tự Động</div>
-      <img id="payQR" src="" alt="QR chuyển khoản" style="width:216px;height:216px;background:#fff;border-radius:12px;object-fit:contain"/>
-      <div id="payAmount" style="margin:12px 0 2px;font-size:22px;font-weight:800"></div>
-      <div style="font-size:12px;color:var(--muted,#93a)">Nội dung CK (giữ nguyên):</div>
-      <div id="payMa" style="font-size:19px;font-weight:800;letter-spacing:2px;margin:2px 0;color:var(--acc2,#5ad)"></div>
-      <div id="payBank" style="font-size:12px;color:var(--muted,#93a);margin-bottom:6px"></div>
-      <div id="payTrangThai" style="font-size:13px;margin:6px 0;min-height:18px"></div>
-      <div style="font-size:12px;color:var(--muted,#93a)">Hết hạn sau <b id="payDem">15:00</b></div>
-    </div>
-    <!-- VIEW 2: Thanh toán thành công -->
-    <div id="payOkView" style="display:none">
-      <div style="font-size:52px;line-height:1;margin:4px 0 2px">🎉</div>
-      <div style="font-size:19px;font-weight:800;color:#39d98a;margin-bottom:6px">Thanh Toán Thành Công</div>
-      <p style="font-size:13.5px;line-height:1.7;margin:8px 4px 16px">Cảm ơn Bạn đã sử dụng dịch vụ, tải app, đăng nhập tài khoản để dùng tool.<br>Chúc Bạn Công Việc Thuận Lợi <span style="color:#ff2d55">❤️</span></p>
-      <button class="btn go" style="width:100%" onclick="dongPayModal()">Bắt đầu dùng ngay ✨</button>
-    </div>
-    <!-- VIEW 3: Cảnh báo chưa thanh toán -->
-    <div id="payWarnView" style="display:none">
-      <div style="font-size:48px;line-height:1;margin:4px 0 2px">⚠️</div>
-      <div style="font-size:18px;font-weight:800;margin-bottom:6px">Bạn chưa thanh toán</div>
-      <p style="font-size:13.5px;line-height:1.7;margin:8px 4px 16px">Hãy thanh toán để trải nghiệm công cụ kiếm tiền tự động.</p>
-      <button class="btn go" style="width:100%" onclick="payBackToQR()">Tiếp tục thanh toán</button>
-    </div>
-  </div>
-</div>
 <!-- ===========================================================================================
      01/09/2026 — THANH "MÁY ĐANG LÀM GÌ" (luôn hiện ở MỌI tab)
 
@@ -36111,7 +35715,7 @@ async function nbqLoadList() {
           <b style="font-size:12.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${esc(f.name)}">🎬 ${esc(f.name)}</b>
           <div class="sub" style="margin:4px 0 8px;font-size:11px">${(f.size/1024/1024).toFixed(1)} MB</div>
           <div style="display:flex;gap:6px">
-            <button class="btn go" style="padding:5px 9px;font-size:11px" onclick="openFolder('MediaCrawler/data/ne_ban_quuyen/videos')">📂 Mở thư mục</button>
+            <button class="btn go" style="padding:5px 9px;font-size:11px" onclick="openFolder('Meowcrawler/data/ne_ban_quuyen/videos')">📂 Mở thư mục</button>
           </div>
         </div>`
       ).join("");

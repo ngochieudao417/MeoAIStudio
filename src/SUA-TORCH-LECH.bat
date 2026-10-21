@@ -10,7 +10,7 @@ cd /d "%~dp0"
 ::   torch       = 2.8.0+cpu     <-- SAI (ban CPU, va sai phien ban)
 ::   torchaudio  = 2.5.1+cu121   <-- ban CUDA cho torch 2.5.1
 ::   => 2 goi KHONG tuong thich ABI -> "import torch" vo -> ctranslate2 vo theo -> ASR chet.
-:: Du an GHIM phien ban torch trong MediaCrawler\pyproject.toml (hien tai 2.8.0), va cai_gpu.py
+:: Du an GHIM phien ban torch trong Meowcrawler\pyproject.toml (hien tai 2.8.0), va cai_gpu.py
 :: doc THANG con so do ra (ham _ver_torch_ghim) - MOT NGUON SU THAT.
 :: 06/08/2026: script nay TRUOC DAY ghim cung 2.5.1+cu121 trong khi pyproject ghim 2.8.0
 :: => chinh cai script "sua lech" lai TU TAO ra lech ABI. Nay khong ghim cung nua.

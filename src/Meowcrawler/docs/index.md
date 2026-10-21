@@ -14,7 +14,7 @@
 ### 2. 同步 Python 依赖
 ```shell
 # 进入项目根目录
-cd MediaCrawler
+cd Meowcrawler
 
 # 使用 uv 保证 Python 版本和依赖一致性
 uv sync
@@ -51,7 +51,7 @@ uv run main.py --help
 > 如果爬取抖音或知乎，需要提前安装 Node.js，版本 `>= 16`。
 ```shell
 # 进入项目根目录
-cd MediaCrawler
+cd Meowcrawler
 
 # 创建虚拟环境（示例 Python 版本：3.11，requirements 基于该版本）
 python -m venv venv

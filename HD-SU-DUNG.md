@@ -12,5 +12,5 @@
 ## Các Thư Mục Lưu Trữ
 - Mã nguồn ứng dụng: `local_tool/src/`
 - Môi trường Python: `local_tool/.venv/`
-- Video đã cào & dữ liệu: `MediaCrawler/data/`
+- Video đã cào & dữ liệu: `Meowcrawler/data/`
 - Video đã render thành phẩm: `processed_videos/`

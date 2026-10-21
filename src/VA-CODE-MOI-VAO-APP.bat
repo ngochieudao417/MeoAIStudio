@@ -107,7 +107,7 @@ if errorlevel 8 (
 :: VI SAO CAN BUOC RIENG: robocopy o tren KHONG co /PURGE va /MIR (co y - de khong xoa file cau hinh cua
 :: khach). He qua: XOA mot file khoi ban phat hanh KHONG BAO GIO toi duoc may khach da nhan no - thu muc
 :: dich chi TICH LUY. Do that 07/08/2026: ban da cai co 23 file .bat trong khi app-src chi con 16.
-:: CHAY-WEB.bat = launcher OWNER-only dat VC_TIER=unlimited + VC_EMBEDDED=1 (bo dang nhap) + nonce RONG.
+:: CHAY-WEB.bat = launcher cu, can go khoi cac ban da nhan file nay.
 :: Goi phat hanh 05/08 CO chua no => phai go tren may da nhan, khong chi chan ship.
 :: CHI xoa DUNG mot ten file, TUYET DOI khong dung wildcard o day.
 if exist "%DSTDIR%\CHAY-WEB.bat" (

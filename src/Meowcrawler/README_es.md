@@ -97,7 +97,7 @@ El proyecto depende de Node.js, por favor descargue e instale desde el sitio web
 
 ```shell
 # Entrar al directorio del proyecto
-cd MediaCrawler
+cd Meowcrawler
 
 # Usar el comando uv sync para asegurar la consistencia de la versión de python y paquetes de dependencias relacionados
 uv sync
@@ -172,7 +172,7 @@ Después de iniciar exitosamente, visite `http://localhost:8080` para abrir la i
 
 ```shell
 # Entrar al directorio raíz del proyecto
-cd MediaCrawler
+cd Meowcrawler
 
 # Crear entorno virtual
 # Mi versión de python es: 3.9.6, las librerías en requirements.txt están basadas en esta versión
@@ -230,7 +230,7 @@ MediaCrawler soporta múltiples métodos de almacenamiento de datos, incluyendo 
 
 
 ### 💬 Grupos de Discusión
-- **Grupo de Discusión WeChat**: [Haga clic para unirse](https://nanmicoder.github.io/MediaCrawler/%E5%BE%AE%E4%BF%A1%E4%BA%A4%E6%B5%81%E7%BE%A4.html)
+- **Grupo de Discusión WeChat**: [Haga clic para unirse](https://nanmicoder.github.io/Meowcrawler/%E5%BE%AE%E4%BF%A1%E4%BA%A4%E6%B5%81%E7%BE%A4.html)
 - **Cuenta de Bilibili**: [Sígueme](https://space.bilibili.com/434377496), compartiendo conocimientos de tecnología de IA y rastreo
 
 
@@ -254,7 +254,7 @@ TikHub.io proporciona 900+ interfaces de datos altamente estables, cubriendo 14+
 ---
 
 ### 📚 Otros
-- **Preguntas Frecuentes**: [Documentación Completa de MediaCrawler](https://nanmicoder.github.io/MediaCrawler/)
+- **Preguntas Frecuentes**: [Documentación Completa de MediaCrawler](https://nanmicoder.github.io/Meowcrawler/)
 - **Tutorial de Rastreador para Principiantes**: [Tutorial Gratuito CrawlerTutorial](https://github.com/NanmiCoder/CrawlerTutorial)
 - **Proyecto de Código Abierto de Rastreador de Noticias**: [NewsCrawlerCollection](https://github.com/NanmiCoder/NewsCrawlerCollection)
 

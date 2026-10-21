@@ -15,7 +15,7 @@ echo.
 echo Dang tat python / pythonw va Chromium cua tool...
 powershell -NoProfile -Command "Get-Process python,pythonw -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue; Get-Process chrome -ErrorAction SilentlyContinue | Where-Object { $_.Path -like '*ms-playwright*' } | Stop-Process -Force -ErrorAction SilentlyContinue"
 echo Dang giai phong khoa ho so dang nhap...
-del /F /Q "MediaCrawler\browser_data\dy_user_data_dir\Singleton*" 2>nul
+del /F /Q "Meowcrawler\browser_data\dy_user_data_dir\Singleton*" 2>nul
 echo.
 echo XONG! Da don sach. Bay gio:
 echo   - Mo lai giao dien:  WEB-UI.bat  (hoac CAO-VIDEO.bat)

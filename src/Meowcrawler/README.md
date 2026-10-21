@@ -106,7 +106,7 @@
 
 ```shell
 # 进入项目目录
-cd MediaCrawler
+cd Meowcrawler
 
 # 使用 uv sync 命令来保证 python 版本和相关依赖包的一致性
 uv sync
@@ -190,7 +190,7 @@ uv run python -m api.main
 
 ```shell
 # 进入项目根目录
-cd MediaCrawler
+cd Meowcrawler
 
 # 创建虚拟环境
 # 我的 python 版本是：3.11 requirements.txt 中的库是基于这个版本的
@@ -248,7 +248,7 @@ MediaCrawler 支持多种数据存储方式，包括 CSV、JSON、JSONL、Excel�
 
 
 ## 💬 交流群组
-- **微信交流群**：[点击加入](https://nanmicoder.github.io/MediaCrawler/%E5%BE%AE%E4%BF%A1%E4%BA%A4%E6%B5%81%E7%BE%A4.html)
+- **微信交流群**：[点击加入](https://nanmicoder.github.io/Meowcrawler/%E5%BE%AE%E4%BF%A1%E4%BA%A4%E6%B5%81%E7%BE%A4.html)
 - **B站账号**：[关注我](https://space.bilibili.com/434377496)，分享AI与爬虫技术知识
 
 
@@ -297,7 +297,7 @@ TikHub.io 提供 900+ 高稳定性数据接口，覆盖 TK、DY、XHS、Y2B、In
 ---
 
 ## 📚 其他
-- **常见问题**：[MediaCrawler 完整文档](https://nanmicoder.github.io/MediaCrawler/)
+- **常见问题**：[MediaCrawler 完整文档](https://nanmicoder.github.io/Meowcrawler/)
 - **爬虫入门教程**：[CrawlerTutorial 免费教程](https://github.com/NanmiCoder/CrawlerTutorial)
 - **新闻爬虫开源项目**：[NewsCrawlerCollection](https://github.com/NanmiCoder/NewsCrawlerCollection)
 

@@ -32,11 +32,11 @@ PRIVATE_FILES = {
     "_login_check.json", "_kiem_moi_truong.json", "_gpu_auto.json",
 }
 BUNDLED_BROWSER_MODULES = {
-    "MediaCrawler/media_platform/bilibili/core.py",
-    "MediaCrawler/media_platform/tieba/core.py",
-    "MediaCrawler/media_platform/zhihu/core.py",
-    "MediaCrawler/media_platform/kuaishou/core.py",
-    "MediaCrawler/media_platform/weibo/core.py",
+    "Meowcrawler/media_platform/bilibili/core.py",
+    "Meowcrawler/media_platform/tieba/core.py",
+    "Meowcrawler/media_platform/zhihu/core.py",
+    "Meowcrawler/media_platform/kuaishou/core.py",
+    "Meowcrawler/media_platform/weibo/core.py",
 }
 
 
@@ -44,7 +44,7 @@ def excluded_app(directory: Path, name: str) -> bool:
     rel = directory.relative_to(ROOT / "src")
     if name in PRIVATE_FILES or name == "__pycache__" or name.endswith(".log"):
         return True
-    return rel in (Path("."), Path("MediaCrawler")) and name in ROOT_PRIVATE_DIRS
+    return rel in (Path("."), Path("Meowcrawler")) and name in ROOT_PRIVATE_DIRS
 
 
 def excluded_runtime(directory: Path, name: str) -> bool:
@@ -163,7 +163,7 @@ def build() -> None:
         if missing:
             raise RuntimeError(f"Installer missing: {sorted(missing)}")
         for name in names:
-            if name.startswith("src/MediaCrawler/browser_data/") or name.startswith("src/MediaCrawler/data/"):
+            if name.startswith("src/Meowcrawler/browser_data/") or name.startswith("src/Meowcrawler/data/"):
                 raise RuntimeError(f"Private data included: {name}")
             if name in {"src/secret.key", "src/data_khach.db", "config_keys.json"}:
                 raise RuntimeError(f"Private file included: {name}")
