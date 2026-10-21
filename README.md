@@ -41,8 +41,6 @@ Các thư mục dữ liệu thường gặp:
 | `src/processed_videos/` | Video xuất ra từ ứng dụng |
 | `release/` | Bộ cài được tạo trên máy đóng gói |
 
-Một số tệp nhạy cảm từng được đưa vào lịch sử Git trước khi có quy tắc bỏ qua. `.gitignore` chỉ ngăn thêm mới; nếu khóa cũ còn hiệu lực, cần thay khóa và xử lý lịch sử theo kế hoạch chung của nhóm.
-
 ## Cấu trúc repo
 
 | Đường dẫn | Vai trò |
